@@ -1,0 +1,62 @@
+---- eVias C++ library README ----
+
+{-------------------- ABSTRACT
+
+This library is currently under development. Some of the features may be buggy or
+their implementation may be incomplete. This is a hobbie development, helping me for
+a faster development of applications using C++. Bugs can be reported by mail to
+<saive.gregory@gmail.com>.
+
+Mostly, this library will include features helping me to achieve daily tasks. The main
+purpose of having this library linked to my applications is to be able to develop
+those application much faster by having a good library layer to work on.
+
+--------------------- END ABSTRACT}
+
+{-------------------- LIBRARY MODULES LIST
+
+- evias::core
+    - configIni     : ".ini" file configuration read / write module
+    - jsonSingleEntry  : JSON "key":"value"
+    - jsonArrayEntry   : JSON "key":[array_entries]
+    - jsonObjectEntry  : JSON "key":{object_entries}
+    - dbAdapter     : database adapter workaround
+    - pSqlAdapter   : PostgreSQL database adapter
+    - dbTable          : database table data fetch
+    - dbField          : database fields representation
+    - dbRow            : simple row representation
+    - sqlSelect        : SQL SELECT statement representation
+    - sqlFrom          : SQL FROM statement representation
+    - sqlWhere         : SQL WHERE statement representation
+    - selectQuery      : represents a whole select statement (SQL)
+    - updateQuery      : represents a whole update statement (SQL)
+    - removeQuery      : represents a whole delete statement (SQL)
+    - insertQuery      : represents a whole insert statement (SQL)
+
+evias::test
+    - unitTest      : unit testing abstraction layer
+    - dbConnection     : test postgresql connection
+    - dbFetchAll       : test fetchAll method of dbTable<pSqlAdapter>
+    - dbUpdate         : test field value update with dbTable<pSqlAdapter>
+    - dbInsert         : test row insert with dbTable<pSqlAdapter>
+    - dbRemove         : test row delete with dbTable<pSqlAdapter>
+    - configFileParse  : test configuration file parsing feature (configIni)
+    - jsonParsing      : test json entries parse and creation
+    - jsonObjectParsing: test creation of JSON objects with C++ standard lib and generate JSON
+    - mainWnd          : test Qt main window display
+    - mainWnd_Full     : test Qt main window & style sheets display
+    - easySql          : test sqlSelect class
+    - insertSql        : test insertQuery class
+    - updateSql        : test updateQuery class
+    - removeSql        : test removeQuery class
+    - sqlWithParams    : test selectQuery class with params
+
+- evias::application
+    - consoleParser : console call arguments parsing module
+    - Irc           : Internet Relay Chat client instance class
+    - Project       : eVias Project abstraction layer
+    - MainWnd       : Qt Main window
+    - Debugger      : application debugger can be used for multiple projects
+    - basicView     : inherits QWidget
+
+--------------------- END LIBRARY MODULES LIST }
