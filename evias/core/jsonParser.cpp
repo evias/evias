@@ -124,6 +124,10 @@ namespace core {
         string::size_type findObjectCloseBracket   = objectData.find_first_of ("}");
         string::size_type findObjectAffectOperator = objectData.find_first_of ("=");
 
+        // @TODO : ={ should be tests:
+        // affectOperatorPos < objectDeclarePos &&
+        // nothing but spaces between affectOperatorPos & objectDeclarePos
+
         bool hasKeyValSequence = (
             findObjectAffectOperator != string::npos &&
             findObjectDeclareBracket != string::npos &&
@@ -164,8 +168,9 @@ namespace core {
         int lastColumn  = 0;
         do {
             // find "," until not in string / array / object anymore ;
-            // mean it will loop until we are in a the root sequence {key:value,key:{subkey:subval,subkey:subval},}
-            // there will be 2 matches for the above example, the one between the subval,subkey is not counted
+            // mean it will loop until we are in a the root sequence
+            // {key:value,key:{subkey:subval,subkey:subval}}
+            // there will be 1 match for the above example, the one between the subval,subkey is not counted
 
             string::size_type firstColumn = betweenBrackets.find_first_of (",", searchOffset+1);
 
