@@ -1,29 +1,6 @@
 #ifndef __EVIAS_CORE_selectQuery__
 #define __EVIAS_CORE_selectQuery__
 
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- evias::core
- *
- * Implemented Classes:
- *  - sqlSelect
- *  - sqlFrom
- *  - sqlWhere
- *  - sqlParam
- *  - sqlParams
- *  - selectQuery
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
-
 #include <string>
 #include <vector>
 #include <map>

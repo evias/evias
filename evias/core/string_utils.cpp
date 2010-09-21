@@ -1,25 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Functions:
- *  - int stringToInt(string)                                       : convert a string into an integer value
- *  - string intToString(int)                                       : convert an integer value into a string
- *  - string strToUpper(string)                                     : uppercase a string
- *  - string strToLower(string)                                     : lowercase a string
- *  - string padString (const string&, int, string, strPadType)     : pad a string with one / more characters (right / left / both)
- *  - string genPassword (int)                                      : generate a random password (default length = 8)
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #include "string_utils.hpp"
 
 namespace evias {

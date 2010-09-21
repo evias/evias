@@ -1,25 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Classes:
- * 	- dbField
- * 	- pSqlAdapter
- *
- * Implemented Functions:
- *  - static string quoteInto (string data)     : quote a value into an SQL valid value
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
-
 #ifndef __EVIAS_NS_DBFIELD_HPP__
 #define __EVIAS_NS_DBFIELD_HPP__
 

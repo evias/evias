@@ -1,23 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces: 	
- * 	- eVias
- *
- * Implemented Classes:
- * 	- dbAdapter
- *
- * Implemented Functions:
- * 	- pqxx::result doQuery (string) 	: execute a query on the adapter
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #include "db_adapter.hpp"
 
 namespace evias {

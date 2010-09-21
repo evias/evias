@@ -1,39 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Classes:
- * 	- Date
- *
- * Implemented Functions:
- * 	public :
- *  - Date* now()                   : get the current timestamp
- *  - bool isLeapYear (int)         : get wether the year is a leap year
- *  - int daysByMonth (int, int)    : get the count of days in a certain month
- *  - int year ()                   : get the year data
- *  - int month ()                  : get the month data
- *  - int mDay ()                   : month day (1-31) data
- *  - int yDay ()                   : year day (1-365) data
- *  - int wDay ()                   : week day (1-7) data
- *  - int hour ()                   : get the hour data
- *  - int min ()                    : get the minutes data
- *  - int sec ()                    : get the seconds data
- *  - time_t timeStamp ()           : get the timestamp data
- *  - struct tm* timeData ()        : get the timeData vector
- *
- *  protected
- *  - Date* const _initTimeData()   : initialize the time data
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #ifndef EVIAS_CORE_DATE_HPP
 #define EVIAS_CORE_DATE_HPP
 

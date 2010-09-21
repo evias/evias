@@ -1,36 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces: 	
- * 	- eVias
- *
- * Implemented Classes:
- * 	- Date
- *
- * Implemented Functions:
- * 	public :
- * 	- Date ()                       : initialize time data
- * 	- Date (time_t)                 : use a time record for initialization
- * 	- Date (const Date&)            : copy constructor
- * 	- string toString ()            : print a date in a string representation
- * 	- Date addDay ()                : add a day to the current timestamp
- * 	- Date addDays (int)            : add multiple days to current timestamp (negative possible)
- * 	- Date subDay()                 : substract one day
- * 	- Date subDays (int)            : substract multiple days
- * 	- Date addMonth ()              : add a month to the current timestamp
- * 	- @todo string toString (string)
- * 	- @todo Date addMonth (int)
- * 	- @todo Date addYear ()
- * 	- @todo Date addYears (int)
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #include "date.hpp"
 
 namespace evias {

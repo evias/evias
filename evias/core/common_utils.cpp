@@ -1,22 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- evias::core
- *
- * Implemented Functions:
- * 	- void s_mapDump(map<string,string>) 	: print a map's content
- * 	- void s_vecDump(vector<string,string>) : print a vector's content
- * 	- string md5Hash(string) 		: get a MD5 hash out of a string
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #include "common_utils.hpp"
 #include <openssl/md5.h>
 

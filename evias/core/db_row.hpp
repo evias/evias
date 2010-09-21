@@ -1,26 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces: 	
- * 	- eVias
- *
- * Implemented Classes:
- * 	- dbRow
- *
- * Implemented Functions:
- *  - void operator()(pqxx::result::tuple)  : initialize a row with a PQxx pair
- *  - string operator[](int)                : get a field's value by its index
- *  - string operator[](string)             : get a field's value by its name
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
-
 #ifndef __EVIAS_NS_DBROW_HPP__
 #define __EVIAS_NS_DBROW_HPP__
 

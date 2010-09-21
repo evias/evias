@@ -1,22 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Enumerations:
- *  - enum errorCodes
- *  - enum strPadType
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
-
 #ifndef EVIAS_CORE_STRING_UTILS_HPP
 #define EVIAS_CORE_STRING_UTILS_HPP
 

@@ -1,25 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Functions:
- * 	template <typename arrType, size_t arrSize>
- * 	-  size_t countElm(arrType (&array)[arrSize]) 	: count the elements of an array of any type
- *	template <typename T>
- *	- const T& max(const T&, const T&) 		: get the maximum value out of the two
- *	template <typename T>
- * 	- const T& min(const T&, const T&) 		: get the minimum value out of the two
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #ifndef EVIAS_CORE_COMMON_UTILS_HPP
 #define EVIAS_CORE_COMMON_UTILS_HPP
 

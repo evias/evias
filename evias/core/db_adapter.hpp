@@ -1,25 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Classes:
- * 	- dbAdapter
- * 	- pSqlAdapter
- *
- * Implemented Functions:
- * 	- dbAdapter::dbAdapter(string, string, string, string) 	: construct a database adapter
- * 	- pSqlAdapter::fieldNamesOf(string, string) 		    : get the field names of a table in a PostgreSQL database
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #ifndef __EVIAS_NS_DBADAPTER__
 #define __EVIAS_NS_DBADAPTER__
 

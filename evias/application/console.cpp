@@ -1,39 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces: 	
- * 	- eVias
- *
- * Implemented Classes:
- * 	- consoleParser
- *
- * Implemented Functions:
- * 	public :
- * 	- consoleParser* parseAll() 			        : parse all registered arguments
- * 	- consoleParser* const addAllowedArgs(s_vec) 	: add a list of allowed arguments 
- * 	- consoleParser* const addAllowedArg(string)    : add an allowed argument
- *      - consoleParser* const setAllowedArgs(s_vec): set the list of allowed arguments
- * 	- consoleParser* const removeAllowedArg(string) : remove an allowed argument
- * 	- consoleParser* const removeAllowedArgs(s_vec) : remove a list of allowed arguments
- * 	- consoleParser* const setRequiredArgs(s_vec) 	: set the list of required arguments
- * 	- consoleParser* const setArgsPositions (is_map): set the arguments' positions
- *
- * 	protected :
- * 	- consoleParser* const _dispatchData () 	    : dispatch key => value map
- * 	- bool _validateArgKeys(s_vec) 			        : validate argument keys
- * 	- bool _validateData () 			            : validate global data
- * 	- bool _validateInput () 			            : validate user call input
- * 	- bool _hasRequired ()                          : validate wether the required call arguments have a value
- * 	- void _printUsage ()                           : print the consoleParser usage message
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #include "console.hpp"
 
 namespace evias {

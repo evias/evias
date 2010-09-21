@@ -1,19 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- evias::core
- *
- * Implemented Classes:
- * 	- configIni
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
 #ifndef __EVIAS_CORE_NS_CONFIGINI__
 #define __EVIAS_CORE_NS_CONFIGINI__
 
