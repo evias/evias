@@ -80,7 +80,8 @@ LIB_TESTS_DB =  db_connection            \
 LIB_TESTS_CONFIG = configFileParse
 
 LIB_TESTS_JSON = jsonParsing            \
-                     jsonObjectParsing
+                 jsonObjectParsing      \
+                 jsonFurther
 
 LIB_TESTS_QT = mainWnd                  \
                    mainWnd_full
@@ -98,6 +99,7 @@ clean :
 	rm -f $(foreach mocfile, ${LIB_MOCS}, ${LIB_APP_DIR}/moc_${mocfile}.cpp)
 	rm -f ${LIB_TEST_JUNK_DIR}/*.o
 	rm -f ${LIB_TEST_PREFIX}/*.exe
+	rm -f ${LIB_TEST_PREFIX}/*${LIB_NAME}*
 
 all :
 	@make library
@@ -168,6 +170,10 @@ tests :
 	@echo "-- evias/tests/sql_objects"
 	$(foreach source, ${LIB_TESTS_SQLOBJ}, `${BUILD} ${LIB_TEST_SRC_DIR}/sql_objects/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
 	$(foreach object, ${LIB_TESTS_SQLOBJ}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
+	@echo " "
+	@echo " "
+	@echo "-- copy library files to tests bin directory"
+	@cp ${LIB_PREFIX}/*${LIB_NAME}* ${LIB_TEST_PREFIX}/
 	@echo " "
 	@echo " "
 	@echo " "

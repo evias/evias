@@ -124,18 +124,27 @@ namespace core {
         string::size_type findObjectCloseBracket   = objectData.find_first_of ("}");
         string::size_type findObjectAffectOperator = objectData.find_first_of ("=");
 
-        // @TODO : ={ should be tests:
-        // affectOperatorPos < objectDeclarePos &&
-        // nothing but spaces between affectOperatorPos & objectDeclarePos
+        // check for object JSON syntax
 
-        bool hasKeyValSequence = (
-            findObjectAffectOperator != string::npos &&
-            findObjectDeclareBracket != string::npos &&
-            findObjectCloseBracket != string::npos &&
-            findObjectAffectOperator == findObjectDeclareBracket - 1 && // @FIXME : "={" is mandatory for now ..
-            findObjectCloseBracket > findObjectDeclareBracket
+        // (1)
+        bool hasValidObjectDeclareBegin = (
+            findObjectAffectOperator < findObjectDeclareBracket && // = before {
+            // make sure there is nothing else than spaces between = and {
+            (objectData.find_first_not_of (" ", findObjectAffectOperator, findObjectDeclareBracket-findObjectAffectOperator) == string::npos)
         );
 
+        // (2)
+        bool hasKeyValSequence = (
+            findObjectAffectOperator != string::npos    &&      // has =
+            findObjectDeclareBracket != string::npos    &&      // has {
+            findObjectCloseBracket != string::npos      &&      // has }
+            hasValidObjectDeclareBegin                  &&      // see (1)
+            findObjectCloseBracket > findObjectDeclareBracket   // { is after }
+        );
+
+        // XXX (3) validate syntax
+
+        objectKey = "unknown_object_key";
         if (hasKeyValSequence) {
             // object_name={ data } format
 
@@ -149,10 +158,8 @@ namespace core {
 
             objectKey = cleaned;
         }
-        else {
-            // { data } format
-            objectKey = "unknown_object_key";
-        }
+
+        // parse the magic between { }
 
         string betweenBrackets = objectData.substr (findObjectDeclareBracket+1, findObjectCloseBracket - findObjectDeclareBracket - 1);
 
@@ -161,15 +168,15 @@ namespace core {
 
         bool hasDoneWork = false;
 
+        // used for storing current pair of key:value (or key:array ; key : object ..)
         string currentDeclaration = "";
 
-        // get the first "," needed
         int searchOffset = 0; // used for going through the string ..
         int lastColumn  = 0;
         do {
             // find "," until not in string / array / object anymore ;
             // mean it will loop until we are in a the root sequence
-            // {key:value,key:{subkey:subval,subkey:subval}}
+            // Example JSON: {key:value,key:{subkey:subval,subkey:subval}}
             // there will be 1 match for the above example, the one between the subval,subkey is not counted
 
             string::size_type firstColumn = betweenBrackets.find_first_of (",", searchOffset+1);
@@ -217,6 +224,7 @@ namespace core {
 
             if (firstColumn == string::npos) {
                 // has only one declaration
+
                 currentDeclaration = betweenBrackets.substr (lastColumn > 0 ? lastColumn + 1 : lastColumn, betweenBrackets.size() - lastColumn);
 
                 objDeclarations.push_back (currentDeclaration);
@@ -225,6 +233,7 @@ namespace core {
             }
             else {
                 // has multiple declarations
+
                 if (! isInString && ! isInObject && ! isInArray) {
                     currentDeclaration = betweenBrackets.substr (
                         (lastColumn > 0 ? lastColumn + 1 : lastColumn),     // from first char after last "," or from begin
@@ -235,9 +244,7 @@ namespace core {
 
                     lastColumn   = firstColumn;
                 }
-                else {
-                    currentDeclaration = "not done yet";
-                }
+
                 searchOffset = firstColumn;
             }
 
@@ -246,6 +253,11 @@ namespace core {
             ! hasDoneWork &&
             (searchOffset != string::npos)
         );
+
+
+        // iterate throug entries declarations strings
+        // and create corresponding jsonEntry* child instance
+
 
         vector<string>::iterator itDeclaration = objDeclarations.begin ();
         for ( ; itDeclaration != objDeclarations.end (); itDeclaration++ ) {
@@ -259,6 +271,10 @@ namespace core {
 
             if (declarationParts.size() >= 2) {
                 // has key / value sequence
+
+                // split into cleanedKey and currentDeclVal
+                // respectively declaration's key and declaration's value
+
                 currentDeclKey = declarationParts.at(0);
 
                 string::iterator itKey = currentDeclKey.begin();
@@ -277,29 +293,45 @@ namespace core {
                 currentDeclVal = evias::core::assemble (dataParts, ":");
             }
 
+            // iterate declaration value to parse object openings,
+            // array openings or string openings.
+
             string::iterator itId = currentDeclVal.begin ();
-            bool hasIdentifier;
             jsonEntry* entry;
+
+            bool hasIdentifier;
             bool isValidEntry = false;
             for ( ; itId != currentDeclVal.end (); itId++ ) {
+
                 if (*itId == ' ')
+                    // skip spaces..
                     continue;
 
                 if (*itId == '\"') {
+                    // single entry beginning/closing character found
+
                     cleanedVal = "";
                     string::iterator itClean = currentDeclVal.begin();
-                    for (; itClean != currentDeclVal.end(); itClean++) {
-                        if (*itClean == '\"')
+
+                    // iterate through string for getting a cleaned value (no " character)
+                    for (int x = 0; itClean != currentDeclVal.end(); itClean++, x++) {
+                        if (*itClean == '\"' && (x == 0 || x == currentDeclVal.size()-1))
+                            // skip quote only if at begin or end
                             continue;
                         else
                             cleanedVal = cleanedVal + (*itClean);
                     }
 
+                    // create the instance
                     entry = new jsonSingleEntry( cleanedKey, cleanedVal );
 
                     isValidEntry = true;
                 }
                 else if (*itId == '[') {
+                    // array entry beginning character found
+
+                    // format to key:[value1,value2,value3]
+
                     string arrayJson = (
                         cleanedKey != "unknown_object_key"
                             ? currentDeclKey
@@ -308,11 +340,14 @@ namespace core {
 
                     arrayJson.append (":" + currentDeclVal);
 
+                    // create the instance
                     entry = jsonArrayEntry::fromJSON (arrayJson);
 
                     isValidEntry = true;
                 }
                 else if (*itId == '{') {
+                    // object entry beginning character found
+
                     string objectJson = (
                         cleanedKey != "unknown_object_key"
                             ? cleanedKey + "="
@@ -320,6 +355,7 @@ namespace core {
                     );
                     objectJson.append (currentDeclVal);
 
+                    // create the instance
                     entry = jsonObjectEntry::fromJSON (objectJson);
 
                     isValidEntry = true;
@@ -330,9 +366,14 @@ namespace core {
             } // end for currentDeclVal
 
             if (isValidEntry)
+                // add the processed entry
                 objEntries.push_back (entry);
 
         } // end for itDeclaration
+
+
+        // create the output object
+        // and add its child entries, now processed
 
         jsonObjectEntry* objEntry = new jsonObjectEntry ((objectKey != "unknown_object_key" ? objectKey : ""));
 
