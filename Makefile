@@ -58,6 +58,7 @@ LIB_CORE =  common_utils        \
 LIB_APPLICATION =	console          \
 					project          \
 					irc              \
+                    logger           \
 					MainWnd          \
 					debugger         \
 					TailEditor       \
