@@ -1,36 +1,3 @@
-/**
- * Package: 	iSchool Core
- *
- * Implemented Namespaces:
- * 	- eVias
- *
- * Implemented Classes:
- * 	- consoleParser
- *
- * Implemented Functions:
- * 	public :
- *  - consoleParser ()                              : initialize the console parser
- *  - consoleParser (int, char**)                   : initialize with term call arguments
- *  - consoleParser (string, string, int, char**)   : initialize with term call arguments + project information
- *  - consoleParser* const canEmptyCall(bool)       : check wether the program can be called without arguments
- *  - s_vec allowedArgs ()                          : get the list of allowed arguments
- *  - s_vec callArgs ()                             : get the list of call arguments
- *  - is_map argsPositions ()                       : get the map of arguments position
- *  - s_map readData ()                             : get a map with argument_name => value
- *  - consoleCodes lastReturn ()                    : get the last return (error) code
- *  - string lastReturnMessage ()                   : get the message for the last return code
- *
- *  protected :
- *  - void _initReturnMessages ()                   : initialize the list of return messages
- *
- * Copyright (c) 2010 - 2011 Grégory Saive
- *
- * For more informations about the licensing of this product, please refer
- * to the LICENCE file in the root application directory.
- *
- * Version: 	1.0
- */
-
 #ifndef EVIAS_CORE_CONSOLE_HPP
 #define EVIAS_CORE_CONSOLE_HPP
 
