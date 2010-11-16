@@ -18,6 +18,7 @@ LIB_TEST_SRC_DIR=evias/tests
 LIB_CORE_DIR=evias/core
 LIB_APP_DIR=evias/application
 LIB_MODELS_DIR=evias/models
+LIB_NETWORK_DIR=evias/network
 
 LIB_NAME=evias
 LIB_RELEASE=1
@@ -65,6 +66,12 @@ LIB_APPLICATION =	console          \
                     basicView
 
 LIB_MODEL = model_abstract
+LIB_NETWORK = soap_method   \
+              soap_fault    \
+              soap_result   \
+              soap_request  \
+              soap_handler  \
+              soap_server
 
 LIB_MOCS =  TailEditor		\
             MainWnd			\
@@ -130,8 +137,12 @@ library :
 	$(foreach source, ${LIB_MODEL}, `${BUILD} ${LIB_MODELS_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
 	@echo " "
 	@echo " "
+	@echo "-- evias::network"
+	$(foreach source, ${LIB_NETWORK}, `${BUILD} ${LIB_NETWORK_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
+	@echo " "
+	@echo " "
 	@echo "-- link libevias.so"
-	${LIB_LINKER} -o ${LIB_PREFIX}/${LIB_NAME}.so.${LIB_RELEASE} $(foreach object, ${LIB_CORE} ${LIB_APPLICATION} ${LIB_MODEL}, ${JUNK_DIR}/${object}.o) $(foreach object, ${LIB_MOCS}, ${JUNK_DIR}/moc_${object}.o) -lc
+	${LIB_LINKER} -o ${LIB_PREFIX}/${LIB_NAME}.so.${LIB_RELEASE} $(foreach object, ${LIB_CORE} ${LIB_APPLICATION} ${LIB_MODEL} ${LIB_NETWORK}, ${JUNK_DIR}/${object}.o) $(foreach object, ${LIB_MOCS}, ${JUNK_DIR}/moc_${object}.o) -lc
 	ln -s ${LIB_NAME}.so.${LIB_RELEASE} ${LIB_PREFIX}/lib${LIB_NAME}.so
 	@echo " "
 	@echo "-- libevias.so exported to ${LIB_PREFIX}"
