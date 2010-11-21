@@ -274,6 +274,22 @@ namespace core {
         return notFound;
     }
 
+    map<string,string> configIni::getValues(string section, vector<string> keys)
+    {
+        string notFound = "key not found for section: " + section + " and pair key: ";
+
+        map<string,string> outputMap;
+        vector<string>::iterator itKey = keys.begin();
+        for (; itKey != keys.end(); itKey++) {
+
+            string keyValue = getValue(section, (*itKey));
+
+            outputMap.insert(make_pair((*itKey), keyValue));
+        }
+
+        return outputMap;
+    }
+
 }; // end namespace core
 
 }; // end namespace evias

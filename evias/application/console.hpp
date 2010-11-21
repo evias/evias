@@ -24,7 +24,7 @@ namespace application {
     typedef map<string,string>  s_map;
     typedef map<int,string>     is_map;
 
-    enum consoleCodes {
+    typedef enum {
         RET_SUCCESS			= 0, // ok
         NOTHING_TO_DO 		= 1, // ok
         WRONG_DATA_INPUT 	= 10,// err
@@ -36,7 +36,7 @@ namespace application {
         DATA_DISPATCHED     = 20,// err
         DATA_NOT_DISPATCHED = 21,// err
         ARGS_POS_NOT_SET    = 22 // err
-    };
+    } consoleCodes;
 
     static string consoleMessages[] = {
         "Success",

@@ -54,7 +54,8 @@ LIB_CORE =  common_utils        \
             db_adapter          \
             db_field            \
             sql_queries         \
-            unit_test_abstract
+            unit_test_abstract  \
+            threading
 
 LIB_APPLICATION =	console          \
 					project          \

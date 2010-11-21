@@ -16,10 +16,10 @@ namespace evias {
 
 namespace core {
 
-    enum adapterType {
+    typedef enum {
         __ADAPTER_POSTGRESQL__  = 10,
         __ADAPTER_MYSQL__       = 11
-    };
+    } adapterType;
 
     class dbAdapter {
 

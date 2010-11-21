@@ -84,6 +84,9 @@ namespace core {
 
             string getValue (string, string);
 
+            /* retrieve several values of one section */
+            map<string,string> getValues(string, vector<string>);
+
         protected :
 
             int _parseFile ();
