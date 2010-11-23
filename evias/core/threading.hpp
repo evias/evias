@@ -6,12 +6,12 @@
 #if OS_WINDOWS
 #  define THREAD_FUNC void
 #  define THREAD_RET
-#  define __threadStart( fct, arg ) { beginthread( (fct), 0, (arg) ); }
+#  define __threadStart( function, callArgs ) { beginthread( (function), 0, (callArgs) ); }
 #else
 #  include <pthread.h>
 #  define THREAD_FUNC void *
 #  define THREAD_RET NULL
-#  define __threadStart( fct, arg ) { pthread_t _a_b_thread1_c_; pthread_create( &_a_b_thread1_c_, NULL, (fct), (arg) ); }
+#  define __threadStart( function, callArgs ) { pthread_t threadObj; pthread_create( &threadObj, NULL, (function), (callArgs) ); }
 #endif
 
 namespace evias {
@@ -25,7 +25,7 @@ namespace core {
         friend class Lock;
 
         protected:
-            void *m_pImpl;
+            void *_handle;
 
             int lock();
             int unlock();

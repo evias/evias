@@ -13,25 +13,32 @@ namespace core {
     Mutex::Mutex()
     {
 #if OS_WINDOWS
-        m_pImpl = new HANDLE;
-        *((HANDLE*)m_pImpl) = CreateMutex(NULL, FALSE, NULL);
+        _handle = new HANDLE;
+
+        // CreateMutex returns an object reference to the created
+        // handle (aka the mutex)
+        *((HANDLE*)_handle) = CreateMutex(NULL, false, NULL);
 #else
-        m_pImpl = new pthread_mutex_t;
-        pthread_mutex_init((pthread_mutex_t*)m_pImpl, NULL);
+        _handle = new pthread_mutex_t;
+        pthread_mutex_init((pthread_mutex_t*)_handle, NULL);
 #endif
     }
 
     Mutex::~Mutex()
     {
+        // destroy the mutex and free memory
+
 #if OS_WINDOWS
-        HANDLE* pImpl = reinterpret_cast<HANDLE*>(m_pImpl);
-        CloseHandle(*pImpl);
+        // from void* to HANDLE*
+        HANDLE* handle = reinterpret_cast<HANDLE*>(_handle);
+        CloseHandle(*_handle);
 #else
-        pthread_mutex_t* pImpl = reinterpret_cast<pthread_mutex_t*>(m_pImpl);
-        pthread_mutex_destroy(pImpl);
+        // from void* to pthread_mutex_t*
+        pthread_mutex_t* handle = reinterpret_cast<pthread_mutex_t*>(_handle);
+        pthread_mutex_destroy(_handle);
 #endif
-        delete pImpl; (pImpl) = NULL;
-        m_pImpl = NULL;
+        delete handle; (handle) = NULL;
+        _handle = NULL;
     }
 
     int Mutex::lock()
@@ -39,10 +46,10 @@ namespace core {
         int iRet = RET_SUCCESS;
 
 #if OS_WINDOWS
-        if(WAIT_OBJECT_0 != WaitForSingleObject(*((HANDLE*)m_pImpl), INFINITE))
+        if(WAIT_OBJECT_0 != WaitForSingleObject(*((HANDLE*)_handle), INFINITE))
             iRet = -1;
 #else
-        if(0 != pthread_mutex_lock((pthread_mutex_t*)m_pImpl))
+        if(0 != pthread_mutex_lock((pthread_mutex_t*)_handle))
             iRet = -1;
 #endif
 
@@ -54,10 +61,10 @@ namespace core {
         int iRet = RET_SUCCESS;
 
 #if OS_WINDOWS
-        if(0 == ReleaseMutex(*((HANDLE*)m_pImpl)))
+        if(0 == ReleaseMutex(*((HANDLE*)_handle)))
             iRet = -1;
 #else
-        if(0 != pthread_mutex_unlock((pthread_mutex_t*)m_pImpl))
+        if(0 != pthread_mutex_unlock((pthread_mutex_t*)_handle))
             iRet = -1;
 #endif
 
