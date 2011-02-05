@@ -6,7 +6,7 @@ namespace evias {
 namespace core {
 
     /**
-     * NotClonable
+     * notClonable
      *
      * interface for objects which may not be copied or cloned.
      *
@@ -20,17 +20,17 @@ namespace core {
      * or copying the content of the current instance to
      * a new one of the same class.
      **/
-    class NotClonable
+    class notClonable
     {
         private:
 
-            NotClonable(const NotClonable&);
-            const NotClonable& operator=(const NotClonable&);
+            notClonable(const notClonable&);
+            const notClonable& operator=(const notClonable&);
 
         protected:
 
-            NotClonable() {};
-            virtual ~NotClonable() {};
+            notClonable() {};
+            virtual ~notClonable() {};
     };
 
 };

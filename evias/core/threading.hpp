@@ -25,7 +25,7 @@ namespace core {
         friend class Lock;
 
         protected:
-            void *_handle;
+            void* _handle;
 
             int lock();
             int unlock();

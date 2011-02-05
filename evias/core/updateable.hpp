@@ -6,7 +6,7 @@ namespace evias {
 namespace core {
 
     /**
-     * Updateable
+     * updateableObject
      *
      * interface for objects which may be updated during run time
      *
@@ -14,13 +14,13 @@ namespace core {
      * similar have to be implemented in the update() function.
      *
      **/
-    class Updateable
+    class updateableObject
     {
         public :
 
-            Updateable() {};
+            updateableObject() {};
 
-            virtual Updateable() {};
+            virtual updateableObject() {};
 
             virtual int update() = 0;
     };

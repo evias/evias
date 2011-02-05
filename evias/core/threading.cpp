@@ -35,7 +35,7 @@ namespace core {
 #else
         // from void* to pthread_mutex_t*
         pthread_mutex_t* handle = reinterpret_cast<pthread_mutex_t*>(_handle);
-        pthread_mutex_destroy(_handle);
+        pthread_mutex_destroy((pthread_mutex_t*) _handle);
 #endif
         delete handle; (handle) = NULL;
         _handle = NULL;
