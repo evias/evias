@@ -1,0 +1,77 @@
+--------------
+--- 0.8 ---
+--------------
+
+* implement files data access
+    - documents: xls*, doc*, ppt, pdf, odt
+    - images: svg, png, jpg, gif
+* implement files data export
+
+--- 0.7.6 ----
+
+* add container classes working with non-iteration data
+  access.
+* add typed container logic classes.
+* add unitary tests for network module.
+* add unitary test suite logic class.
+
+--- 0.7.5 ----
+
+* add container logic classes working with data pointers.
+    - should be working with 8-bits data representation
+      as this would be a very good base of the network
+      packet logic classes.
+* add network module
+    - packet logic : see TCP and UDP specifications.
+    - add network connection logic, working with
+      sockets.
+      . add TCP/IP connection class
+
+--- 0.7.2 ----
+
+* add threading logic classes.
+    - add Lock class, process Lock logic.
+    - add Mutex class for managing the threads locking.
+* add macro definitions, test compilation on windows
+  and change classes if needed.
+* add object utilities
+    - notClonable : easy to use interface
+      for unclonable objects.
+    - updateableObject : easy to use interface
+      for object logic.
+
+------------
+--- 0.7 ----
+------------
+
+* add SQL classes
+    - adapter abstraction
+    - pgsql adapter
+    - dbTable logic
+        - should work with a template class name based on
+          a dbAdapter. As by example MySQL won't get the
+          fields of a table from information_schema relation
+          as would PgSQL.
+* add SQL queries writing classes
+    - should allow a simple write of queries
+    - queries execution is not considered for
+      these classes.
+* add unitary tests
+
+------------
+--- 0.6 ----
+------------
+
+* add JSON reading and writing classes
+    - should allow single entries, array entries and
+      object entries.
+* add .ini files reading and writing classes
+* add unitary tests
+
+------------
+--- 0.5 ----
+------------
+
+* import old classes, implemented in 2002, the library
+  had been forgotten on an old PC. ^^
+
