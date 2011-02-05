@@ -35,7 +35,7 @@ MD5_LINK=-lssl
 EVIAS_LINK=-Lbuild/ -levias
 
 CXX=g++
-CXX_OPTS=-Ievias -Iplatform ${QT_INC} ${PSQL_INC}
+CXX_OPTS=-Ievias -Iplatform ${QT_INC} ${PSQL_INC} -fpermissive
 
 MOC=/usr/bin/moc-qt4
 MOC_BUILD=${CXX} ${QT_INC} -I./ -c
@@ -55,7 +55,9 @@ LIB_CORE =  common_utils        \
             db_field            \
             sql_queries         \
             unit_test_abstract  \
-            threading
+            threading           \
+            container           \
+            base_container
 
 LIB_APPLICATION =	console          \
 					project          \
@@ -67,12 +69,10 @@ LIB_APPLICATION =	console          \
                     basicView
 
 LIB_MODEL = model_abstract
-LIB_NETWORK = soap_method   \
-              soap_fault    \
-              soap_result   \
-              soap_request  \
-              soap_handler  \
-              soap_server
+LIB_NETWORK =   packet          \
+                connection      \
+                tcpipConnection \
+                net_functions
 
 LIB_MOCS =  TailEditor		\
             MainWnd			\
