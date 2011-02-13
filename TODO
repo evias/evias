@@ -7,13 +7,23 @@
     - images: svg, png, jpg, gif
 * implement files data export
 
+--- 0.7.7 ----
+
+* unitary test suite entries may sometimes
+  depend on the result of co-descendants.
+  defining a relation between tests should
+  thus be possible.
+* add auto release pool feature
+
 --- 0.7.6 ----
 
+* add typed container logic classes.
 * add container classes working with non-iteration data
   access.
-* add typed container logic classes.
 * add unitary tests for network module.
 * add unitary test suite logic class.
+    - adapt all unitary tests to be executed
+      using a suite.
 
 --- 0.7.5 ----
 

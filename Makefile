@@ -55,9 +55,11 @@ LIB_CORE =  common_utils        \
             db_field            \
             sql_queries         \
             unit_test_abstract  \
+			unit_test_suite		\
             threading           \
             container           \
-            base_container
+            base_container		\
+			run_chrono
 
 LIB_APPLICATION =	console          \
 					project          \
@@ -157,32 +159,10 @@ tests :
 	@echo "---- Start build of evias C++ library's v${LIB_VERSION} unitary tests ----"
 	@echo " "
 	@echo " "
-	@echo "-- evias/tests/db"
-	$(foreach source, ${LIB_TESTS_DB}, `${BUILD} ${LIB_TEST_SRC_DIR}/db/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
-	$(foreach object, ${LIB_TESTS_DB}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
 	@echo " "
-	@echo " "
-	@echo "-- evias/tests/configIni"
-	$(foreach source, ${LIB_TESTS_CONFIG}, `${BUILD} ${LIB_TEST_SRC_DIR}/configIni/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
-	$(foreach object, ${LIB_TESTS_CONFIG}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
-	@echo " "
-	@echo " "
-	@echo " "
-	@echo "-- evias/tests/json"
-	$(foreach source, ${LIB_TESTS_JSON}, `${BUILD} ${LIB_TEST_SRC_DIR}/json/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
-	$(foreach object, ${LIB_TESTS_JSON}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
-	@echo " "
-	@echo " "
-	@echo " "
-	@echo "-- evias/tests/qt"
-	$(foreach source, ${LIB_TESTS_QT}, `${BUILD} ${LIB_TEST_SRC_DIR}/qt/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
-	$(foreach object, ${LIB_TESTS_QT}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
-	@echo " "
-	@echo " "
-	@echo " "
-	@echo "-- evias/tests/sql_objects"
-	$(foreach source, ${LIB_TESTS_SQLOBJ}, `${BUILD} ${LIB_TEST_SRC_DIR}/sql_objects/${source}.cpp -o ${LIB_TEST_JUNK_DIR}/${source}.o`)
-	$(foreach object, ${LIB_TESTS_SQLOBJ}, `${TEST_LINKER} -o ${LIB_TEST_PREFIX}/${object}.exe ${LIB_TEST_JUNK_DIR}/${object}.o`)
+	@echo "-- build/link unitary test suite"
+	@${BUILD} ${LIB_TEST_SRC_DIR}/suite_execution.cpp -o ${LIB_TEST_JUNK_DIR}/suite_execution.o
+	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o
 	@echo " "
 	@echo " "
 	@echo "-- copy library files to tests bin directory"
