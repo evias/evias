@@ -3,7 +3,7 @@
 using namespace evias::core;
 
 evias::core::runChrono::runChrono()
-    : m_dIntegral(0.0)
+    : _dIntegral(0.0)
 {
     this->reset();
 }
@@ -15,7 +15,7 @@ evias::core::runChrono::runChrono()
  **/
 double evias::core::runChrono::measure()
 {
-    _clock.tick();
+    _clock.doTick();
     _dIntegral += _clock.getElapsed();
 
     return _dIntegral;
@@ -56,7 +56,7 @@ evias::core::clockInfo::~clockInfo()
 {
 }
 
-evias::core::clockInfo::doTick()
+void evias::core::clockInfo::doTick()
 {
     _lastTick = _time;
     _time     = static_cast<double>(_getTicks()) / 1000.0 - _start;

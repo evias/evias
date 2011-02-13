@@ -39,6 +39,9 @@ namespace core {
             {
             }
 
+            inline vector<string> getFields()
+                { return _fields; };
+
             int addField (string field, string alias = "");
 
             string toString ();
@@ -68,6 +71,9 @@ namespace core {
             {
                 _fromStr = evias::core::assemble (_fromLines, " ");
             }
+
+            inline vector<string> getLines()
+                { return _fromLines; };
 
             sqlFrom* const addLine (string line);
 
@@ -128,6 +134,16 @@ namespace core {
             map<string,string> getParams ()
                 { return _params; }
 
+            string getParam(string key)
+            {
+                map<string,string>::iterator searchIt = _params.begin();
+                if ((searchIt = _params.find(key)) != _params.end()) {
+                    return (*searchIt).second;
+                }
+
+                return "";
+            }
+
             sqlWhere* const addCondition (string condition);
             string toString ();
 
@@ -135,9 +151,15 @@ namespace core {
                 return _whereLines.size() > 0;
             }
 
+            vector<string> getLines()
+                { return _whereLines; };
+
+            string processParamsParse(string, map<string,string>);
+
         private :
 
             string          _whereStr;
+            string          _processedStr;
             vector<string>  _whereLines;
 
             map<string,string> _params;
@@ -196,6 +218,21 @@ namespace core {
                     delete _whereObj;
             }
 
+            inline int getLimit()
+                { return _limit; }
+
+            inline int getOffset()
+                { return _offset; };
+
+            inline sqlWhere* getWhere()
+                { return _whereObj; };
+
+            inline sqlFrom* getFrom()
+                { return _fromObj; };
+
+            inline sqlSelect* getSelect()
+                { return _selectObj; };
+
             string toString ();
 
             selectQuery* const limit    (int limit);
@@ -205,6 +242,8 @@ namespace core {
             selectQuery* const groupBy  (string groupBy);
             selectQuery* const select   (string field, string alias = "");
             selectQuery* const from     (string line);
+            // XXX where(string, ...)
+            //  => should use va_args to get values for parameters parse
             selectQuery* const where    (string condition);
             selectQuery* const with     (map<string,string>);
             selectQuery* const join     (string table, string alias="", string condition = "", __joinType type = _INNER_JOIN_ON_);
@@ -241,9 +280,20 @@ namespace core {
 
             string toString ();
 
+            // XXX update table_name set ... from second_table join third_table using() .. where second_table_join_condition
+
             updateQuery* const table (string);
             updateQuery* const field (string, string);
             updateQuery* const where (string);
+
+            sqlWhere* getWhere()
+                { return _whereObj; };
+
+            map<string,string> getFields()
+                { return _keyValues; };
+
+            string getTable()
+                { return _tableName; };
 
         private :
 
@@ -280,6 +330,12 @@ namespace core {
             removeQuery* const where (string);
             removeQuery* const cascade (bool bCasc = true);
 
+            sqlFrom* getFrom()
+                { return _fromObj; };
+
+            sqlWhere* getWhere()
+                { return _whereObj; };
+
         private :
 
             string      _queryStr;
@@ -310,6 +366,14 @@ namespace core {
             insertQuery* const fields (vector<string>);
             insertQuery* const values (vector<string>);
             insertQuery* const values (map<string,string>);
+
+            map<string,string> getValuesDispatched()
+                { return _data; };
+
+            bool hasValueForField(string field)
+            {
+                return _data.find(field) != _data.end();
+            }
 
         private :
 

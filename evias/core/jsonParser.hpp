@@ -194,6 +194,9 @@ namespace core {
                     _entries.push_back ((*itSwap));
             }
 
+            inline vector<jsonEntry*> getEntries()
+                { return _entries; };
+
             inline string toJSON () {
                 string json = "";
 

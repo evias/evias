@@ -290,42 +290,46 @@ namespace core {
 
     string sqlWhere::toString ()
     {
-        _whereStr = evias::core::assemble (_whereLines, " AND ");
-
-        if (! _params.empty()) {
-            // needs to iterate the where conditions to replace the parameter keys
-            // by their respective values.
-
-            map<string,string> params                   = getParams ();
-            map<string,string>::iterator currentParam   = params.begin ();
-
-            for ( ; currentParam != params.end (); currentParam++) {
-                // try and replace the parameter's key in the query,
-                // by its actual value
-
-                string paramKey = (*currentParam).first;
-                string paramVal = (*currentParam).second;
-
-                cout << endl << "key: " << paramKey << " | val: " << paramVal << endl;
-
-                // find key until end
-                string::size_type findKey;
-                do {
-                    findKey = _whereStr.find (paramKey);
-
-                    if (findKey != string::npos) {
-                        // replace by value
-
-                        _whereStr.replace ( findKey, paramKey.size(), dbField::quoteInto (paramVal) );
-                    }
-                }
-                while (findKey != string::npos);
-            }
+        if (_processedStr.empty()) {
+            _whereStr = evias::core::assemble (_whereLines, " AND ");
+            _processedStr = processParamsParse(_whereStr, _params);
         }
 
-        cout << endl << "will return: " << _whereStr;
+        return string (" WHERE " + _processedStr + " ");
+    }
 
-        return string (" WHERE " + _whereStr + " ");
+    string sqlWhere::processParamsParse(string parsedStr, map<string,string> params)
+    {
+        if (params.empty()) {
+            return parsedStr;
+        }
+
+        map<string,string>::iterator currentParam   = params.begin ();
+
+        string outputStr = parsedStr;
+
+        for ( ; currentParam != params.end (); currentParam++) {
+            // try and replace the parameter's key in the query,
+            // by its actual value
+
+            string paramKey = (*currentParam).first;
+            string paramVal = (*currentParam).second;
+
+            // find key until end
+            string::size_type findKey;
+            do {
+                findKey = outputStr.find (paramKey);
+
+                if (findKey != string::npos) {
+                    // replace by value
+
+                    outputStr.replace ( findKey, paramKey.size(), dbField::quoteInto (paramVal) );
+                }
+            }
+            while (findKey != string::npos);
+        }
+
+        return outputStr;
     }
 
     /**

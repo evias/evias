@@ -6,6 +6,7 @@ namespace application {
 
     consoleParser* const consoleParser::parseAll() {
         if (! (this->_argsCnt > 1)) {
+            // has only program name argument
             this->_lastReturn = this->_canEmptyCall ? NOTHING_TO_DO : MISSING_REQUIRED;
             return this;
         }
@@ -53,7 +54,12 @@ namespace application {
         return true;
     }
 
-    bool consoleParser::_hasRequired() {
+    bool consoleParser::_hasRequired()
+    {
+        if (this->_vRequired.size() == 0) {
+            return true;
+        }
+
         s_map::iterator itData = this->_mData.begin(); // data iteration
         s_vec::iterator itFound; // search return
         size_t indexAt;      // search validation
@@ -102,6 +108,10 @@ namespace application {
             return this;
         }
 
+        // XXX should not be done like this
+        //   => why not use regular expression
+        //      to know wether a positioning argumentation
+        //      has been used or a named argumentation
         // test purpose (do not loop if any error.)
         if (atoi(this->_vArgs[1].c_str()) != 0) {
             // have only numbers, positions need to be set
@@ -116,6 +126,7 @@ namespace application {
         itBefore= this->_vArgs.begin();
 
         for (int i = 0; itMixed != this->_vArgs.end(); itMixed++, i++) {
+
             if (i == 0) {
                 // first argument is program name
                 continue;
@@ -141,15 +152,23 @@ namespace application {
                 else {
                     // not a valid argument
                     this->_lastReturn = ARG_NAME_INVALID;
-                    return this;
+                    continue;
                 }
             }
             else {
                 // arg value
-                if ((*itBefore)[0] == '-') {
+                if ((*itBefore)[0] == '-' && this->_lastReturn != ARG_NAME_INVALID) {
+
                     // fetched valid - beginning argument .. now fetch its value
                     keyName = (*itBefore);
                     this->_mData.insert(pair<string, string>(keyName, (*itMixed)));
+                    continue;
+                }
+                else if (this->_lastReturn == ARG_NAME_INVALID) {
+                    // can now pass to next argument if any present ..
+                    // mismatched arguments are to be allowed, just they are
+                    // not processed
+                    this->_lastReturn = RET_SUCCESS;
                     continue;
                 }
 
