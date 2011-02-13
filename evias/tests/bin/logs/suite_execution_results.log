@@ -1,0 +1,80 @@
+---- Result for test 'INI parsing'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'INI writing'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'JSON classes simpleParse'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'JSON classes objectParse'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'JSON classes objectLoad'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'SQL classes query data checks'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'SQL classes insertStmt'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'SQL classes removeStmt'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'SQL classes updateStmt'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'SQL classes parameters parse (conditions)'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : 1. Message : no_message_check
+
+---- Result for test 'Database objects dbConnection'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : -2. Message : database adapter could not be initialized. (adapter error : FATAL:  Ident authentication failed for user "developing"
+)
+
+---- Result for test 'Database objects dbInsert'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : -2. Message : database adapter could not be initialized. (adapter error: FATAL:  Ident authentication failed for user "developing"
+)
+
+---- Result for test 'Database objects dbDelete'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : -2. Message : could not initialize database adapter. (adapter error: FATAL:  Ident authentication failed for user "developing"
+
+
+---- Result for test 'Database objects dbUpdate'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : -2. Message : database adapter could not be initialized. (adapter error: FATAL:  Ident authentication failed for user "developing"
+)
+
+---- Result for test 'Database objects dbFetchAll'
+
+-- Expected : Code : 1. Message : no_message_check
+-- Execution Result : Code : -2. Message : database adapter could not be initialized. (adapter error: FATAL:  Ident authentication failed for user "developing"
+)
+
