@@ -8,10 +8,6 @@ namespace test {
 
     unitTest::unitTest ()
     {
-        cout    << endl
-                << "--- iSchool Unit Tester invoked."
-                << endl;
-
         // init timestamp
         time_t seed;
         time (&seed);
@@ -20,7 +16,11 @@ namespace test {
         _startDate = evias::core::Date::now();
 
         _state = true;
-        _printMessage = "";
+        _returnMsg = "no_message_check";
+        _label = "no label, date: " + _startDate->toString();
+
+        _returnCode  = 3;
+        _execSeconds = 0;
     }
 
     int unitTest::shutdown ()
@@ -29,15 +29,9 @@ namespace test {
 
         unsigned long totalExecTime = _endDate->timeStamp() - _startDate->timeStamp();
 
-        int seconds = totalExecTime;
+        int _execSeconds = totalExecTime;
 
-        cout    << endl
-                << "--- Total execution time (in seconds) : " << seconds    << endl
-                << "-- Date of Begin: " << _startDate->toString()           << endl
-                << "-- Date of End : "  << _endDate->toString()             << endl
-                << endl;
-
-        return 0;
+        return _returnCode;
     }
 
 }; // end namespace test
