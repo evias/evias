@@ -147,6 +147,7 @@ namespace application {
 
                 if (stIndexFound != this->_vAllowed.size()) {
                     // valid argument, will be added next turn
+                    this->_mData.insert(make_pair((*itMixed), ""));
                     continue;
                 }
                 else {
@@ -161,7 +162,7 @@ namespace application {
 
                     // fetched valid - beginning argument .. now fetch its value
                     keyName = (*itBefore);
-                    this->_mData.insert(pair<string, string>(keyName, (*itMixed)));
+                    this->_mData[keyName] = (*itMixed);
                     continue;
                 }
                 else if (this->_lastReturn == ARG_NAME_INVALID) {
