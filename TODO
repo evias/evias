@@ -2,10 +2,28 @@
 --- 0.8 ---
 --------------
 
+* add typed container logic classes.
+* add container classes working with non-iteration data
+  access.
 * implement files data access
     - documents: xls*, doc*, ppt, pdf, odt
     - images: svg, png, jpg, gif
 * implement files data export
+
+--- 0.7.9 ----
+
+* implement enhanced regular expressions parsing features
+    - should allow any regular expression to be parsed
+    - work with easy to use data accessors
+
+--- 0.7.8 ----
+
+* implement regular expression parsing feature
+    - first version should allow basic parse of patterns
+      returning a map<int,string> where the int represents
+      the position and string the pattern matching value.
+    - bool matchesPattern(string value, string pattern)
+* unitary test'ify the whole library features.
 
 --- 0.7.7 ----
 
@@ -17,9 +35,6 @@
 
 --- 0.7.6 ----
 
-* add typed container logic classes.
-* add container classes working with non-iteration data
-  access.
 * add unitary tests for network module.
 * add unitary test suite logic class.
     - adapt all unitary tests to be executed
