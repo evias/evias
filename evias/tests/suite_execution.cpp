@@ -30,6 +30,7 @@
 #include "databaseObjects/dbDelete.hpp"
 #include "databaseObjects/dbUpdate.hpp"
 #include "databaseObjects/dbFetchAll.hpp"
+#include "networkObjects/packetObject.hpp"
 
 #include <vector>
 #include <string>
@@ -47,24 +48,26 @@ int main (int argc, char* args[])
     using evias::application::consoleParser;
 
     string project = "eVias C++ library unitary test suite";
-    string usage = "./suite_execution.exe [--no_config 1] [--no_json 1] [--no_sqlobj 1] [--no_views 1] [--no_dbobj 1]";
+    string usage = "./suite_execution.exe [--no-config] [--no-json] [--no-sqlobjects] [--no-views] [--no_dbobjects] [--no-network]";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
     suiteCallArgs->canEmptyCall(true)
-                 ->addAllowedArg("--no_config")
-                 ->addAllowedArg("--no_json")
-                 ->addAllowedArg("--no_sqlobj")
-                 ->addAllowedArg("--no_views")
-                 ->addAllowedArg("--no_dbobj")
+                 ->addAllowedArg("--no-config")
+                 ->addAllowedArg("--no-json")
+                 ->addAllowedArg("--no-sqlobjects")
+                 ->addAllowedArg("--no-views")
+                 ->addAllowedArg("--no-dbobjects")
+                 ->addAllowedArg("--no-network")
                  ->parseAll();
 
     map<string,string> callArgs = suiteCallArgs->readData();
 
     // suite execution call configuration
-    bool testConfigFiles = (callArgs.find("--no_config") == callArgs.end());
-    bool testJson        = (callArgs.find("--no_json") == callArgs.end());
-    bool testSqlObjects  = (callArgs.find("--no_sqlobj") == callArgs.end());
-    bool testViews       = (callArgs.find("--no_views") == callArgs.end());
-    bool testDbObjects   = (callArgs.find("--no_dbobj") == callArgs.end());
+    bool testConfigFiles = (callArgs.find("--no-config") == callArgs.end());
+    bool testJson        = (callArgs.find("--no-json") == callArgs.end());
+    bool testSqlObjects  = (callArgs.find("--no-sqlobjects") == callArgs.end());
+    bool testViews       = (callArgs.find("--no-views") == callArgs.end());
+    bool testDbObjects   = (callArgs.find("--no-dbobjects") == callArgs.end());
+    bool testNetwork     = (callArgs.find("--no-network") == callArgs.end());
 
     // start unitary test suite configuration
 
@@ -186,6 +189,11 @@ int main (int argc, char* args[])
 	databaseObjects_dbFetchAll->setLabel("Database objects dbFetchAll");
 	// end test 17
 
+    // begin test 18
+    evias::core::test::networkObjects::packetObject* networkObjects_packetObject = new evias::core::test::networkObjects::packetObject();
+    networkObjects_packetObject->setLabel("Network objects packetObject");
+    // end test 18
+
 /**
  * configure test suite
  * map a test object to a testResult.
@@ -219,6 +227,9 @@ int main (int argc, char* args[])
         testSuite.addTest(databaseObjects_dbDelete, testResult(1, "no_message_check"));
         testSuite.addTest(databaseObjects_dbUpdate, testResult(1, "no_message_check"));
         testSuite.addTest(databaseObjects_dbFetchAll, testResult(1, "no_message_check"));
+    }
+    if (testNetwork) {
+        testSuite.addTest(networkObjects_packetObject, testResult(1, "no_message_check"));
     }
 
     testSuite.setQuietMode(false);
