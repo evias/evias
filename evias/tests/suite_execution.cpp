@@ -8,6 +8,7 @@
  *
  */
 
+#include "../core/string_utils.hpp"
 #include "../core/unit_test_suite.hpp"
 #include "../application/console.hpp"
 
@@ -15,6 +16,7 @@
 
 #include "configFiles/objectParse.hpp"
 #include "configFiles/objectWrite.hpp"
+#include "configFiles/invalidRead.hpp"
 #include "jsonObjects/simpleParse.hpp"
 #include "jsonObjects/objectParse.hpp"
 #include "jsonObjects/objectLoad.hpp"
@@ -46,28 +48,76 @@ int main (int argc, char* args[])
     using evias::core::test::unitTestSuite;
     using evias::core::test::testResult;
     using evias::application::consoleParser;
+    using evias::core::in_vector;
 
     string project = "eVias C++ library unitary test suite";
-    string usage = "./suite_execution.exe [--no-config] [--no-json] [--no-sqlobjects] [--no-views] [--no_dbobjects] [--no-network]";
+    string usage = " \
+        ./suite_execution.exe [--skip (config|json|sqlobjects|views|dbobjects|network)] \
+                              [--only (config|json|sqlobjects|views|dbobjects|network)  \
+    ";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
     suiteCallArgs->canEmptyCall(true)
-                 ->addAllowedArg("--no-config")
-                 ->addAllowedArg("--no-json")
-                 ->addAllowedArg("--no-sqlobjects")
-                 ->addAllowedArg("--no-views")
-                 ->addAllowedArg("--no-dbobjects")
-                 ->addAllowedArg("--no-network")
+                 ->addAllowedArg("--skip")
+                 ->addAllowedArg("--only")
                  ->parseAll();
 
     map<string,string> callArgs = suiteCallArgs->readData();
 
     // suite execution call configuration
-    bool testConfigFiles = (callArgs.find("--no-config") == callArgs.end());
-    bool testJson        = (callArgs.find("--no-json") == callArgs.end());
-    bool testSqlObjects  = (callArgs.find("--no-sqlobjects") == callArgs.end());
-    bool testViews       = (callArgs.find("--no-views") == callArgs.end());
-    bool testDbObjects   = (callArgs.find("--no-dbobjects") == callArgs.end());
-    bool testNetwork     = (callArgs.find("--no-network") == callArgs.end());
+    bool hasOnly = (callArgs.find("--only") != callArgs.end());
+    bool hasSkip = (callArgs.find("--skip") != callArgs.end());
+
+    bool testConfigFiles = false;
+    bool testJson        = false;
+    bool testSqlObjects  = false;
+    bool testViews       = false;
+    bool testDbObjects   = false;
+    bool testNetwork     = false;
+
+    map<string,int> validKeys;
+    validKeys.insert(make_pair("config", 1));
+    validKeys.insert(make_pair("json", 2));
+    validKeys.insert(make_pair("sqlobjects", 3));
+    validKeys.insert(make_pair("views", 4));
+    validKeys.insert(make_pair("dbobjects", 5));
+    validKeys.insert(make_pair("network", 6));
+
+    if (hasOnly && callArgs["--only"].size() > 0 && (validKeys.find(callArgs["--only"]) != validKeys.end()) ) {
+        string onlyVal = callArgs["--only"];
+
+        if (onlyVal == "config") testConfigFiles = true;
+        else if (onlyVal == "json") testJson = true;
+        else if (onlyVal == "sqlobjects") testSqlObjects = true;
+        else if (onlyVal == "views") testViews = true;
+        else if (onlyVal == "dbobjects") testDbObjects = true;
+        else if (onlyVal == "network") testNetwork = true;
+    }
+    else if (hasSkip && callArgs["--skip"].size() > 0) {
+        // skip may have to split arguments with "," for several skipped modules
+        string skipKeys = callArgs["--skip"];
+        vector<string> keysToSkip;
+        if (skipKeys.find(",") != string::npos) {
+            // has multiple keys
+            // (append last comma for in_vector() bug
+            keysToSkip = evias::core::split(skipKeys.append(","), ',');
+        }
+        else keysToSkip.push_back(skipKeys);
+
+        // for skip option, by default everything is tested
+        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = true;
+
+        // foreach key found, "do not test"
+        if (in_vector("config", keysToSkip))      testConfigFiles = false;
+        if (in_vector("json", keysToSkip))        testJson        = false;
+        if (in_vector("sqlobjects", keysToSkip))  testSqlObjects  = false;
+        if (in_vector("views", keysToSkip))       testViews       = false;
+        if (in_vector("dbobjects", keysToSkip))   testDbObjects   = false;
+        if (in_vector("network", keysToSkip))     testNetwork     = false;
+    }
+    else {
+        // no relevant arg, test everything
+        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = true;
+    }
 
     // start unitary test suite configuration
 
@@ -79,120 +129,91 @@ int main (int argc, char* args[])
     // initialize each unitary test service
     //
 
-	// begin test 1
     evias::core::test::configFiles::objectParse* configFiles_objectParse = new evias::core::test::configFiles::objectParse();
     params.push_back ("/home/greg/srv/home.work/cpp/eviasLib/evias/tests/bin/config/configFiles/objectParse.ini");
 
     configFiles_objectParse->setOptions(params);
 	configFiles_objectParse->setLabel("INI parsing");
-	// end test 1
 
 	params.clear();
 
-    // begin test 2
     evias::core::test::configFiles::objectWrite* configFiles_objectWrite = new evias::core::test::configFiles::objectWrite();
     params.push_back ("/home/greg/srv/home.work/cpp/eviasLib/evias/tests/bin/config/configFiles/objectWrite.ini");
 
     configFiles_objectWrite->setOptions(params);
 	configFiles_objectWrite->setLabel("INI writing");
-	// end test 2
 
 	params.clear();
 
-    // begin test 3
+    evias::core::test::configFiles::invalidRead* configFiles_invalidRead = new evias::core::test::configFiles::invalidRead();
+    params.push_back ("/home/greg/srv/home.work/cpp/eviasLib/evias/tests/bin/config/configFiles/invalidRead.ini");
+
+    configFiles_invalidRead->setOptions(params);
+	configFiles_invalidRead->setLabel("INI invalid reading");
+
+	params.clear();
+
     evias::core::test::jsonObjects::simpleParse* jsonObjects_simpleParse = new evias::core::test::jsonObjects::simpleParse();
 	jsonObjects_simpleParse->setLabel("JSON classes simpleParse");
-	// end test 3
 
-    // begin test 4
     evias::core::test::jsonObjects::objectParse* jsonObjects_objectParse = new evias::core::test::jsonObjects::objectParse();
 	jsonObjects_objectParse->setLabel("JSON classes objectParse");
-	// end test 4
 
-    // begin test 5
     evias::core::test::jsonObjects::objectLoad* jsonObjects_objectLoad = new evias::core::test::jsonObjects::objectLoad();
 	jsonObjects_objectLoad->setLabel("JSON classes objectLoad");
-	// end test 5
 
-    // begin test 6
     evias::core::test::sqlObjects::dataChecks* sqlObjects_dataChecks = new evias::core::test::sqlObjects::dataChecks();
     sqlObjects_dataChecks->setLabel("SQL classes query data checks");
-    // end test 6
 
-    // begin test 7
     evias::core::test::sqlObjects::insertStmt* sqlObjects_insertStmt = new evias::core::test::sqlObjects::insertStmt();
 	sqlObjects_insertStmt->setLabel("SQL classes insertStmt");
-	// end test 7
 
-    // begin test 8
     evias::core::test::sqlObjects::removeStmt* sqlObjects_removeStmt = new evias::core::test::sqlObjects::removeStmt();
 	sqlObjects_removeStmt->setLabel("SQL classes removeStmt");
-	// end test 8
 
-    // begin test 9
     evias::core::test::sqlObjects::updateStmt* sqlObjects_updateStmt = new evias::core::test::sqlObjects::updateStmt();
 	sqlObjects_updateStmt->setLabel("SQL classes updateStmt");
-	// end test 9
 
-    // begin test 10
     evias::core::test::sqlObjects::paramsParse* sqlObjects_paramsParse = new evias::core::test::sqlObjects::paramsParse();
     sqlObjects_paramsParse->setLabel("SQL classes parameters parse (conditions)");
-    // end test 10
 
-    // begin test 11
     evias::core::test::qtViews::mainWnd* qtViews_mainWnd = new evias::core::test::qtViews::mainWnd();
     qtViews_mainWnd->setLabel("Qt classes mainWnd");
     qtViews_mainWnd->setCall(argc,args);
-    // end test 12
 
-    // begin test 12
     evias::core::test::qtViews::enhancedView* qtViews_enhancedView = new evias::core::test::qtViews::enhancedView();
     qtViews_enhancedView->setLabel("Qt classes enhancedView");
     qtViews_enhancedView->setCall(argc,args);
-    // end test 12
 
     params.clear();
 
-    // configuration for test 13 => 17
     params.push_back("evias");
     params.push_back("developing");
     params.push_back("");
     params.push_back("web.evias.loc");
 
-    // begin test 13
     evias::core::test::databaseObjects::dbConnection* databaseObjects_dbConnection = new evias::core::test::databaseObjects::dbConnection();
     databaseObjects_dbConnection->setOptions(params);
 	databaseObjects_dbConnection->setLabel("Database objects dbConnection");
-	// end test 13
 
-    // begin test 14
     evias::core::test::databaseObjects::dbInsert* databaseObjects_dbInsert = new evias::core::test::databaseObjects::dbInsert();
     databaseObjects_dbInsert->setOptions(params);
 	databaseObjects_dbInsert->setLabel("Database objects dbInsert");
-	// end test 14
 
-    // begin test 15
     evias::core::test::databaseObjects::dbDelete* databaseObjects_dbDelete = new evias::core::test::databaseObjects::dbDelete();
     databaseObjects_dbDelete->setOptions(params);
 	databaseObjects_dbDelete->setLabel("Database objects dbDelete");
-	// end test 15
 
-    // begin test 16
     evias::core::test::databaseObjects::dbUpdate* databaseObjects_dbUpdate = new evias::core::test::databaseObjects::dbUpdate();
     databaseObjects_dbUpdate->setOptions(params);
 	databaseObjects_dbUpdate->setLabel("Database objects dbUpdate");
-	// end test 16
 
-    // begin test 17
     evias::core::test::databaseObjects::dbFetchAll* databaseObjects_dbFetchAll = new evias::core::test::databaseObjects::dbFetchAll();
     databaseObjects_dbFetchAll->setOptions(params);
 	databaseObjects_dbFetchAll->setLabel("Database objects dbFetchAll");
-	// end test 17
 
-    // begin test 18
     evias::core::test::networkObjects::packetObject* networkObjects_packetObject = new evias::core::test::networkObjects::packetObject();
     networkObjects_packetObject->setLabel("Network objects packetObject");
-    // end test 18
 
 /**
  * configure test suite
@@ -204,6 +225,7 @@ int main (int argc, char* args[])
     if (testConfigFiles) {
         testSuite.addTest(configFiles_objectParse, testResult(1, "no_message_check"));
         testSuite.addTest(configFiles_objectWrite, testResult(1, "no_message_check"));
+        testSuite.addTest(configFiles_invalidRead, testResult(1, "no_message_check"));
     }
     if (testJson) {
         testSuite.addTest(jsonObjects_simpleParse, testResult(1, "no_message_check"));
