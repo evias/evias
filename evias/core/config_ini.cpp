@@ -194,9 +194,6 @@ namespace core {
         writer.open (_file.c_str(), ios::out);
 
         if (! writer.good()) {
-            cout << endl
-                 << "[ERROR] cannot open for write." << endl;
-
             return 0;
         }
 
@@ -250,7 +247,7 @@ namespace core {
 
     string configIni::getValue (string section, string pairKey)
     {
-        string notFound = "key not found for section: " + section + " and pair key: " + pairKey;
+        string notFound = "";
 
         vector<iniSection>::iterator itSec = _iniSections.begin();
         map<string,string>::iterator itPairs;
@@ -276,8 +273,6 @@ namespace core {
 
     map<string,string> configIni::getValues(string section, vector<string> keys)
     {
-        string notFound = "key not found for section: " + section + " and pair key: ";
-
         map<string,string> outputMap;
         vector<string>::iterator itKey = keys.begin();
         for (; itKey != keys.end(); itKey++) {
