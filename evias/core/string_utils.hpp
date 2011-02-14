@@ -10,6 +10,8 @@
 
 #include <cstdlib> // atoi
 
+#include "common_utils.hpp"
+
 namespace evias {
 
 namespace core {
@@ -55,8 +57,7 @@ namespace core {
 	void trimLeft (string&, const char*);
 	void trimRight (string&, const char*);
 
-    string stripTags (string);
-    string stripTags (string, string[]);
+    bool in_vector(string, vector<string>);
 
 }; // end namespace core
 

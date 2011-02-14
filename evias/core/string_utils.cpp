@@ -282,32 +282,14 @@ namespace core {
         }
 	}
 
-    // strip all tags
-    string stripTags (string inStr)
+    bool in_vector(string needle, vector<string> haystack)
     {
-        string defaultTags[12] = {
-            "a", "img", "br", "html", "head", "body", "div", "span",
-            "table", "tr", "td" // XXX : see for full list
-        };
+        for (int i = 0, max = haystack.size() ; i < max; i++) {
+            if (haystack.at(i) == needle)
+                return true;
+        }
 
-        return stripTags (inStr, defaultTags);
-    }
-
-    // strip list of specific tags
-    string stripTags (string inStr, string tags[])
-    {
-        string outStr;
-
-        // foreach inStr as character
-        //     check character is "<"
-        //         then get next closing ">"
-        //         parse tag content
-        //         remove tag declaration
-        //     else
-        //         then do nothing
-        // endforeach;
-
-        return outStr;
+        return false;
     }
 
 }; // end namespace core
