@@ -9,7 +9,7 @@
 
 typedef uint8_t __netRequest_t;
 
-#define HEADER_SIZE (4 * sizeof(int8_t)+sizeof(__netRequest_t)+sizeof(uint32_t))
+#define HEADER_SIZE (5 * sizeof(int8_t)+sizeof(__netRequest_t)+sizeof(uint32_t))
 
 #pragma pack(push, 1)
 #pragma pack(1)
@@ -21,11 +21,8 @@ typedef struct {
 #pragma pack(pop)
 
 #  define EVIAS_MSG_NULL               ((__netRequest_t) 0x00)
-#  define EVIAS_MSG_LOGIN              ((__netRequest_t) 0x01)
-#  define EVIAS_MSG_LOGOUT             ((__netRequest_t) 0x02)
-#  define EVIAS_MSG_SIGNUP             ((__netRequest_t) 0x03)
-#  define EVIAS_MSG_FEEDBACK           ((__netRequest_t) 0x04)
-#  define EVIAS_MSG_MAX                ((__netRequest_t) 0x05)
+#  define EVIAS_MSG_HELLO              ((__netRequest_t) 0x01)
+#  define EVIAS_MSG_MAX                ((__netRequest_t) 0x02)
 #  define EVIAS_MSG_NONE               ((__netRequest_t) 0xFF)
 
 namespace evias {
@@ -122,8 +119,9 @@ namespace network {
             inline uint64_t read(uint64_t &out) {this->_read(out); return out;};
             inline string   read(string& out)   {out = this->readString(); return out;};
 
-            string readString();
+            string readString(bool = true);
             string extractString();
+            string readHeaderString();
 
             int write(netPacket *);
             int read (netPacket *);

@@ -1,6 +1,12 @@
 #include "packet.hpp"
+#include "../core/string_utils.hpp"
+
+#include <iostream>
 
 using namespace evias::network;
+using namespace evias::core;
+
+using namespace std;
 
 /**
  * constructor logic
@@ -112,12 +118,15 @@ netPacket* evias::network::netPacket::append(const void* dataPointer, uint32_t d
 /**
  * readString
  *
- * get the character representation of the current pointer
- * position.
+ * get a string representation of the data (start at _curPos)
  **/
-string evias::network::netPacket::readString()
+string evias::network::netPacket::readString(bool rewindFirst)
 {
     size_t len = this->getTotalLen();
+
+    if (rewindFirst)
+        rewind();
+
     if(_curPos >= len)
         return "";
 
@@ -125,6 +134,15 @@ string evias::network::netPacket::readString()
 
     _curPos += ret.length() + 1;
     return ret;
+}
+
+string evias::network::netPacket::readHeaderString()
+{
+    string header = string(reinterpret_cast<char*>(m_dataPointer));
+
+    header = header.substr(0, header.size() - 2);
+
+    return header;
 }
 
 /**
