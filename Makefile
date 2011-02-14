@@ -107,7 +107,7 @@ clean :
 	rm -f ${JUNK_DIR}/*.o
 	rm -f ${LIB_PREFIX}/lib${LIB_NAME}.so
 	rm -f ${LIB_PREFIX}/${LIB_NAME}.so.${LIB_RELEASE}
-	rm -f $(foreach mocfile, ${LIB_MOCS}, ${LIB_APP_DIR}/moc_${mocfile}.cpp)
+	rm -f $(foreach mocfile, ${LIB_MOCS}, ${LIB_APP_DIR}/moc_${mocfile}.hpp.cpp)
 	rm -f ${LIB_TEST_JUNK_DIR}/*.o
 	rm -f ${LIB_TEST_PREFIX}/*.exe
 	rm -f ${LIB_TEST_PREFIX}/*${LIB_NAME}*
