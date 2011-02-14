@@ -33,24 +33,6 @@ those application much faster by having a good library layer to work on.
     - removeQuery      : represents a whole delete statement (SQL)
     - insertQuery      : represents a whole insert statement (SQL)
 
-evias::test
-    - unitTest      : unit testing abstraction layer
-    - dbConnection     : test postgresql connection
-    - dbFetchAll       : test fetchAll method of dbTable<pSqlAdapter>
-    - dbUpdate         : test field value update with dbTable<pSqlAdapter>
-    - dbInsert         : test row insert with dbTable<pSqlAdapter>
-    - dbRemove         : test row delete with dbTable<pSqlAdapter>
-    - configFileParse  : test configuration file parsing feature (configIni)
-    - jsonParsing      : test json entries parse and creation
-    - jsonObjectParsing: test creation of JSON objects with C++ standard lib and generate JSON
-    - mainWnd          : test Qt main window display
-    - mainWnd_Full     : test Qt main window & style sheets display
-    - easySql          : test sqlSelect class
-    - insertSql        : test insertQuery class
-    - updateSql        : test updateQuery class
-    - removeSql        : test removeQuery class
-    - sqlWithParams    : test selectQuery class with params
-
 - evias::application
     - consoleParser : console call arguments parsing module
     - Irc           : Internet Relay Chat client instance class
@@ -58,5 +40,20 @@ evias::test
     - MainWnd       : Qt Main window
     - Debugger      : application debugger can be used for multiple projects
     - basicView     : inherits QWidget
+
+- evias::network
+    - netConnection     : abstracted class using 32bits packets socket based connections.
+    - tcpipConnection   : TCP/IP standardized connection
+    - netPacket         : class name, be enough..
+
+- evias::core::test
+    - unitTestSuite     : unitary test suite object, can run multiple unitary tests and print their results.
+    - unitTest          : abstracted unitary test class base
+      - configFiles     : tests the different configuration files reading features
+      - jsonObjects     : tests the JSON parse / write objects.
+      - sqlObjects      : tests the various SQL classes.
+      - qtViews         : tests the Qt derivated views.
+      - databaseObjects : tests the database connection objects. (PgSQL for now)
+      - networkObjects  : tests the network objects (netPacket, tcpipConnection ..)
 
 --------------------- END LIBRARY MODULES LIST }
