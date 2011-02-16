@@ -23,14 +23,69 @@ namespace core {
         _countPairs     = 0;
     }
 
+    iniSection configIni::getSection(string section)
+    {
+        vector<iniSection>::iterator it = _iniSections.begin();
+        for ( ; it != _iniSections.end(); it++) {
+            if ((*it).getLabel() == section) {
+                return (*it);
+            }
+        }
+
+        map<string,string> pairs;
+        pairs.insert(make_pair("error", "section not found"));
+        iniSection toReturn;
+        toReturn.setLabel("invalid");
+        toReturn.setPairs(pairs);
+
+        return toReturn;
+    }
+
+    vector<string> configIni::getSectionLabels()
+    {
+        return _sections;
+    }
+
+    vector<iniSection> configIni::getIniSections()
+    {
+        return _iniSections;
+    }
+
+    vector<string> configIni::getLines()
+    {
+        return _lines;
+    }
+
+    int configIni::getLinesCount()
+    {
+        if (_countLines == 0) {
+            _countLines = _lines.size();
+        }
+        return _countLines;
+    }
+
+    int configIni::getSectionsCount()
+    {
+        if (_countSections == 0) {
+            _countSections = _sections.size();
+        }
+        return _countSections;
+    }
+
+    int configIni::getPairsCount()
+    {
+        return _countPairs;
+    }
+
+    bool configIni::state()
+    {
+        return _state;
+    }
+
     int configIni::parse ()
     {
         if (! _state) {
             // has not passed init test
-            cout << endl
-                 << "[EXIT] Could not pass initialization test. Look for the config file access rights because it could not be opened."
-                 << endl;
-
             return 0;
         }
 
@@ -43,148 +98,6 @@ namespace core {
         }
 
         return 1;
-    }
-
-    int configIni::_parseFile()
-    {
-        ifstream reader;
-
-        reader.open(_file.c_str());
-
-        if (! reader) {
-
-            cout << endl
-                 << "[ERROR] Could not open file: " << _file << endl;
-            _state = false;
-
-            return 0;
-        }
-
-        string line = "";
-        int count = 0;
-        while (reader.good()) {
-            getline (reader, line);
-
-            _lines.push_back (line);
-            count ++;
-        }
-        reader.close();
-
-        return count;
-    }
-
-    int configIni::_parseSections()
-    {
-        if (_lines.empty()) {
-            return 0;
-        }
-
-        vector<string>::iterator lineIt = _lines.begin();
-        int count = 0;
-        string sectionValidChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
-        string currentSection = "";
-        vector<string> currentSectionLines;
-        bool hasSavedData = false;
-        for (; lineIt != _lines.end(); lineIt++) {
-            string::size_type findOpeningBracket = (*lineIt).find_first_of ("[");
-            string::size_type findClosingBracket = (*lineIt).find_first_of ("]");
-
-            if (findOpeningBracket != string::npos && findClosingBracket != string::npos) {
-                // has []
-
-                string beforeOpeningPart = (*lineIt).substr (0, findOpeningBracket);
-                string afterClosingPart  = (*lineIt).substr(findClosingBracket, (*lineIt).size() - findClosingBracket - 1);
-                string betweenBrackets   = (*lineIt).substr(findOpeningBracket + 1, findClosingBracket - findOpeningBracket - 1);
-
-                // - (1) look if there is some other character than spaces before the opening bracket
-                // - (2) look if there is an invalid character in between the brackets
-                // - (3) look if there is more text after the closing bracket (invalid)
-                string::size_type findNotSpace      = beforeOpeningPart.find_first_not_of (" ");
-                string::size_type findInvalidChar   = betweenBrackets.find_first_not_of (sectionValidChars);
-                string::size_type findFurtherText   = afterClosingPart.find_first_not_of (" ");
-                if (
-                    findNotSpace != string::npos        ||  // (1)
-                    findInvalidChar != string::npos     ||  // (2)
-                    findFurtherText != string::npos         // (3)
-                   )
-                {
-                    // not a section line
-                    if (! currentSection.empty()) {
-                        currentSectionLines.push_back (*lineIt);
-                    }
-                    continue ;
-                }
-
-                // will now add a new section
-
-                // data save
-                if (! currentSection.empty())
-                    _linesBySection.insert (pair<string, vector<string> >(currentSection, currentSectionLines));
-
-                // add new section
-                _sections.push_back (betweenBrackets);
-                currentSection = betweenBrackets;
-                currentSectionLines.clear();
-                count++;
-            }
-            else {
-                if (! currentSection.empty()) {
-                    currentSectionLines.push_back (*lineIt);
-                }
-            }
-        }
-
-        if (! hasSavedData && ! currentSection.empty()) {
-            _linesBySection.insert (pair<string,vector<string> >(currentSection, currentSectionLines));
-        }
-
-        return count;
-    }
-
-    int configIni::_parsePairs ()
-    {
-        if (_linesBySection.empty()) {
-            return 0;
-        }
-
-        map<string, vector<string> >::iterator itSection = _linesBySection.begin();
-        int count = 0;
-        for (; itSection != _linesBySection.end(); itSection++) {
-            // for each section, save lines of format "key = value"
-
-            map<string,string> currentSectionPairs;
-
-            iniSection currentSection;
-            currentSection.setLabel((*itSection).first);
-
-            vector<string>::iterator itLines = (*itSection).second.begin();
-            for (; itLines != (*itSection).second.end(); itLines++) {
-                // for each line, check the syntax and save if needed
-
-                string::size_type posEqual = (*itLines).find ("=");
-                int lineSize = (*itLines).size();
-                if (posEqual != string::npos) {
-                    // line to be added_
-                    string beforeEqual = (*itLines).substr (0, posEqual);
-                    string afterEqual  = (*itLines).substr (posEqual + 1, lineSize - posEqual - 1);
-
-                    // XXX trim values
-                    evias::core::trim (beforeEqual, " ");
-                    evias::core::trim (afterEqual, " ");
-
-                    currentSectionPairs.insert (pair<string,string>(beforeEqual, afterEqual));
-
-                    count++;
-                }
-            }
-
-            // save pairs for section
-            currentSection.setPairs (currentSectionPairs);
-
-            _iniSections.push_back (currentSection);
-        }
-
-        return count;
     }
 
     int configIni::changeValue (string section, string pairKey, string newValue)
@@ -283,6 +196,147 @@ namespace core {
         }
 
         return outputMap;
+    }
+
+    int configIni::_parseFile()
+    {
+        ifstream reader;
+
+        reader.open(_file.c_str());
+
+        if (! reader) {
+
+            _state = false;
+            return 0;
+        }
+
+        string line = "";
+        int count = 0;
+        while (reader.good()) {
+            getline (reader, line);
+
+            _lines.push_back (line);
+            count ++;
+        }
+        reader.close();
+
+        return count;
+    }
+
+    int configIni::_parseSections()
+    {
+        if (_lines.empty()) {
+            return 0;
+        }
+
+        vector<string>::iterator lineIt = _lines.begin();
+        int count = 0;
+        // XXX ':' is extending delimiter
+        string sectionValidChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+        string currentSection = "";
+        vector<string> currentSectionLines;
+        bool hasSavedData = false;
+        for (; lineIt != _lines.end(); lineIt++) {
+            string::size_type findOpeningBracket = (*lineIt).find_first_of ("[");
+            string::size_type findClosingBracket = (*lineIt).find_first_of ("]");
+
+            if (findOpeningBracket != string::npos && findClosingBracket != string::npos) {
+                // has []
+
+                string beforeOpeningPart = (*lineIt).substr (0, findOpeningBracket);
+                string afterClosingPart  = (*lineIt).substr(findClosingBracket, (*lineIt).size() - findClosingBracket - 1);
+                string betweenBrackets   = (*lineIt).substr(findOpeningBracket + 1, findClosingBracket - findOpeningBracket - 1);
+
+                // - (1) look if there is some other character than spaces before the opening bracket
+                // - (2) look if there is an invalid character in between the brackets
+                // - (3) look if there is more text after the closing bracket (invalid)
+                string::size_type findNotSpace      = beforeOpeningPart.find_first_not_of (" ");
+                string::size_type findInvalidChar   = betweenBrackets.find_first_not_of (sectionValidChars);
+                string::size_type findFurtherText   = afterClosingPart.find_first_not_of (" ");
+                if (
+                    findNotSpace != string::npos        ||  // (1)
+                    findInvalidChar != string::npos     ||  // (2)
+                    findFurtherText != string::npos         // (3)
+                   )
+                {
+                    // not a section line
+                    if (! currentSection.empty()) {
+                        currentSectionLines.push_back (*lineIt);
+                    }
+                    continue ;
+                }
+
+                // will now add a new section
+
+                // data save
+                if (! currentSection.empty())
+                    _linesBySection.insert (pair<string, vector<string> >(currentSection, currentSectionLines));
+
+                // add new section
+                _sections.push_back (betweenBrackets);
+                currentSection = betweenBrackets;
+                currentSectionLines.clear();
+                count++;
+            }
+            else {
+                if (! currentSection.empty()) {
+                    currentSectionLines.push_back (*lineIt);
+                }
+            }
+        }
+
+        if (! hasSavedData && ! currentSection.empty()) {
+            _linesBySection.insert (pair<string,vector<string> >(currentSection, currentSectionLines));
+        }
+
+        return count;
+    }
+
+    int configIni::_parsePairs ()
+    {
+        if (_linesBySection.empty()) {
+            return 0;
+        }
+
+        map<string, vector<string> >::iterator itSection = _linesBySection.begin();
+        int count = 0;
+        for (; itSection != _linesBySection.end(); itSection++) {
+            // for each section, save lines of format "key = value"
+
+            map<string,string> currentSectionPairs;
+
+            iniSection currentSection;
+            currentSection.setLabel((*itSection).first);
+
+            vector<string>::iterator itLines = (*itSection).second.begin();
+            for (; itLines != (*itSection).second.end(); itLines++) {
+                // for each line, check the syntax and save if needed
+
+                if ((*itLines)[0] == ';') continue; // is commented
+
+                string::size_type posEqual = (*itLines).find ("=");
+                int lineSize = (*itLines).size();
+                if (posEqual != string::npos) {
+                    // line to be added_
+                    string beforeEqual = (*itLines).substr (0, posEqual);
+                    string afterEqual  = (*itLines).substr (posEqual + 1, lineSize - posEqual - 1);
+
+                    evias::core::trim (beforeEqual, " ");
+                    evias::core::trim (afterEqual, " ");
+
+                    currentSectionPairs.insert (pair<string,string>(beforeEqual, afterEqual));
+
+                    count++;
+                }
+            }
+
+            // save pairs for section
+            currentSection.setPairs (currentSectionPairs);
+
+            _iniSections.push_back (currentSection);
+        }
+
+        return count;
     }
 
 }; // end namespace core

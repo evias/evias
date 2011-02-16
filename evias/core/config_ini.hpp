@@ -59,29 +59,17 @@ namespace core {
 
             int parse ();
 
-            vector<string> getSections()
-            { return _sections; }
+            iniSection          getSection(string);
+            vector<string>      getSectionLabels();
+            vector<iniSection>  getIniSections();
+            vector<string>      getLines();
 
-            vector<iniSection> getIniSections()
-            { return _iniSections; }
-
-            vector<string> getLines()
-            { return _lines; }
-
-            int getLinesCount()
-            { return _countLines; }
-
-            int getSectionsCount()
-            { return _countSections; }
-
-            int getPairsCount()
-            { return _countPairs; }
-
-            bool state ()
-            { return _state; }
+            int     getLinesCount();
+            int     getSectionsCount();
+            int     getPairsCount();
+            bool    state ();
 
             int changeValue (string, string, string);
-
             string getValue (string, string);
 
             /* retrieve several values of one section */
@@ -90,9 +78,7 @@ namespace core {
         protected :
 
             int _parseFile ();
-
             int _parseSections ();
-
             int _parsePairs ();
 
         private :
@@ -109,92 +95,6 @@ namespace core {
             vector<iniSection>          _iniSections;
 
             bool                        _state;
-    };
-
-    class debugIni {
-        public :
-
-            debugIni (configIni* iniDebugged)
-                : _iniDebugged(iniDebugged)
-            {
-
-            }
-
-            ~debugIni () { };
-
-            inline void vs_linesDump() {
-                cout << endl << endl
-                     << "-- [configIni Line Dump]"
-                     << endl;
-
-                vector<string> toPrint = _iniDebugged->getLines();
-                vector<string>::iterator itSec = toPrint.begin();
-                string lineToPrint = "";
-                for (int i = 0; itSec != toPrint.end(); itSec++, i++) {
-
-                    lineToPrint = "Index: " + evias::core::intToString(i) + " | " + "Label: " + (*itSec);
-
-                    cout << lineToPrint << endl;
-                }
-
-                cout << endl
-                     << "-- [configIni End Line Dump]"
-                     << endl;
-            }
-
-            inline void vs_sectionsDump() {
-                cout << endl << endl
-                     << "-- [configIni Section Dump]"
-                     << endl;
-
-                vector<string> toPrint = _iniDebugged->getSections();
-                vector<string>::iterator itSec = toPrint.begin();
-                string lineToPrint = "";
-                for (int i = 0; itSec != toPrint.end(); itSec++, i++) {
-
-                    lineToPrint = "Index: " + evias::core::intToString(i) + " | " + "Label: " + (*itSec);
-
-                    cout << lineToPrint << endl;
-                }
-
-                cout << endl
-                     << "-- [configIni End Section Dump]"
-                     << endl;
-            }
-
-            inline void mss_pairsDump() {
-                cout << endl << endl
-                     << "-- [configIni Pairs Dump]"
-                     << endl;
-
-                vector<iniSection> iniSections = _iniDebugged->getIniSections();
-                map<string,string> currentSectionPairs;
-                vector<iniSection>::iterator itSec = iniSections.begin();
-                map<string,string>::iterator itPairs;
-                string lineToPrint = "";
-                for (int i = 0; itSec != iniSections.end(); itSec++, i++) {
-
-                    lineToPrint = "-- Index: " + evias::core::intToString(i) + " | Section: " + (*itSec).getLabel();
-
-                    cout << lineToPrint << endl;
-
-                    currentSectionPairs = (*itSec).getPairs();
-                    itPairs = currentSectionPairs.begin();
-                    for (int j = 0; itPairs != currentSectionPairs.end(); itPairs++, j++) {
-
-                        lineToPrint = "---- Index: " + evias::core::intToString(j) + " | Pair [" + (*itPairs).first + " => " + (*itPairs).second + "]";
-
-                        cout << lineToPrint << endl;
-                    }
-                }
-
-                cout << endl
-                     << "-- [configIni End Pairs Dump]"
-                     << endl;
-            }
-
-        private :
-            configIni* _iniDebugged;
     };
 
 }; // end namespace core
