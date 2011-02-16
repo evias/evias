@@ -162,8 +162,9 @@ tests :
 	@echo " "
 	@echo " "
 	@echo "-- build/link unitary test suite"
+	@${BUILD} ${LIB_TEST_SRC_DIR}/library_test_suite.cpp -o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
 	@${BUILD} ${LIB_TEST_SRC_DIR}/suite_execution.cpp -o ${LIB_TEST_JUNK_DIR}/suite_execution.o
-	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o
+	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
 	@echo " "
 	@echo " "
 	@echo "-- copy library files to tests bin directory"
