@@ -31,7 +31,7 @@ namespace configFiles {
 
             objectParse () : unitTest () { };
 
-            ~objectParse ();
+            ~objectParse () {};
 
             inline void prepare ()
             {

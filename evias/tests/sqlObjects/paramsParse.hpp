@@ -20,7 +20,7 @@ namespace sqlObjects {
 
             paramsParse () : unitTest() {};
 
-            ~paramsParse ();
+            ~paramsParse () {};
 
             inline void prepare ()
             {

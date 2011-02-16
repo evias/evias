@@ -24,7 +24,7 @@ namespace qtViews {
 
             mainWnd () : unitTest () { };
 
-            ~mainWnd ();
+            ~mainWnd () {};
 
             // XXX memcpy argv
             inline void setCall(int argc, char** argv)

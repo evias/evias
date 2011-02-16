@@ -89,7 +89,7 @@ namespace test {
             void notify(string);
             void error(string);
 
-        private :
+        protected :
 
             int     _count;
             bool    _beQuiet;

@@ -20,7 +20,7 @@ namespace jsonObjects {
 
             objectParse () : unitTest() {};
 
-            ~objectParse ();
+            ~objectParse () {};
 
             inline void prepare ()
             {

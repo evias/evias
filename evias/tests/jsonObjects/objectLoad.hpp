@@ -20,10 +20,11 @@ namespace jsonObjects {
 
             objectLoad () : unitTest() {};
 
-            ~objectLoad ();
+            ~objectLoad () {};
 
             inline void prepare ()
             {
+                setReturnCode((int) RETURN_SUCCESS);
             }
 
             inline int execute ()

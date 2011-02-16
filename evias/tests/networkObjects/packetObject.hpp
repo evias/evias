@@ -33,7 +33,7 @@ namespace networkObjects {
 
             packetObject () : unitTest () { };
 
-            ~packetObject ();
+            ~packetObject () {};
 
             inline void prepare ()
             {

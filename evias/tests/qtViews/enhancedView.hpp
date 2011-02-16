@@ -25,7 +25,7 @@ namespace qtViews {
 
             enhancedView () : unitTest () { };
 
-            ~enhancedView ();
+            ~enhancedView () {};
 
             inline void setCall (int argc, char** argv)
                 { _argc = argc; _argv = argv; _hasSetCall = true; }

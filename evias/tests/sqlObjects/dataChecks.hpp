@@ -20,7 +20,7 @@ namespace sqlObjects {
 
             dataChecks () : unitTest() {};
 
-            ~dataChecks ();
+             ~dataChecks () {};
 
             inline void prepare ()
             {

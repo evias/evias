@@ -20,7 +20,7 @@ namespace jsonObjects {
 
             simpleParse () : unitTest() {};
 
-            ~simpleParse ();
+            ~simpleParse () {};
 
             inline void prepare ()
             {
@@ -80,12 +80,12 @@ namespace jsonObjects {
                 delete array2;
                 delete staticArray1;
 
-                return 1;
+                return setReturnCode((int) RETURN_SUCCESS);
             }
 
             inline int shutdown ()
             {
-                return 0;
+                return _returnCode;
             }
 
     };

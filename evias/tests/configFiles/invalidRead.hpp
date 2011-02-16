@@ -31,7 +31,7 @@ namespace configFiles {
 
             invalidRead () : unitTest () { };
 
-            ~invalidRead ();
+            ~invalidRead () {};
 
             inline void prepare ()
             {

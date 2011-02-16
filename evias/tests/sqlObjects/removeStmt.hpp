@@ -20,7 +20,7 @@ namespace sqlObjects {
 
             removeStmt () : unitTest() {};
 
-            ~removeStmt ();
+            ~removeStmt () {};
 
             inline void prepare ()
             {

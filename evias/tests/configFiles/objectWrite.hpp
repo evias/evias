@@ -31,7 +31,7 @@ namespace configFiles {
 
             objectWrite () : unitTest () { };
 
-            ~objectWrite ();
+            ~objectWrite () {};
 
             inline void prepare ()
             {
