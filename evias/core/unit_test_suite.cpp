@@ -74,10 +74,10 @@ namespace test {
     {
         // XXX error messages should be written in new file {_outputFile}_error
 
-        string backColor= "\[\033[00;0m";
-        string msgColor = "\[\033[01;32m"; // green
+        string backColor= "\[\033[0m";
+        string msgColor = "\[\033[32m"; // green
         if (! awaited.isValidResult(result)) {
-            msgColor = "\[\033[01;31m"; // red
+            msgColor = "\[\033[31m"; // red
         }
 
         cout << msgColor

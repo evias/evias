@@ -30,6 +30,27 @@ namespace core {
         PAD_BOTH
     };
 
+    // XXX get full utf-8 spec listing
+    const string __mLowercaseAccented      = "àéèùüöäëï";
+    const string __mLowercaseDictionnary   = "abcdefghijklmnopqrstuvwxyz";
+    const string __mLowercaseSpecial       = "æŧþßðđŋħĸłµ¢ł";
+    const string __mUppercaseDictionnary   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const string __mUppercaseAccented      = "ÀÉÈÙÜÖÄËÏ";
+    const string __mUppercaseSpecial       = "ÆŦØÞÐŊĦJĸŁ¢Ł";
+    const string __mDigitDictionnary       = "0123456789";
+    const string __mOtherDictionnary       = "\"\'\\²¬~&#{([-|`_^@)]°+=}$£¤%µ*!§/:;.?,<>€¶←↓→«»” ";
+
+    const string __mAnyDictionnary         = (
+        __mDigitDictionnary
+        + __mLowercaseDictionnary
+        + __mUppercaseDictionnary
+        + __mLowercaseAccented
+        + __mUppercaseAccented
+        + __mLowercaseSpecial
+        + __mUppercaseSpecial
+        + __mOtherDictionnary
+    );
+
     int stringToInt(string);
 
     // int to string conversion
@@ -58,6 +79,12 @@ namespace core {
 	void trimRight (string&, const char*);
 
     bool in_vector(string, vector<string>);
+
+    bool isAlpha(string);
+    bool isNumeric(string);
+
+    bool greaterThan(string,string);
+    bool smallerThan(string,string);
 
 }; // end namespace core
 

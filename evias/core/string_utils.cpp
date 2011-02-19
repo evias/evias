@@ -292,6 +292,53 @@ namespace core {
         return false;
     }
 
+    bool isAlpha(string value)
+    {
+        string alphaDictionnary = (__mLowercaseDictionnary + __mUppercaseDictionnary);
+        size_t firstNotAlpha = value.find_first_not_of(alphaDictionnary);
+
+        return firstNotAlpha == string::npos;
+    }
+
+    bool isNumeric(string value)
+    {
+        string digitDictionnary = (__mDigitDictionnary + ".,"); // allow both, point and comma
+        size_t firstNotDigit = value.find_first_not_of(digitDictionnary);
+
+        return firstNotDigit == string::npos;
+    }
+
+    bool greaterThan(string first, string second)
+    {
+        if (second.size() < first.size())
+            return true;
+
+        for (string::iterator itFst = first.begin(), itSnd = second.begin(); itFst != first.end() && itSnd != second.end(); itFst++, itSnd++) {
+            if (*itFst > *itSnd)
+                return true;
+            if (*itFst < *itSnd)
+                return false;
+        }
+
+        return false;
+    }
+
+    bool smallerThan(string first, string second)
+    {
+        if (first.size() < second.size())
+            return true;
+
+        for (string::iterator itFst = first.begin(), itSnd = second.begin(); itFst != first.end() && itSnd != second.end(); itFst++, itSnd++) {
+            if (*itFst < *itSnd)
+                return true;
+            if (*itFst > *itSnd)
+                return false;
+        }
+
+        return false;
+    }
+
+
 }; // end namespace core
 
 }; // end namespace evias
