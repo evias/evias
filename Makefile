@@ -59,7 +59,8 @@ LIB_CORE =  common_utils        \
             threading           \
             container           \
             base_container		\
-			run_chrono
+			run_chrono          \
+            regexp_objects
 
 LIB_APPLICATION =	console          \
 					project          \

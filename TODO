@@ -1,4 +1,14 @@
 --------------
+--- 0.9
+--------------
+
+* add auto release pool feature
+    - should be based on std::auto_ptr, though acting
+      as a Mac OS X reference counter which would
+      extend the reusability of pointers and free
+      the developer of memory problems.
+
+--------------
 --- 0.8 ---
 --------------
 
@@ -23,7 +33,6 @@
       returning a map<int,string> where the int represents
       the position and string the pattern matching value.
     - bool matchesPattern(string value, string pattern)
-* unitary test'ify the whole library features.
 
 --- 0.7.7 ----
 
@@ -31,7 +40,7 @@
   depend on the result of co-descendants.
   defining a relation between tests should
   thus be possible.
-* add auto release pool feature
+* unitary test'ify the whole library features.
 
 --- 0.7.6 ----
 
