@@ -29,8 +29,8 @@ int main (int argc, char* args[])
 
     string project = "eVias C++ library unitary test suite";
     string usage = " \
-        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network] \
-                              [--only config,json,sqlobjects,views,dbobjects,network]  \
+        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regexp] \
+                              [--only config,json,sqlobjects,views,dbobjects,network,regexp]  \
     ";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
     suiteCallArgs->canEmptyCall(true)
@@ -49,6 +49,7 @@ int main (int argc, char* args[])
     bool testViews       = true;
     bool testDbObjects   = true;
     bool testNetwork     = true;
+    bool testRegExp      = true;
 
     bool hasOnly = (callArgs.find("--only") != callArgs.end());
     bool hasSkip = (callArgs.find("--skip") != callArgs.end());
@@ -82,7 +83,7 @@ int main (int argc, char* args[])
             initTest = false;
         }
 
-        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = (initTest);
+        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = testRegExp = (initTest);
 
         // present in option key(s) means having to change the data
         if (in_vector("config", optionKeys))     testConfigFiles  = ! initTest;
@@ -91,6 +92,7 @@ int main (int argc, char* args[])
         if (in_vector("views", optionKeys))      testViews        = ! initTest;
         if (in_vector("dbobjects", optionKeys))  testDbObjects    = ! initTest;
         if (in_vector("network", optionKeys))    testNetwork      = ! initTest;
+        if (in_vector("regexp", optionKeys))     testRegExp       = ! initTest;
     }
 
     // configure the test suite
@@ -101,7 +103,8 @@ int main (int argc, char* args[])
                 ->setTestSQL(testSqlObjects)
                 ->setTestViews(testViews)
                 ->setTestDatabase(testDbObjects)
-                ->setTestNetwork(testNetwork);
+                ->setTestNetwork(testNetwork)
+                ->setTestRegExp(testRegExp);
 
     // execute tests
     int returnCode = librarySuite->execute();

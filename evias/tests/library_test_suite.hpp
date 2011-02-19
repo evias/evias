@@ -28,6 +28,7 @@
 #include "databaseObjects/dbUpdate.hpp"
 #include "databaseObjects/dbFetchAll.hpp"
 #include "networkObjects/packetObject.hpp"
+#include "regularExpressions/charsRanges.hpp"
 
 namespace evias {
 
@@ -48,6 +49,7 @@ namespace test {
         eviasTestSuite* const setTestViews(bool);
         eviasTestSuite* const setTestDatabase(bool);
         eviasTestSuite* const setTestNetwork(bool);
+        eviasTestSuite* const setTestRegExp(bool);
 
     protected :
 
@@ -57,6 +59,7 @@ namespace test {
         void _initTestsViews();
         void _initTestsDatabase();
         void _initTestsNetwork();
+        void _initTestsRegExp();
 
     private :
 
@@ -69,6 +72,7 @@ namespace test {
         bool _testViews;
         bool _testDatabase;
         bool _testNetwork;
+        bool _testRegExp;
 
         configFiles::objectParse*   _configFiles_objectParse;
         configFiles::objectWrite*   _configFiles_objectWrite;
@@ -95,6 +99,8 @@ namespace test {
         databaseObjects::dbFetchAll*    _databaseObjects_dbFetchAll;
 
         networkObjects::packetObject*   _networkObjects_packetObject;
+
+        regularExpressions::charsRanges* _regularExpressions_charsRanges;
 
     };
 

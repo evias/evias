@@ -22,6 +22,7 @@ namespace test {
         _initTestsViews();
         _initTestsDatabase();
         _initTestsNetwork();
+        _initTestsRegExp();
     }
 
     eviasTestSuite::~eviasTestSuite()
@@ -62,6 +63,10 @@ namespace test {
 
         if (_testNetwork) {
             releaseMemory(_networkObjects_packetObject);
+        }
+
+        if (_testRegExp) {
+            releaseMemory(_regularExpressions_charsRanges);
         }
     }
 
@@ -129,6 +134,15 @@ namespace test {
         }
         return this;
     }
+
+    eviasTestSuite* const eviasTestSuite::setTestRegExp(bool test)
+    {
+        if ((_testRegExp = test)) {
+            addTest(_regularExpressions_charsRanges, testResult(1, "no_message_check"));
+        }
+        return this;
+    }
+
 
     void eviasTestSuite::_initTestsConfig()
     {
@@ -244,6 +258,13 @@ namespace test {
         _networkObjects_packetObject = new networkObjects::packetObject();
         _networkObjects_packetObject->setLabel("Network objects packetObject");
     }
+
+    void eviasTestSuite::_initTestsRegExp()
+    {
+        _regularExpressions_charsRanges = new regularExpressions::charsRanges();
+        _regularExpressions_charsRanges->setLabel("eRegExp' charsRanges class");
+    }
+
 
 }; // test
 
