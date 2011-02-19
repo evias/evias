@@ -17,7 +17,7 @@
 #include <vector>
 #include <map>
 
-#include "core/regexp_objects.hpp"
+#include "core/regexp_chars_group.hpp"
 #include "core/unit_test_abstract.hpp"
 
 namespace evias {
@@ -28,7 +28,7 @@ namespace test {
 
 namespace regularExpressions {
 
-    using evias::core::charsGroup;
+    using evias::core::regexp::charsGroup;
     using evias::core::assemble;
     using evias::core::intToString;
 

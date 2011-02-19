@@ -16,6 +16,8 @@ namespace evias {
 
 namespace core {
 
+namespace regexp {
+
     const string groupSpecialKeys[] = {
         ":alpha",
         ":digit",
@@ -53,6 +55,8 @@ namespace core {
         // abcdef... ; 01234.. ; ..
         vector<string> _matchingChars;
     };
+
+}; // regexp
 
 }; // core
 

@@ -1,8 +1,10 @@
-#include "regexp_objects.hpp"
+#include "regexp_chars_group.hpp"
 
 namespace evias {
 
 namespace core {
+
+namespace regexp {
 
     charsGroup::charsGroup()
         : _charsGroupPattern("")
@@ -241,6 +243,8 @@ namespace core {
 
         return _matchingChars.size(); // good boy
     }
+
+}; // regexp
 
 }; // core
 
