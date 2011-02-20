@@ -147,21 +147,58 @@ namespace core {
         return ( vsTmp );
     }
 
-    string assemble (vector<string> list, string betweenRows=", ")
+    vector<string> splitParts(string in, int cntChars)
+    {
+        vector<string> out;
+        string::iterator it = in.begin();
+
+        int max = in.size();
+        int addedCnt = 0;
+        int i = 0;
+        string tmpPart = "";
+        do {
+
+            stringstream ss;
+            ss << *it;
+
+            tmpPart.append(ss.str());
+
+            it++;
+            i++;
+
+            if (i == cntChars) {
+                out.push_back(tmpPart);
+
+                i = 0;
+                tmpPart = "";
+                addedCnt++;
+            }
+        }
+        while (addedCnt < max && it != in.end());
+
+        return out;
+    }
+
+    string assemble (vector<string> list, string betweenRows)
     {
         string outputStr = "";
+        int delimSize = betweenRows.size();
         vector<string>::iterator itList = list.begin();
-        for (int i = 0; itList != list.end(); itList++, i++) {
+        for (int i = 0, cntDelims = 0, max = list.size(); itList != list.end() && i < max; itList++, i++) {
 
-            if (i > 0)
-                outputStr.append (betweenRows);
+            if ((bool) delimSize && i > 0) {
+                outputStr.append(betweenRows);
+                cntDelims++;
+            }
 
-            outputStr.append((*itList));
+            string current = *itList;
+            outputStr.append(current);
         }
+
         return outputStr;
     }
 
-    string assemble (map<string,string> keyValuePairs, string betweenKeyValue = " as ", string betweenRows = ", ")
+    string assembleSQL (map<string,string> keyValuePairs, string betweenKeyValue, string betweenRows)
     {
         string outputStr = "";
         map<string,string>::iterator itPairs = keyValuePairs.begin();
@@ -290,6 +327,45 @@ namespace core {
         }
 
         return false;
+    }
+
+    vector<string> vector_merge(vector<string> in, vector<string> concat)
+    {
+        vector<string> out;
+
+        vector<string>::iterator it = in.begin();
+        for ( ; it != in.end(); it++) {
+            out.push_back(*it);
+        }
+
+        it = concat.begin();
+        for ( ; it != concat.end(); it++) {
+            out.push_back(*it);
+        }
+        return out;
+    }
+
+    vector<string> vector_remove(vector<string> from, vector<string> toremove)
+    {
+        vector<string> out;
+
+        vector<string>::iterator iter = from.begin();
+        bool removeIt = false;
+        for ( ; iter != from.end(); iter++) {
+            for (vector<string>::iterator it = toremove.begin(); it != toremove.end(); it++) {
+                if (*iter == *it) {
+                    removeIt = true;
+                    break;
+                }
+            }
+            if (removeIt) {
+                removeIt = false;
+                continue;
+            }
+
+            out.push_back(*iter);
+        }
+        return out;
     }
 
     bool isAlpha(string value)

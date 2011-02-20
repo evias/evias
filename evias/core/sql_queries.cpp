@@ -31,7 +31,7 @@ namespace core {
         }
 
         if (! _fieldsWithAlias.empty()) {
-            _selectStr = evias::core::assemble (_fieldsWithAlias, " as ", ", ");
+            _selectStr = evias::core::assembleSQL (_fieldsWithAlias, " as ", ", ");
         }
 
         return string("SELECT " + _selectStr + " ");

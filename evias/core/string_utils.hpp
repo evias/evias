@@ -42,12 +42,12 @@ namespace core {
 
     const string __mAnyDictionnary         = (
         __mDigitDictionnary
-        + __mLowercaseDictionnary
         + __mUppercaseDictionnary
-        + __mLowercaseAccented
+        + __mLowercaseDictionnary
         + __mUppercaseAccented
-        + __mLowercaseSpecial
+        + __mLowercaseAccented
         + __mUppercaseSpecial
+        + __mLowercaseSpecial
         + __mOtherDictionnary
     );
 
@@ -69,9 +69,10 @@ namespace core {
     string padString(const string &s, int pLen, string pStr, strPadType pType=PAD_LEFT);
 
     vector<string> split (string, unsigned char);
+    vector<string> splitParts (string, int = 1);
 
     string assemble (vector<string>, string);
-    string assemble (map<string,string>, string, string);
+    string assembleSQL (map<string,string>, string = " as ", string = ", ");
 
 	void trim (string&, const char*);
 
@@ -79,6 +80,9 @@ namespace core {
 	void trimRight (string&, const char*);
 
     bool in_vector(string, vector<string>);
+
+    vector<string> vector_merge(vector<string>,vector<string>);
+    vector<string> vector_remove(vector<string>,vector<string>);
 
     bool isAlpha(string);
     bool isNumeric(string);
