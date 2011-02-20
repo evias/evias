@@ -28,6 +28,44 @@ namespace regexp {
         std::copy(in.begin(), in.end(), _matchingChars.begin());
     }
 
+    int charsGroup::addMatching(string in)
+    {
+        if (isNumeric(in)) {
+            _matchingDigits.push_back(in);
+            return 1;
+        }
+        else if (isAlpha(in)) {
+            _matchingAlphas.push_back(in);
+            return 2;
+        }
+        else {
+            _matchingOthers.push_back(in);
+            return 3;
+        }
+
+        return 0;
+    }
+
+    int charsGroup::addMatchingIfNotExists(string in)
+    {
+        bool isDigit = isNumeric(in);
+        bool isChar = isAlpha(in);
+        if (isDigit && ! in_vector(in, _matchingDigits)) {
+            _matchingDigits.push_back(in);
+            return 1;
+        }
+        else if (isChar && ! in_vector(in, _matchingAlphas)) {
+            _matchingAlphas.push_back(in);
+            return 2;
+        }
+        else if (! isDigit && ! isChar && ! in_vector(in, _matchingOthers)) {
+            _matchingOthers.push_back(in);
+            return 3;
+        }
+
+        return 0;
+    }
+
     vector<string> charsGroup::getMatchingChars()
     {
         return _matchingChars;
@@ -37,6 +75,11 @@ namespace regexp {
     {
         _charsGroupPattern = pattern;
         _internalParse();
+    }
+
+    string charsGroup::getPattern()
+    {
+        return _charsGroupPattern;
     }
 
     bool charsGroup::isSpecialGroup(string group)
@@ -84,6 +127,9 @@ namespace regexp {
         }
 
         _matchingChars.clear();
+        _matchingDigits.clear();
+        _matchingAlphas.clear();
+        _matchingOthers.clear();
 
         if (_charsGroupPattern[0] == ':' && isSpecialGroup(_charsGroupPattern)) {
             // :alpha,:digit,:any
@@ -94,7 +140,7 @@ namespace regexp {
              return _matchingChars.size();
         }
 
-        // XXX if first character is '^', means NOT
+        bool isExcludeMode = (_charsGroupPattern[0] == '^');
 
         vector<string> matchingDigits;
         vector<string> matchingAlphas;
@@ -107,6 +153,12 @@ namespace regexp {
             realPos  = 0,// used for escaped issue
             patternSize = _charsGroupPattern.size();
         for (bool isEscape = false; patternIt != _charsGroupPattern.end(); patternIt++) {
+
+            if (isExcludeMode && position == 0) {
+                patternIt++;
+                itBefore = patternIt;
+                position++;
+            }
 
             string currentCharacter;
             stringstream workaround;
@@ -131,12 +183,7 @@ namespace regexp {
                 isEscape = false;
                 realPos  = 0;
 
-                if (isNumeric(currentCharacter))
-                    matchingDigits.push_back(currentCharacter);
-                else if (isAlpha(currentCharacter))
-                    matchingAlphas.push_back(currentCharacter);
-                else
-                    matchingOthers.push_back(currentCharacter);
+                addMatching(currentCharacter);
 
                 itBefore = patternIt;
                 position++;
@@ -176,14 +223,9 @@ namespace regexp {
 
                         stringstream ss;
                         ss << alphaDictionnary[alphaPos];
-                        if (isNumeric(ss.str())) {
-                            matchingDigits.push_back(ss.str());
-                        }
-                        else {
-                            matchingAlphas.push_back(ss.str());
-                        }
-                    }
 
+                        addMatching(ss.str());
+                    }
 
                     itBefore  = patternIt;
                     patternIt = patternIt + 2;
@@ -202,15 +244,7 @@ namespace regexp {
             // coming here means the current character was not relevant for expression
             // process/parse. make sure it is not matching already and then add it
 
-            if (isNumeric(currentCharacter) && ! in_vector(currentCharacter, matchingDigits)) {
-                matchingDigits.push_back(currentCharacter);
-            }
-            else if (isAlpha(currentCharacter) && ! in_vector(currentCharacter, matchingAlphas)) {
-                matchingAlphas.push_back(currentCharacter);
-            }
-            else if (! in_vector(currentCharacter, matchingOthers) && currentCharacter != "\0") {
-                matchingOthers.push_back(currentCharacter);
-            }
+            addMatchingIfNotExists(currentCharacter);
 
             itBefore = patternIt;
             position++;
@@ -222,23 +256,18 @@ namespace regexp {
         // and special characters end up the list.
 
         if (_matchingChars.empty()) {
-            std::sort(matchingDigits.begin(), matchingDigits.end(), &smallerThan);
-            std::sort(matchingAlphas.begin(), matchingAlphas.end(), &smallerThan);
+            std::sort(_matchingDigits.begin(), _matchingDigits.end(), &smallerThan);
+            std::sort(_matchingAlphas.begin(), _matchingAlphas.end(), &smallerThan);
 
-            // std::copy would take years
-            vector<string>::iterator it;
-            for(it = matchingDigits.begin(); it != matchingDigits.end(); it++) {
-                //cout << "digit [" << *it << "]" << endl;
-                _matchingChars.push_back(*it);
-            }
-            for(it = matchingAlphas.begin(); it != matchingAlphas.end(); it++) {
-                //cout << "alpha [" << *it << "]" << endl;
-                _matchingChars.push_back(*it);
-            }
-            for(it = matchingOthers.begin(); it != matchingOthers.end(); it++) {
-                //cout << "other [" << *it << "]" << endl;
-                _matchingChars.push_back(*it);
-            }
+            vector<string> sortedAlphas = vector_merge(_matchingDigits, _matchingAlphas);
+
+            _matchingChars = vector_merge(sortedAlphas, _matchingOthers);
+        }
+
+        if (isExcludeMode) {
+            // all the characters we got as matching should be excluded. all others taken.
+            vector<string> otherDict = splitParts(__mAnyDictionnary, 1);
+            _matchingChars = vector_remove(otherDict, _matchingChars);
         }
 
         return _matchingChars.size(); // good boy

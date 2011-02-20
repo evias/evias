@@ -93,6 +93,28 @@ namespace regularExpressions {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
+                // excluding rule, as this chars group will match:
+                // ABCDEFG0123456789
+                // we should match all BUT these characters.
+                groupPattern = "^A-G012345-9";
+                testGroup.setPattern(groupPattern);
+
+                objectMatchingChars = evias::core::assemble(testGroup.getMatchingChars(), "");
+
+                // the expectedMatchingChars can be gotten by parsing the pattern
+                // without the first character and then do the exclude by ourself.
+                testGroup.setPattern(groupPattern.substr(1, groupPattern.size()-1));
+
+                // do the exclude
+                vector<string> anyDictionnary = evias::core::splitParts(evias::core::__mAnyDictionnary, 1);
+                anyDictionnary = evias::core::vector_remove(anyDictionnary, testGroup.getMatchingChars());
+                expectedMatchingChars = evias::core::assemble(anyDictionnary, "");
+
+                if (objectMatchingChars != expectedMatchingChars) {
+                    _returnMsg = wrongMatchingCharsError(objectMatchingChars, expectedMatchingChars);
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
                 return setReturnCode((int) RETURN_SUCCESS);
             }
 

@@ -37,8 +37,12 @@ namespace regexp {
         virtual ~charsGroup();
 
         void setPattern(string);
+        string getPattern();
 
         void setMatchingChars(vector<string>);
+
+        int addMatching(string);
+        int addMatchingIfNotExists(string);
 
         bool        isSpecialGroup(string);
         charsGroup  getSpecialGroup(string);
@@ -54,6 +58,10 @@ namespace regexp {
 
         // abcdef... ; 01234.. ; ..
         vector<string> _matchingChars;
+
+        vector<string> _matchingDigits;
+        vector<string> _matchingAlphas;
+        vector<string> _matchingOthers;
     };
 
 }; // regexp
