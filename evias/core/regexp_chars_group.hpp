@@ -1,5 +1,5 @@
-#ifndef EVIAS_CORE_NS_REGEXP
-#   define EVIAS_CORE_NS_REGEXP
+#ifndef EVIAS_CORE_REGEXP_NS_CHARSGROUP
+#   define EVIAS_CORE_REGEXP_NS_CHARSGROUP
 
 #include "string_utils.hpp"
 
@@ -19,9 +19,9 @@ namespace core {
 namespace regexp {
 
     const string groupSpecialKeys[] = {
-        ":alpha",
-        ":digit",
-        ":any"
+        ":alpha:",
+        ":digit:",
+        ":any:"
     };
 
     // a charsGroup represent data between brackets in

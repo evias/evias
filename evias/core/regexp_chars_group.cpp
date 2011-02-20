@@ -98,13 +98,13 @@ namespace regexp {
         vector<string> matchingChars;
         string dictionnary = "";
 
-        if (group == ":alpha") {
+        if (group == ":alpha:") {
             dictionnary = __mLowercaseDictionnary + "," + __mUppercaseDictionnary + "," + __mDigitDictionnary;
         }
-        else if (group == ":digit") {
+        else if (group == ":digit:") {
             dictionnary = __mDigitDictionnary;
         }
-        else if (group == ":any") {
+        else if (group == ":any:") {
             dictionnary = __mAnyDictionnary;
         }
 
