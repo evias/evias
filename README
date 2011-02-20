@@ -13,7 +13,63 @@ those application much faster by having a good library layer to work on.
 
 --------------------- END ABSTRACT}
 
+{-------------------- USE INSTRUCTIONS
+
+Compiling and linking the library can be done using
+
+$ make library
+
+Compiling the unitary test suite (after library compile)
+
+$ make tests
+
+Before using the evias library, I recommend to execute the library
+test suite on your platform, as this will permit to see if everything
+is well configured for the library features to be used on your platform.
+
+To execute the library unitary test suite, you simple execute the following
+command :
+
+$ ./evias/tests/bin/suite_execution.exe
+
+To compile another project using this library in any case, you have
+to define the include path to the evias library header files and
+link your executable with the evias library. As the examples
+below will explain.
+
+Take this as your base compilation rule
+# g++ -c main.cpp -o main.o
+
+So add the include path to the evias library
+# g++ -Ipath/to/evias -c main.cpp -o main.o
+
+Take this as you're base build rule
+# g++ -o build/outputExecutable main.o
+
+And add the needed information for linking to the evias library
+# g++ -Lpath/to/evias -levias -o build/outputExecutable main.o
+
+--------------------- END USE INSTRUCTIONS}
+
+{-------------------- CONTRIBUTE
+
+To contribute by developing features designed to be merge into the
+evias library you can send a fork request to github.com/evias/evias.git
+and I will have a look at what you are proposing.
+
+Your fork request should mention a link from where I can fetch your
+developments. I would surely be happy to see people colaborating
+as this project could become useful to C++ developments, being
+the gateway between back end C++ techniques to query on an application
+base of any kind. Most of the implemented patterns are based on
+web application patterns and web application development needs.
+
+--------------------- END CONTRIBUTE}
+
 {-------------------- LIBRARY MODULES LIST
+
+This section should display a list of all implemented modules. As
+I am trying to keep it up to date as possible. :]
 
 - evias::core
     - configIni     : ".ini" file configuration read / write module
@@ -32,6 +88,8 @@ those application much faster by having a good library layer to work on.
     - updateQuery      : represents a whole update statement (SQL)
     - removeQuery      : represents a whole delete statement (SQL)
     - insertQuery      : represents a whole insert statement (SQL)
+    - regExp
+        - charsGroup   : example: [A-Za-Z0123] charsGroup is A-Za-Z0123
 
 - evias::application
     - consoleParser : console call arguments parsing module
@@ -55,5 +113,6 @@ those application much faster by having a good library layer to work on.
       - qtViews         : tests the Qt derivated views.
       - databaseObjects : tests the database connection objects. (PgSQL for now)
       - networkObjects  : tests the network objects (netPacket, tcpipConnection ..)
+      - regularExpressions: tests the regular expression parse feature.
 
 --------------------- END LIBRARY MODULES LIST }
