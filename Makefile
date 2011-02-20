@@ -60,7 +60,9 @@ LIB_CORE =  common_utils        \
             container           \
             base_container		\
 			run_chrono          \
-            regexp_chars_group
+            regexp_chars_group  \
+            regexp_counter      \
+            regexp
 
 LIB_APPLICATION =	console          \
 					project          \
