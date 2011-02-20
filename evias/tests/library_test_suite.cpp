@@ -67,6 +67,7 @@ namespace test {
 
         if (_testRegExp) {
             releaseMemory(_regularExpressions_charsRanges);
+            releaseMemory(_regularExpressions_easyParse);
         }
     }
 
@@ -139,6 +140,7 @@ namespace test {
     {
         if ((_testRegExp = test)) {
             addTest(_regularExpressions_charsRanges, testResult(1, "no_message_check"));
+            addTest(_regularExpressions_easyParse, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -263,6 +265,9 @@ namespace test {
     {
         _regularExpressions_charsRanges = new regularExpressions::charsRanges();
         _regularExpressions_charsRanges->setLabel("eRegExp' charsRanges class");
+
+        _regularExpressions_easyParse = new regularExpressions::easyParse();
+        _regularExpressions_easyParse->setLabel("eRegExp' easyParse class");
     }
 
 

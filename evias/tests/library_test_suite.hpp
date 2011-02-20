@@ -29,6 +29,7 @@
 #include "databaseObjects/dbFetchAll.hpp"
 #include "networkObjects/packetObject.hpp"
 #include "regularExpressions/charsRanges.hpp"
+#include "regularExpressions/easyParse.hpp"
 
 namespace evias {
 
@@ -101,6 +102,7 @@ namespace test {
         networkObjects::packetObject*   _networkObjects_packetObject;
 
         regularExpressions::charsRanges* _regularExpressions_charsRanges;
+        regularExpressions::easyParse*   _regularExpressions_easyParse;
 
     };
 
