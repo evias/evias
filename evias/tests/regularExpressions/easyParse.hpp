@@ -102,6 +102,41 @@ namespace regularExpressions {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
+                // use infinity operator
+                regexp = "B-[1-9][0-9]+";
+                testObject.parse(regexp, "no_value_test");
+                zipCodeParts = testObject.getGroups();
+
+                // should be matching at least 5 characters, as we can't define
+                // a maximal size, we set it to be the minimal.
+                if (zipCodeParts.size() != 4) {
+                    _returnMsg = "\"" + regexp + "\" should match at least 4 positions, though matches " + intToString(zipCodeParts.size()) + ".";
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                // use infinity operator with following group
+                regexp = "B-[1-9][0-9]+[abc]x[def]";
+                testObject.parse(regexp, "no_value_test");
+                zipCodeParts = testObject.getGroups();
+
+                // matches minimum of 7 characters since the last groups have
+                // no occurence counters and so must be present after any
+                // count of occurences matching a char of the group before
+                // of which the declaration is followed by a '+' operator.
+                if (zipCodeParts.size() != 7) {
+                    _returnMsg = "\"" + regexp + "\" should match at least 5 positions, though matches " + intToString(zipCodeParts.size()) + ".";
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                int objectMatchingCnt = zipCodeParts[4].getMatchingChars().size();
+                int expectedMatchingCnt = 3; // 5th position is [abc] => three matching chars
+                if (objectMatchingCnt != expectedMatchingCnt) {
+                    _returnMsg = "\"" + regexp + "\" should match " + intToString(expectedMatchingCnt) +" for pos 5, matches " + intToString(objectMatchingCnt) + ".";
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                // XXX add '?' operator test
+
                 return setReturnCode((int) RETURN_SUCCESS);
             }
 
