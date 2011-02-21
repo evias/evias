@@ -131,6 +131,7 @@ namespace regexp {
         string::iterator beforeIt = patternIt;
         int currentCharPos = 0;
         int position = 0;
+        int positionOccurences = 0;
         charsGroup infinityMatchingGroup;
         charsGroup lastGroup;
 
@@ -157,7 +158,16 @@ namespace regexp {
             string groupPattern;
             charsGroup groupForPos;
 
-            if (isNumeric(currentCharacter) || isAlpha(currentCharacter)) {
+            if (positionOccurences > 0) {
+
+                groupForPos.setPattern(lastGroup.getPattern());
+                positionOccurences--;
+                position--;
+                currentCharPos--;
+                patternIt--; // should not go further until the occurences
+                             // for the multiplied position have all been set
+            }
+            else if (isNumeric(currentCharacter) || isAlpha(currentCharacter)) {
 
                 groupPattern = currentCharacter;
                 groupForPos.setPattern(groupPattern);
@@ -217,6 +227,30 @@ namespace regexp {
             }
             else if (currentCharacter == "{" && lastWasGroup) {
 
+                size_t closingBracket = _pattern.find("}", currentCharPos);
+
+                if (closingBracket != string::npos) {
+                    // valid occurence counter
+                    string occurenceCounterStr = _pattern.substr(currentCharPos + 1, closingBracket - currentCharPos - 1);
+
+                    positionOccurences = 0;
+                    if (occurenceCounterStr.find(",") != string::npos) {
+                        // has list of counters ({1,2,4} => may occur once, twice or 4 times
+
+                        // NOT IMPLEMENTED YET
+                        positionOccurences = 1;
+                    }
+                    else {
+                        positionOccurences = stringToInt(occurenceCounterStr);
+                    }
+
+                    if (positionOccurences > 0) {
+                        positionOccurences--; // first position already parsed
+                    }
+
+                    patternIt = patternIt + (closingBracket - currentCharPos);
+                    currentCharPos = closingBracket;
+                }
             }
             else {
 
@@ -263,6 +297,25 @@ namespace regexp {
 
             lastGroup = groupForPos;
             _totalPositions++;
+        }
+
+        int atPos = 0;
+        if ((bool) _groupsByPosition.size()) {
+            map<int, charsGroup>::reverse_iterator rit = _groupsByPosition.rbegin();
+            atPos = (*rit).first + 1;
+        }
+
+        // may have to copy lastGroup several times after the loop has
+        // finished. (pattern "[abcd]{5}" should match 5 time [abcd], the loop
+        // will terminate after parsing the closing '}' bracket and so
+        // need to add 3 more entries of the same last group.
+        int cnt = 0;
+        while (positionOccurences > 0) {
+            charsGroup groupForPos(lastGroup.getPattern());
+
+            _groupsByPosition.insert(make_pair(atPos + cnt, groupForPos));
+            positionOccurences--;
+            cnt++;
         }
 
         return (int) PARSE_DONE;
