@@ -141,6 +141,7 @@ namespace test {
         if ((_testRegExp = test)) {
             addTest(_regularExpressions_charsRanges, testResult(1, "no_message_check"));
             addTest(_regularExpressions_easyParse, testResult(1, "no_message_check"));
+            addTest(_regularExpressions_occurenceCounters, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -268,6 +269,10 @@ namespace test {
 
         _regularExpressions_easyParse = new regularExpressions::easyParse();
         _regularExpressions_easyParse->setLabel("eRegExp' easyParse class");
+
+        _regularExpressions_occurenceCounters = new regularExpressions::occurenceCounters();
+        _regularExpressions_occurenceCounters->setLabel("eRegExp' occurenceCounters class");
+
     }
 
 

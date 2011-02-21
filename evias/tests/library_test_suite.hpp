@@ -30,6 +30,7 @@
 #include "networkObjects/packetObject.hpp"
 #include "regularExpressions/charsRanges.hpp"
 #include "regularExpressions/easyParse.hpp"
+#include "regularExpressions/occurenceCounters.hpp"
 
 namespace evias {
 
@@ -103,6 +104,7 @@ namespace test {
 
         regularExpressions::charsRanges* _regularExpressions_charsRanges;
         regularExpressions::easyParse*   _regularExpressions_easyParse;
+        regularExpressions::occurenceCounters*   _regularExpressions_occurenceCounters;
 
     };
 
