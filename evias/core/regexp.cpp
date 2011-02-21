@@ -76,10 +76,12 @@ namespace regexp {
         return _groupsByPosition;
     }
 
-    charsGroup eRegExp::getGroup(int pos)
+    charsGroup eRegExp::getGroupAt(int pos)
     {
-        if (pos <= _groupsByPosition.size()-1) {
-            return _groupsByPosition[pos];
+        map<int,charsGroup> groups = getGroups();
+
+        if (pos < groups.size()) {
+            return groups[pos];
         }
 
         charsGroup group;
@@ -128,8 +130,13 @@ namespace regexp {
         string::iterator patternIt = _pattern.begin();
         string::iterator beforeIt = patternIt;
         int currentCharPos = 0;
-        int i = 0;
-        for (bool doEscape = false; patternIt != _pattern.end(); patternIt++, currentCharPos++, i++) {
+        int position = 0;
+        charsGroup infinityMatchingGroup;
+        charsGroup lastGroup;
+
+        for (bool doEscape = false, lastWasGroup = false, hasGroupInfinity = false, infinityAndEmpty;
+             patternIt != _pattern.end();
+             patternIt++, currentCharPos++, position++) {
 
             stringstream ssbefore;
             ssbefore << *beforeIt;
@@ -182,6 +189,7 @@ namespace regexp {
 
                     patternIt = patternIt + (closingBracket - currentCharPos);
                     currentCharPos = closingBracket;
+                    lastWasGroup = true;
                 }
                 else { // missing closing bracket
 
@@ -197,14 +205,64 @@ namespace regexp {
                 groupPattern = currentCharacter;
                 groupForPos.setPattern(groupPattern);
             }
-            // XXX else if (currentCharacter == "{")
-            // XXX else if (isOperator(currentCharacter)
+            else if (isOperator(currentCharacter) && lastWasGroup) {
+
+                // last group can possibly be applied to multiple positions
+
+                hasGroupInfinity   = true;
+                infinityAndEmpty   = (currentCharacter == "?");
+                infinityMatchingGroup.setPattern(lastGroup.getPattern());
+
+                lastWasGroup = false;
+            }
+            else if (currentCharacter == "{" && lastWasGroup) {
+
+            }
             else {
 
                 return (int) NOT_SUPPORTED;
             }
 
-            _groupsByPosition.insert(make_pair(i, groupForPos));
+            // having some infinity operators means we cannot return a reliable
+            // "group by position" map, parsing the pattern is done in another way
+            // as we will not match character by group for position but rather try
+            // and see if the current group is somewhere next to the group being
+            // infinit'd.
+
+            int atPos = 0;
+            if (position > 0) {
+                map<int, charsGroup>::reverse_iterator rit = _groupsByPosition.rbegin();
+                atPos = (*rit).first + 1;
+            }
+
+            if (infinityAndEmpty) {
+                infinityAndEmpty = false;
+                _optionalGroups.insert(make_pair(atPos-1, infinityMatchingGroup));
+            }
+
+            if (hasGroupInfinity && _groupInfinities.size() == 0) {
+                // is + or ? operator
+
+                hasGroupInfinity = false;
+
+                _groupInfinities.insert(make_pair(atPos-1, infinityMatchingGroup));
+                lastGroup = infinityMatchingGroup;
+                continue; // no need to implement totalPos + insert group
+            }
+            else if (_groupInfinities.size() > 0) {
+                hasGroupInfinity = false;
+
+                _followingInfinities.push_back(groupForPos);
+            }
+
+            if (groupForPos.getPattern().empty()) {
+                continue;
+            }
+
+            _groupsByPosition.insert(make_pair(atPos, groupForPos));
+
+            lastGroup = groupForPos;
+            _totalPositions++;
         }
 
         return (int) PARSE_DONE;
@@ -218,6 +276,8 @@ namespace regexp {
 
         // XXX iterate through the value and see if each
         //     character matches the corresponding group
+
+        // check _optionalGroups and _groupInfinities
 
         return (int) NOT_SUPPORTED;
     }

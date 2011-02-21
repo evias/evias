@@ -50,7 +50,7 @@ namespace regexp {
         map<int, string>   getMatches();
 
         map<int,charsGroup> getGroups();
-        charsGroup          getGroup(int);
+        charsGroup          getGroupAt(int);
 
         bool isExpressionStarter(string);
         bool isExpressionEnder(string);
@@ -61,8 +61,15 @@ namespace regexp {
         int _parsePattern();
         int _parseValue();
 
+
+        int     _totalPositions;
+
         string  _pattern;
         string  _value;
+
+        map<int,charsGroup> _optionalGroups;
+        map<int,charsGroup> _groupInfinities;
+        vector<charsGroup>  _followingInfinities;
 
         map<int, string>    _matches;
         map<string,string>  _namedMatches;
