@@ -124,7 +124,7 @@ namespace regularExpressions {
                 // count of occurences matching a char of the group before
                 // of which the declaration is followed by a '+' operator.
                 if (zipCodeParts.size() != 7) {
-                    _returnMsg = "\"" + regexp + "\" should match at least 5 positions, though matches " + intToString(zipCodeParts.size()) + ".";
+                    _returnMsg = "\"" + regexp + "\" should match at least 7 positions, though matches " + intToString(zipCodeParts.size()) + ".";
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
@@ -135,7 +135,17 @@ namespace regularExpressions {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
-                // XXX add '?' operator test
+                regexp = "B-[1-9][0-9]+[abc]?x[def]";
+                testObject.parse(regexp, "no_value_test");
+                zipCodeParts = testObject.getGroups();
+
+                // '?' operator will set position to be matching the group concerned
+                // but on value parse mode, it will enable the emptiness possibility
+                // for this position (emptiness means group not being matched)
+                if (zipCodeParts.size() != 7) {
+                    _returnMsg = "\"" + regexp + "\" should match at least 7 positions, though matches " + intToString(zipCodeParts.size()) + ".";
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }
