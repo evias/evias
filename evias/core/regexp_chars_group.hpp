@@ -24,6 +24,10 @@ namespace regexp {
         ":any:"
     };
 
+    class charsGroup;
+
+    bool operator==(charsGroup, charsGroup);
+
     // a charsGroup represent data between brackets in
     // a regular expression. by example :
     // [A-Z0-9;-\.]    => the charsGroup would be A-Z0-9;-\.
@@ -34,6 +38,7 @@ namespace regexp {
 
         charsGroup();
         charsGroup(string);
+        charsGroup(const charsGroup&);
         virtual ~charsGroup();
 
         void setPattern(string);

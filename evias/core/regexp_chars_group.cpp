@@ -6,6 +6,15 @@ namespace core {
 
 namespace regexp {
 
+    bool operator==(charsGroup lft, charsGroup rgt)
+    {
+        // pattern and matches count should be the same
+        return (
+            lft.getPattern() == rgt.getPattern() &&
+            lft.getMatchingChars().size() == rgt.getMatchingChars().size()
+        );
+    }
+
     charsGroup::charsGroup()
         : _charsGroupPattern("")
     {
@@ -16,6 +25,15 @@ namespace regexp {
         : _charsGroupPattern(groupPattern)
     {
         _internalParse();
+    }
+
+    charsGroup::charsGroup(const charsGroup & rgt)
+        : _charsGroupPattern(rgt._charsGroupPattern),
+          _matchingChars(rgt._matchingChars),
+          _matchingDigits(rgt._matchingDigits),
+          _matchingAlphas(rgt._matchingAlphas),
+          _matchingOthers(rgt._matchingOthers)
+    {
     }
 
     charsGroup::~charsGroup()
