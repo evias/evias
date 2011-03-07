@@ -1,2 +1,1 @@
-*.log
-*.ini
+evias/tests/bin/logs/
