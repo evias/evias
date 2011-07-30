@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <memory>
 
 #include "string_utils.hpp"
 #include "unit_test_abstract.hpp"
@@ -18,6 +19,12 @@ namespace test {
     using namespace std;
 
 	using evias::core::intToString;
+
+    enum unitTestVerbosity {
+        QUIET   = 1,
+        NORMAL  = 2,
+        VERBOSE = 3
+    };
 
     class testResult
     {
@@ -63,7 +70,10 @@ namespace test {
         public :
 
             unitTestSuite(bool = true);
+            unitTestSuite(const unitTestSuite&);
             ~unitTestSuite();
+            
+            unitTestSuite* const setVerbosity(unitTestVerbosity);
 
             bool execute();
 
@@ -83,13 +93,17 @@ namespace test {
                 { _errorFile = filePath; };
 
             void setQuietMode(bool isQuiet = true)
-                { _beQuiet = isQuiet; };
+                { _beQuiet = isQuiet; _verbosity = QUIET; };
 
 			void printResult(string, testResult, testResult, bool = false);
-            void notify(string);
+            void shortResult(string, testResult, testResult);
+            
+            void notify(string, bool=false);
             void error(string);
 
         protected :
+
+            unitTestVerbosity _verbosity;
 
             int     _count;
             bool    _beQuiet;

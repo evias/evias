@@ -8,8 +8,18 @@ namespace test {
 
     unitTestSuite::unitTestSuite(bool beQuiet)
      : _count(0),
-       _beQuiet(beQuiet),
-       _outputFile("")
+       _outputFile(""),
+       _verbosity(VERBOSE)
+    {
+    }
+
+    unitTestSuite::unitTestSuite(const unitTestSuite & copy)
+     : _count(copy._count),
+       _outputFile(copy._outputFile),
+       _verbosity(copy._verbosity),
+       _tests(copy._tests),
+       _expectedResults(copy._expectedResults),
+       _testResults(copy._testResults)
     {
     }
 
@@ -17,13 +27,18 @@ namespace test {
     {
     }
 
+    unitTestSuite* const unitTestSuite::setVerbosity(unitTestVerbosity v)
+    {
+        _verbosity = v;
+
+        return this;
+    }
+
     bool unitTestSuite::execute()
     {
-        notify("#### eVias unitary test suite will now execute all added tests.");
-        notify("");
-        notify("");
-
         bool execReturn = true;
+        int cntSuccess  = 0;
+        int cntFailures = 0;
         for (int i = 0, max = _tests.size(); i < max; i++) {
 
             int currentTestCode   = -1;
@@ -43,12 +58,36 @@ namespace test {
             execReturn = execReturn && _expectedResults[i].isValidCode(currentTestCode);
 
             // print to console + file if specified
-            printResult(_tests[i]->getLabel(), currentResult, _expectedResults[i], i==0);
+            switch (_verbosity)
+            {
+                default :
+                case VERBOSE :
+                    printResult(_tests[i]->getLabel(), currentResult, _expectedResults[i], i==0);
+                    break;
+
+                case NORMAL :
+                    shortResult(_tests[i]->getLabel(), currentResult, _expectedResults[i]);
+                    break;
+
+                case QUIET :
+                    break;
+            }
+            
+            if (_expectedResults[i].isValidResult(currentResult))
+                cntSuccess++;
+            else
+                cntFailures++;
         }
 
         notify("");
         notify("");
-        notify(string("#### execution of eVias unitary test suite done, return code : ").append(execReturn ? "1" : "0"));
+
+        notify(
+            string("#### execution of unitary test suite done with ")
+            .append(intToString(cntSuccess)).append(" sucess(es) and ")
+            .append(intToString(cntFailures)).append(" failures.")
+            .append(" Return code is: ").append(execReturn ? "1" : "0")
+        );
 
         return execReturn;
     }
@@ -70,14 +109,28 @@ namespace test {
         return this;
     }
 
+    void unitTestSuite::shortResult(string label, testResult result, testResult awaited)
+    {
+        string backColor= "\[\e[1;0m]";
+        string msgColor = "\[\e[1;32m]"; // green
+        if (! awaited.isValidResult(result)) {
+            msgColor = "\[\e[1;31m]"; // red
+        }
+
+        cout << msgColor << "--- TEST RESULT for '" << label << "' is : ["
+             << (awaited.isValidResult(result) ? "RESULT MATCH" : "RESULT ERROR")
+             << "]"
+             << backColor
+             << endl;
+    }
+
     void unitTestSuite::printResult(string label, testResult result, testResult awaited, bool flushBefore)
     {
         // XXX error messages should be written in new file {_outputFile}_error
-
-        string backColor= "\[\033[0m";
-        string msgColor = "\[\033[32m"; // green
+        string backColor= "\[\e[1;0m]";
+        string msgColor = "\[\e[1;32m]"; // green
         if (! awaited.isValidResult(result)) {
-            msgColor = "\[\033[31m"; // red
+            msgColor = "\[\e[1;31m]"; // red
         }
 
         cout << msgColor
@@ -119,9 +172,9 @@ namespace test {
         }
     }
 
-    void unitTestSuite::notify(string msg)
+    void unitTestSuite::notify(string msg, bool force)
     {
-        if (_beQuiet) return;
+        if (! force && _verbosity == QUIET) return;
 
         cout << msg << endl;
     }
