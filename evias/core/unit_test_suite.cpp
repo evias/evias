@@ -101,11 +101,13 @@ namespace test {
         notify("");
         notify("");
 
-        notify(
+        colorNotify(
             string("#### execution of unitary test suite done with ")
             .append(intToString(cntSuccess)).append(" sucess(es) and ")
             .append(intToString(cntFailures)).append(" failures.")
-            .append(" Return code is: ").append(execReturn ? "1" : "0")
+            .append(" Return code is: ").append(execReturn ? "1" : "0"),
+            (cntFailures == 0),
+            true
         );
 
         return execReturn;
@@ -135,6 +137,20 @@ namespace test {
         addTest(test, awaited);
 
         return this;
+    }
+
+    void unitTestSuite::colorNotify(string msg, bool success, bool force)
+    {
+        if (! force && _verbosity == QUIET)
+            return;
+        
+        string backColor= "\[\e[1;0m]";
+        string msgColor = "\[\e[1;32m]"; // green
+        if (! success) {
+            msgColor = "\[\e[1;31m]"; // red
+        }
+
+        cout << msgColor << msg << backColor << endl;
     }
 
     void unitTestSuite::shortResult(string label, testResult result, testResult awaited)

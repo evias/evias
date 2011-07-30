@@ -108,6 +108,7 @@ namespace test {
 
 			void printResult(string, testResult, testResult, bool = false);
             void shortResult(string, testResult, testResult);
+            void colorNotify(string, bool, bool=false);
             
             void notify(string, bool=false);
             void error(string);
