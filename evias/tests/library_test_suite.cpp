@@ -242,18 +242,22 @@ namespace test {
         _databaseObjects_dbInsert = new databaseObjects::dbInsert();
         _databaseObjects_dbInsert->setOptions(params);
         _databaseObjects_dbInsert->setLabel("Database objects dbInsert");
+        _databaseObjects_dbInsert->addDependence(_databaseObjects_dbConnection, testResult(1, "no_message_check"));
 
         _databaseObjects_dbDelete = new databaseObjects::dbDelete();
         _databaseObjects_dbDelete->setOptions(params);
         _databaseObjects_dbDelete->setLabel("Database objects dbDelete");
+        _databaseObjects_dbDelete->addDependence(_databaseObjects_dbConnection, testResult(1, "no_message_check"));
 
         _databaseObjects_dbUpdate = new databaseObjects::dbUpdate();
         _databaseObjects_dbUpdate->setOptions(params);
         _databaseObjects_dbUpdate->setLabel("Database objects dbUpdate");
+        _databaseObjects_dbUpdate->addDependence(_databaseObjects_dbConnection, testResult(1, "no_message_check"));
 
         _databaseObjects_dbFetchAll = new databaseObjects::dbFetchAll();
         _databaseObjects_dbFetchAll->setOptions(params);
         _databaseObjects_dbFetchAll->setLabel("Database objects dbFetchAll");
+        _databaseObjects_dbFetchAll->addDependence(_databaseObjects_dbConnection, testResult(1, "no_message_check"));
     }
 
     void eviasTestSuite::_initTestsNetwork()
