@@ -28,6 +28,7 @@
 #include "databaseObjects/dbUpdate.hpp"
 #include "databaseObjects/dbFetchAll.hpp"
 #include "networkObjects/packetObject.hpp"
+#include "networkObjects/ircClient.hpp"
 #include "regularExpressions/charsRanges.hpp"
 #include "regularExpressions/easyParse.hpp"
 #include "regularExpressions/occurenceCounters.hpp"
@@ -101,6 +102,7 @@ namespace test {
         databaseObjects::dbFetchAll*    _databaseObjects_dbFetchAll;
 
         networkObjects::packetObject*   _networkObjects_packetObject;
+        networkObjects::ircClient*      _networkObjects_ircClient;
 
         regularExpressions::charsRanges* _regularExpressions_charsRanges;
         regularExpressions::easyParse*   _regularExpressions_easyParse;

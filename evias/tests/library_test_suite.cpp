@@ -130,6 +130,7 @@ namespace test {
     {
         if ((_testNetwork = test)) {
             addTest(_networkObjects_packetObject, testResult(1, "no_message_check"));
+            addTest(_networkObjects_ircClient, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -262,6 +263,9 @@ namespace test {
     {
         _networkObjects_packetObject = new networkObjects::packetObject();
         _networkObjects_packetObject->setLabel("Network objects packetObject");
+
+        _networkObjects_ircClient = new networkObjects::ircClient();
+        _networkObjects_ircClient->setLabel("Network objects ircClient");
     }
 
     void eviasTestSuite::_initTestsRegExp()
