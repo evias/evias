@@ -1,4 +1,5 @@
 #include "unit_test_suite.hpp"
+#include "../application/console.hpp"
 
 namespace evias {
 
@@ -6,10 +7,14 @@ namespace core {
 
 namespace test {
 
-    unitTestSuite::unitTestSuite(bool beQuiet)
+    using evias::application::consoleParser;
+    using evias::application::Project;
+
+    unitTestSuite::unitTestSuite()
      : _count(0),
        _outputFile(""),
-       _verbosity(VERBOSE)
+       _verbosity(VERBOSE),
+       Project("unitary test suite application")
     {
     }
 
@@ -19,7 +24,8 @@ namespace test {
        _verbosity(copy._verbosity),
        _tests(copy._tests),
        _expectedResults(copy._expectedResults),
-       _testResults(copy._testResults)
+       _testResults(copy._testResults),
+       Project(copy._name)
     {
     }
 
@@ -34,9 +40,16 @@ namespace test {
         return this;
     }
 
-    bool unitTestSuite::execute()
+    int unitTestSuite::bootstrap(int argc, char** argv)
     {
-        bool execReturn = true;
+        _consoleParser = new evias::application::consoleParser(argc, argv);
+
+        return 1;
+    }
+
+    int unitTestSuite::execute()
+    {
+        int execReturn = 1;
         int cntSuccess  = 0;
         int cntFailures = 0;
         for (int i = 0, max = _tests.size(); i < max; i++) {
@@ -61,7 +74,7 @@ namespace test {
             _testResults.insert(make_pair(i, currentResult));
 
             // return boolean may change here
-            execReturn = execReturn && _expectedResults[i].isValidCode(currentTestCode);
+            execReturn = currentTestCode != SUCCESS ? currentTestCode : execReturn;
 
             // print to console + file if specified
             switch (_verbosity)
@@ -96,6 +109,15 @@ namespace test {
         );
 
         return execReturn;
+    }
+
+    int unitTestSuite::shutdown()
+    {
+        _tests.clear();
+        _expectedResults.clear();
+        _testResults.clear();
+
+        return 1;
     }
 
     int unitTestSuite::addTest(unitTest* test, testResult awaited)

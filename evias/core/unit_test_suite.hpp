@@ -9,6 +9,7 @@
 
 #include "string_utils.hpp"
 #include "unit_test_abstract.hpp"
+#include "../application/project.hpp"
 
 namespace evias {
 
@@ -73,17 +74,19 @@ namespace test {
             string  _returnMsg; // may be empty
     };
 
-    class unitTestSuite
+    class unitTestSuite : public evias::application::Project
     {
         public :
 
-            unitTestSuite(bool = true);
+            unitTestSuite();
             unitTestSuite(const unitTestSuite&);
             ~unitTestSuite();
             
             unitTestSuite* const setVerbosity(unitTestVerbosity);
 
-            bool execute();
+            int bootstrap(int, char**);
+            int execute();
+            int shutdown();
 
             int addTest(unitTest*, testResult);
 
