@@ -34,6 +34,41 @@ namespace test {
         return _returnCode;
     }
 
+    bool unitTest::isFillingDependencies()
+    {
+        if (! hasDependence())
+            return true;
+
+        bool valid = true;
+        for (vector<unitTest*>::iterator dep = _dependsOn.begin();
+            dep != _dependsOn.end();
+            dep++) {
+
+            // execute dependence unitary test
+            (*dep)->prepare();
+            (*dep)->execute();
+            int    dependenceCode = (*dep)->shutdown();
+            string dependenceMsg  = (*dep)->getMessage();
+            testResult depExecResult(dependenceCode, dependenceMsg);
+
+            bool hasResult = _dependenceExpectedResults.find((*dep)->getLabel()) != _dependenceExpectedResults.end();
+
+            if (hasResult) {
+                // compare gotten result with expected one
+                valid = valid && _dependenceExpectedResults[(*dep)->getLabel()].isValidResult(depExecResult);
+            }
+            else valid = false;
+        }
+
+        return valid;
+    }
+
+    void unitTest::addDependence(unitTest* t, testResult r)
+    {
+        _dependsOn.push_back(t);
+        _dependenceExpectedResults.insert(pair<string,testResult>(t->getLabel(), r));
+    }
+
 }; // end namespace test
 
 }; // end namespace core
