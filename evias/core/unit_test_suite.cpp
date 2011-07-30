@@ -44,11 +44,17 @@ namespace test {
             int currentTestCode   = -1;
             string currentTestMsg = "no_message_check";
 
-            // prepare, execute test, get after execution info
-            _tests[i]->prepare();
-            _tests[i]->execute();
-            currentTestCode = _tests[i]->shutdown();
-            currentTestMsg  = _tests[i]->getMessage();
+            if (_tests[i]->hasDependence() && ! _tests[i]->isFillingDependencies())
+                // dependencies check failed
+                currentTestCode = DEPENDENCE_FAILURE;
+            else {
+
+                // prepare, execute test, get after execution info
+                _tests[i]->prepare();
+                _tests[i]->execute();
+                currentTestCode = _tests[i]->shutdown();
+                currentTestMsg  = _tests[i]->getMessage();
+            }
 
             // save result
             testResult currentResult(currentTestCode, currentTestMsg);
@@ -117,8 +123,12 @@ namespace test {
             msgColor = "\[\e[1;31m]"; // red
         }
 
+        string errorMsg = string("[Code: ")
+                        .append(intToString(result.getCode()))
+                        .append("]");
+
         cout << msgColor << "--- TEST RESULT for '" << label << "' is : ["
-             << (awaited.isValidResult(result) ? "RESULT MATCH" : "RESULT ERROR")
+             << (awaited.isValidResult(result) ? "RESULT MATCH" : string("RESULT ERROR ").append(errorMsg))
              << "]"
              << backColor
              << endl;

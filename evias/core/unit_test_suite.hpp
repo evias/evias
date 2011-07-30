@@ -26,6 +26,14 @@ namespace test {
         VERBOSE = 3
     };
 
+    enum returnCodes {
+        SUCCESS = 1,
+        FAILURE = 100,
+        DEPENDENCE_FAILURE = 200
+    };
+
+    class unitTest;
+
     class testResult
     {
         public :
