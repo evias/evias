@@ -20,7 +20,6 @@
 
 int main (int argc, char* args[])
 {
-
 	using namespace std;
     using evias::core::test::eviasTestSuite;
     using evias::core::test::testResult;
@@ -31,11 +30,13 @@ int main (int argc, char* args[])
     string usage = " \
         ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regexp] \
                               [--only config,json,sqlobjects,views,dbobjects,network,regexp]  \
+                              [--verbosity quiet|normal|verbose] \
     ";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
     suiteCallArgs->canEmptyCall(true)
                  ->addAllowedArg("--skip")
                  ->addAllowedArg("--only")
+                 ->addAllowedArg("--verbosity")
                  ->parseAll();
 
     map<string,string> callArgs = suiteCallArgs->readData();
@@ -51,6 +52,7 @@ int main (int argc, char* args[])
     bool testNetwork     = true;
     bool testRegExp      = true;
 
+    bool hasVerb = (callArgs.find("--verbosity") != callArgs.end());
     bool hasOnly = (callArgs.find("--only") != callArgs.end());
     bool hasSkip = (callArgs.find("--skip") != callArgs.end());
 
@@ -61,6 +63,15 @@ int main (int argc, char* args[])
     }
     else if (hasSkip && callArgs["--skip"].size() > 0) {
         usingOption = "--skip";
+    }
+
+    // get verbosity configuration (or not)..
+    int verbosity = evias::core::test::VERBOSE;
+    if (hasVerb && callArgs["--verbosity"].size() > 0) {
+        string sv = callArgs["--verbosity"];
+
+        if (sv == "1") verbosity = evias::core::test::QUIET;
+        else if (sv == "2") verbosity = evias::core::test::NORMAL;
     }
 
     // process call arguments
@@ -98,6 +109,7 @@ int main (int argc, char* args[])
     // configure the test suite
     eviasTestSuite* librarySuite = new eviasTestSuite(argc, args);
 
+    librarySuite->setVerbosity((evias::core::test::unitTestVerbosity)verbosity);
     librarySuite->setTestConfig(testConfigFiles)
                 ->setTestJSON(testJson)
                 ->setTestSQL(testSqlObjects)
