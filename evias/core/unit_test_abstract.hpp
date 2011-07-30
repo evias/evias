@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <typeinfo>
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
 
 #include "date.hpp"
+#include "unit_test_suite.hpp"
 
 namespace evias {
 
@@ -28,6 +30,8 @@ namespace test {
         ERROR_DEVELOPMENT   = -3,
         ERROR_TEST_DATA     = -4
     } serviceErrorCode;
+
+    class testResult;
 
     class unitTest
     {
@@ -66,6 +70,15 @@ namespace test {
             string getLabel()
                 { return _label; };
 
+            // 0.7.7 a unitary test may depend on other test's results
+            bool isFillingDependencies();
+            void addDependence(unitTest*, testResult);
+            bool hasDependence()
+                { return ! _dependsOn.empty(); }
+
+            vector<unitTest*> dependsOn()
+                { return _dependsOn; }
+
         protected :
             bool _state;
 
@@ -79,6 +92,9 @@ namespace test {
 
             evias::core::Date* _startDate;
             evias::core::Date* _endDate;
+
+            vector<unitTest*>       _dependsOn;
+            map<string, testResult> _dependenceExpectedResults;
     };
 
 }; // end namespace test
