@@ -8,8 +8,18 @@ namespace test {
 
     unitTestSuite::unitTestSuite(bool beQuiet)
      : _count(0),
-       _beQuiet(beQuiet),
-       _outputFile("")
+       _outputFile(""),
+       _verbosity(VERBOSE)
+    {
+    }
+
+    unitTestSuite::unitTestSuite(const unitTestSuite & copy)
+     : _count(copy._count),
+       _outputFile(copy._outputFile),
+       _verbosity(copy._verbosity),
+       _tests(copy._tests),
+       _expectedResults(copy._expectedResults),
+       _testResults(copy._testResults)
     {
     }
 
@@ -17,12 +27,15 @@ namespace test {
     {
     }
 
+    unitTestSuite* const unitTestSuite::setVerbosity(unitTestVerbosity v)
+    {
+        _verbosity = v;
+
+        return this;
+    }
+
     bool unitTestSuite::execute()
     {
-        notify("#### eVias unitary test suite will now execute all added tests.");
-        notify("");
-        notify("");
-
         bool execReturn = true;
         for (int i = 0, max = _tests.size(); i < max; i++) {
 
@@ -119,9 +132,9 @@ namespace test {
         }
     }
 
-    void unitTestSuite::notify(string msg)
+    void unitTestSuite::notify(string msg, bool force)
     {
-        if (_beQuiet) return;
+        if (! force && _verbosity == QUIET) return;
 
         cout << msg << endl;
     }
