@@ -19,7 +19,7 @@ Irc::Irc( )
 	_server     = new char [strlen("xxxxxxxxx.xxxxxx.xxxxxxxx.xxxxx")];
 	_caughtCall = 0;
 
-	cout    << "data initialized" << endl;
+	log ("IRC Client initialized");
 }
 
 Irc::~Irc( )
@@ -88,7 +88,7 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 	{
 		WSADATA wsa;
 		if (WSAStartup(MAKEWORD(2,2), &wsa)) {
-			cout << "socket init failed : " << (unsigned long) GetLastError() << endl;
+            log(string("socket init failed : ").append((unsigned long) GetLastError()));
 		}
 	}
 	#else
@@ -111,7 +111,7 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 
 	if ( irc_socket == INVALID_SOCKET || local_socket == INVALID_SOCKET )
 	{
-		cout << "Erreur: Socket Invalide!" << endl;
+		log("Invalid Socket error");
 		return 1;
 	}
 
@@ -121,7 +121,7 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 	{
 		closesocket( irc_socket );
 		closesocket( local_socket );
-		cout << "Could not resolve hostname: " << ConnectServer <<  endl;
+        log(string("Invalid hostname '").append(ConnectServer));
 		return 1;
 	}
 
@@ -136,7 +136,7 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 	   )
 	{
 
-		cout << "########## La connexion ou l'écoute a echouée .." << endl;
+        log ("Could not open listening connection");
 
 		closesocket( irc_socket );
 		closesocket( local_socket );
@@ -175,7 +175,8 @@ void Irc::closeAll( )
 	// Si vous êtes connecté à un serveur IRC
 	if ( connected )
 	{
-		cout << "Disconnected from server." << endl;
+        log ("Disconnected from server");
+
 		connected	= false;
 		// laisse un message de quit
 		closeConnection	( (char*) "eVias Documentation Bot" );
@@ -226,12 +227,13 @@ int Irc::catchIt( )
 	// Si vous n'êtes pas connecté
 	if ( !connected )
 	{
-		cout << "Not connected!" << endl;
+        log("You are not connected !");
 		return 1;
 	}
 
-	cout << "-- IDENTD treatment .." << endl;
 /*
+ * XXX enable listening => IDENTD requiring servers
+ * 
 	int sockfd, newfd;
 	struct sockaddr_in my_addr,
 					   serv_addr;
@@ -256,7 +258,6 @@ int Irc::catchIt( )
 	addr_size = sizeof( struct sockaddr_in );
 	newfd = accept (sockfd, (struct sockaddr*)&serv_addr, &addr_size);
 */
-	cout << "-- IDENTD treatment done" << endl;
 
 	// Boucle étant éxécutez chaque fois
 	while ( 1 )
@@ -848,7 +849,7 @@ void Irc::_parseIrcReply( char *data )
 			message.append (params);
 		}
 
-		cout << message << endl;
+        log (message);
 
 		_callHook( cmd, params, &hostd_tmp );
 	}
@@ -873,13 +874,13 @@ void Irc::_parseIrcReply( char *data )
 
 			sprintf( buffer, "PONG %s\r\n", &params[ 1 ] );
 
-			cout << "PING > PONG :" << params << endl;
+            log (string("PING > PONG :").append(params));
 
 			send( irc_socket, buffer, strlen( buffer ), 0 );
 		}
 		else
 		{
-			cout << "--- RAW [" << cmd << "] {" << data << "} : " << params << "---" << endl;
+            log (string("RAW DATA: [").append(cmd).append("] {").append(data).append("} : ").append(params));
 
 			hostd_tmp.host	 = 0;
 			hostd_tmp.ident	 = 0;

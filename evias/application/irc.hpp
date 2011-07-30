@@ -42,109 +42,126 @@ namespace evias {
 
 namespace application {
 
-// reply fetch
-struct __ircReplyData
-{
-	char *nick;
-	char *ident;
-	char *host;
-	char *target;
-};
+    using std::cout;
+    using std::string;
+    using std::endl;
 
-// command catch feature
-struct __ircCmdHook
-{
-	char		    *ircCommand;
-	__ircCmdHook	*next;
-	int ( * function ) ( char *, __ircReplyData *, void * );
-};
+    // reply fetch
+    struct __ircReplyData
+    {
+        char *nick;
+        char *ident;
+        char *host;
+        char *target;
+    };
 
-// people ..
-struct __ircChannelUser
-{
-	char			*nick;
-	char			*channel;
-	char			flags;
-	__ircChannelUser		*next;
-};
+    // command catch feature
+    struct __ircCmdHook
+    {
+        char		    *ircCommand;
+        __ircCmdHook	*next;
+        int ( * function ) ( char *, __ircReplyData *, void * );
+    };
 
+    // people ..
+    struct __ircChannelUser
+    {
+        char			*nick;
+        char			*channel;
+        char			flags;
+        __ircChannelUser		*next;
+    };
 
-class Irc
-{
-    public :
+    class Irc
+    {
+        public :
 
-        Irc( );
-	    ~Irc( );
+            Irc( );
+            ~Irc( );
 
-        // for-data-reply loop, runs to catch messages coming from server
-    	int catchIt( );
+            // for-data-reply loop, runs to catch messages coming from server
+            int catchIt( );
 
-	    int start	( char *pServer, int iPort, char *pNick, char *pUser, char *pName, char *pPass );
+            int start	( char *pServer, int iPort, char *pNick, char *pUser, char *pName, char *pPass );
 
-        int closeConnection	( char *QuitMsg );
+            int closeConnection	( char *QuitMsg );
 
-        void closeAll();
+            void closeAll();
 
-        // PUBLIC API
+            bool isConnected()
+                { return connected; }
 
-        // communication access
-	    int privateMessage	( char *target, char *message );
+            void setQuietMode(bool q)
+                { _quiet = q; }
 
-        int notice	( char *target, char *message );
+            // PUBLIC API
 
-        // channel access
-    	int channelJoin	( char *channel );
-    	int channelPart	( char *channel );
-	    int channelKick	( char *channel, char *nick );
-    	int channelKick	( char *channel, char *nick, char *message );
-    	int channelMode	( char *modes );
-        int channelMode	( char *channel, char *modes, char *targets );
-	    int channelIsOp	( char *channel, char *nick );
-	    int channelIsVoice	( char *channel, char *nick );
-    	int whoisUser	( char *userList );
+            // communication access
+            int privateMessage	( char *target, char *message );
 
-        // user access
-        int userNick	( char *newnick );
-        char* currentNick() { return cur_nick; };
+            int notice	( char *target, char *message );
 
-        // allows treatment definition, make sure the command is the IRC protocol
-        // call, as such as: "NICK", "LIST", "PART", "JOIN", "PING" ...
-    	void hookCmdWith( char *cmd_name, int ( * function ) ( char *, __ircReplyData *, void * ) );
+            // channel access
+            int channelJoin	( char *channel );
+            int channelPart	( char *channel );
+            int channelKick	( char *channel, char *nick );
+            int channelKick	( char *channel, char *nick, char *message );
+            int channelMode	( char *modes );
+            int channelMode	( char *channel, char *modes, char *targets );
+            int channelIsOp	( char *channel, char *nick );
+            int channelIsVoice	( char *channel, char *nick );
+            int whoisUser	( char *userList );
 
-        int getConnection() {
-            return irc_socket;
-        }
+            // user access
+            int userNick	( char *newnick );
+            char* currentNick() { return cur_nick; };
 
-    private :
+            // allows treatment definition, make sure the command is the IRC protocol
+            // call, as such as: "NICK", "LIST", "PART", "JOIN", "PING" ...
+            void hookCmdWith( char *cmd_name, int ( * function ) ( char *, __ircReplyData *, void * ) );
 
-        // call linked hook for irc command
-        void _callHook ( char *irc_command, char *params, __ircReplyData *hostd );
+            int getConnection() {
+                return irc_socket;
+            }
 
-        // parse response ..
-	    void _parseIrcReply	( char *data );
+            void log(string msg)
+            {
+                if (_quiet) return ;
 
-        // handle data
-    	void _splitToReplies( char *data );
+                cout << msg << endl;
+            }
 
-	    void _addIrcCmdHook( __ircCmdHook *hook, char *cmd_name, int ( * function ) ( char *, __ircReplyData *, void * ) );
-	    void _removeIrcCmdHook( __ircCmdHook *cmd_hook );
+        private :
 
-	    int				irc_socket;
-        int             local_socket;
-        int             _caughtCall;
-    	bool			connected;
-    	bool			bSentNick;
-    	bool			bSentPass;
-    	bool			bSentUser;
-    	bool			bNickserv;
-        bool            _bCanJoin;
-        char*           _server;
-    	char*           cur_nick;
-    	char*           InvalServ;
-    	__ircChannelUser		*chan_users;
-    	__ircCmdHook		*hooks;
+            // call linked hook for irc command
+            void _callHook ( char *irc_command, char *params, __ircReplyData *hostd );
 
-}; // end class Irc
+            // parse response ..
+            void _parseIrcReply	( char *data );
+
+            // handle data
+            void _splitToReplies( char *data );
+
+            void _addIrcCmdHook( __ircCmdHook *hook, char *cmd_name, int ( * function ) ( char *, __ircReplyData *, void * ) );
+            void _removeIrcCmdHook( __ircCmdHook *cmd_hook );
+
+            int				irc_socket;
+            int             local_socket;
+            int             _caughtCall;
+            bool            _quiet;
+            bool			connected;
+            bool			bSentNick;
+            bool			bSentPass;
+            bool			bSentUser;
+            bool			bNickserv;
+            bool            _bCanJoin;
+            char*           _server;
+            char*           cur_nick;
+            char*           InvalServ;
+            __ircChannelUser		*chan_users;
+            __ircCmdHook		*hooks;
+
+    }; // end class Irc
 
 }; // end namespace application
 
