@@ -27,17 +27,29 @@ namespace application {
             virtual int execute   () = 0;
             virtual int shutdown  () = 0;
 
+            string getName()
+                { return _name; }
+
             Date* getInitTime ()
                 { return _initDate; }
 
             Date* getExecTime ()
                 { return _execDate; }
 
-            consoleParser* getCall ()
+            consoleParser* getCallParser ()
                 { return _consoleParser; }
 
             configIni* getConfig ()
                 { return (_projectConfig != NULL ? _projectConfig : (_projectConfig = new configIni())); }
+
+            void setName(string n)
+                { _name = n; }
+
+            void setCallParser(consoleParser* p)
+                { _consoleParser = p; } 
+
+            void setConfig(configIni* c)
+                { _projectConfig = c; }
 
         protected :
 

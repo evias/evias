@@ -6,11 +6,9 @@ namespace core {
 
 namespace test {
 
-    eviasTestSuite::eviasTestSuite(int argc, char** argv)
-        : _argc(argc),
-          _args(argv)
+    eviasTestSuite::eviasTestSuite()
     {
-        unitTestSuite(false);
+        unitTestSuite();
 
         setOutputFile("/home/greg/srv/home.work/cpp/eviasLib/evias/tests/bin/logs/suite_execution_results.log");
 
