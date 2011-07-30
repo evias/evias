@@ -41,6 +41,7 @@
   defining a relation between tests should
   thus be possible.
 * unitary test'ify the whole library features.
+* unitTestSuite should extend evias::application::Project
 
 --- 0.7.6 ----
 
