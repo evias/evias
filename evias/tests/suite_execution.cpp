@@ -107,8 +107,9 @@ int main (int argc, char* args[])
     }
 
     // configure the test suite
-    eviasTestSuite* librarySuite = new eviasTestSuite(argc, args);
+    eviasTestSuite* librarySuite = new eviasTestSuite();
 
+    // configure suite
     librarySuite->setVerbosity((evias::core::test::unitTestVerbosity)verbosity);
     librarySuite->setTestConfig(testConfigFiles)
                 ->setTestJSON(testJson)
@@ -118,8 +119,10 @@ int main (int argc, char* args[])
                 ->setTestNetwork(testNetwork)
                 ->setTestRegExp(testRegExp);
 
-    // execute tests
+    // execute suite
+    librarySuite->bootstrap(argc, args);
     int returnCode = librarySuite->execute();
+    librarySuite->shutdown();
 
     delete librarySuite;
 

@@ -42,7 +42,7 @@ namespace test {
     {
     public :
 
-        eviasTestSuite(int, char**);
+        eviasTestSuite();
         virtual ~eviasTestSuite();
 
         eviasTestSuite* const setTestConfig(bool);
