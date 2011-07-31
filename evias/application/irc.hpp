@@ -31,6 +31,9 @@
 #include <string>
 #include <algorithm>
 
+#include "../core/string_utils.hpp"
+#include "../core/common_utils.hpp"
+
 #define IRC_DEBUG 1
 
 // IRC Flags
@@ -45,6 +48,9 @@ namespace application {
     using std::cout;
     using std::string;
     using std::endl;
+    using std::vector;
+
+    using evias::core::in_vector;
 
     // reply fetch
     struct __ircReplyData
@@ -76,11 +82,18 @@ namespace application {
     {
         public :
 
+            static string MSG_ENDMOTD;
+            static string MSG_ENDLIST;
+            static string MSG_CHANPART;
+            static string MSG_NOTONCHAN;
+            static string MSG_INVALIDCHAN;
+
             Irc( );
             ~Irc( );
 
             // for-data-reply loop, runs to catch messages coming from server
-            int catchIt( );
+            // if code is caught, stops catching
+            int catchIt(string = "");
 
             int start	( char *pServer, int iPort, char *pNick, char *pUser, char *pName, char *pPass );
 
@@ -124,6 +137,9 @@ namespace application {
                 return irc_socket;
             }
 
+            string getLastTreatedCommand()
+                { return _lastTreatedMsgCode; }
+
             void log(string msg)
             {
                 if (_quiet) return ;
@@ -148,6 +164,7 @@ namespace application {
             int				irc_socket;
             int             local_socket;
             int             _caughtCall;
+            bool            _canExit;
             bool            _quiet;
             bool			connected;
             bool			bSentNick;
@@ -158,6 +175,8 @@ namespace application {
             char*           _server;
             char*           cur_nick;
             char*           InvalServ;
+            string          _lastTreatedMsgCode;
+            vector<string>  _endMsgCode;
             __ircChannelUser		*chan_users;
             __ircCmdHook		*hooks;
 

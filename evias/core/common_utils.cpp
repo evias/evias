@@ -12,7 +12,7 @@ namespace core {
 
         cout << "----Map Dump" << endl;
         for( ; it != mMap.end(); it++) {
-            cout << (*it).first   << " - " << (*it).second << endl;
+            cout << "['" << (*it).first << "'] '" << (*it).second << "'" << endl;
         }
         cout << "----End Dump" << endl;
     }
@@ -23,8 +23,8 @@ namespace core {
         vector<string>::iterator it = vVec.begin();
 
         cout << "----Vector Dump" << endl;
-        for( ; it != vVec.end(); it++) {
-            cout << (*it) << endl;
+        for(int i = 0 ; it != vVec.end(); it++, i++) {
+            cout << "[" << evias::core::intToString(i) << "] = '" << (*it) << "'" << endl;
         }
         cout << "----End Dump" << endl;
     }
