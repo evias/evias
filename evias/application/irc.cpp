@@ -6,6 +6,17 @@ namespace evias {
 
 namespace application {
 
+    // valid message commands
+    string Irc::MSG_CHANPART    = "PART";
+
+    // valid end of message groups
+    string Irc::MSG_ENDMOTD     = "376";
+    string Irc::MSG_ENDLIST     = "366";
+    
+    // Error messages from server
+    string Irc::MSG_NOTONCHAN   = "442";
+    string Irc::MSG_INVALIDCHAN = "403";
+
 Irc::Irc( )
 {
 	hooks		= 0;
@@ -18,8 +29,6 @@ Irc::Irc( )
 	InvalServ	= ( char * ) malloc ( strlen( "Impossible de se connecter au serveur random.irc.wanadobe.bizness" ) + 1 );
 	_server     = new char [strlen("xxxxxxxxx.xxxxxx.xxxxxxxx.xxxxx")];
 	_caughtCall = 0;
-
-	log ("IRC Client initialized");
 }
 
 Irc::~Irc( )
@@ -102,6 +111,8 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 	if ( connected )
 		return 1;
 
+    log(string("Will now try to connect to '").append(ConnectServer).append("'"));
+
 	sprintf( _server, "%s", ConnectServer );
 
 	// @todo : IDENTD
@@ -167,12 +178,14 @@ int Irc::start( char* ConnectServer, int ServerPort, char *Nick, char *User, cha
 	sprintf	( ConnectBuffer, "USER %s * 0 :%s\r\n", User, Name );
 	send	( irc_socket, ConnectBuffer, strlen( ConnectBuffer ), 0 );
 
+    log ("connected !");
+
 	return 0;
 }
 
 void Irc::closeAll( )
 {
-	// Si vous êtes connecté à un serveur IRC
+	// Si vous Ãªtes connectÃ© Ã  un serveur IRC
 	if ( connected )
 	{
         log ("Disconnected from server");
@@ -192,10 +205,10 @@ int Irc::closeConnection( char *QuitMsg )
 {
 	char buffer[ 1024 ];
 
-	// Si vous êtes connecté à l'IRC
+	// Si vous Ãªtes connectÃ© Ã  l'IRC
 	if ( connected )
 	{
-		// Si un message de quit à été donné
+		// Si un message de quit Ã  Ã©tÃ© donnÃ©
 		if ( QuitMsg )
 			// Vous quittez avec ce message de quit
 			sprintf( buffer, "QUIT %s\r\n", QuitMsg );
@@ -210,7 +223,7 @@ int Irc::closeConnection( char *QuitMsg )
 	return 0;
 }
 
-int Irc::catchIt( )
+int Irc::catchIt(string endMsgCode)
 {
 	char	buffer[ 1024 ];
 	int		ret_len;
@@ -218,13 +231,17 @@ int Irc::catchIt( )
 	int     cli_size;
 	int     cli_ret;
 
+    if (! endMsgCode.empty()) {
+        _endMsgCode = evias::core::split(endMsgCode, '|');
+    }
+
 #ifdef WIN32
 	HOSTENT* resolv;
 #else
 	hostent* resolv;
 #endif
 
-	// Si vous n'êtes pas connecté
+	// Si vous n'Ãªtes pas connectÃ©
 	if ( !connected )
 	{
         log("You are not connected !");
@@ -259,7 +276,7 @@ int Irc::catchIt( )
 	newfd = accept (sockfd, (struct sockaddr*)&serv_addr, &addr_size);
 */
 
-	// Boucle étant éxécutez chaque fois
+	// Boucle Ã©tant Ã©xÃ©cutez chaque fois
 	while ( 1 )
 	{
 		ret_len = recv( irc_socket, buffer, 1023, 0 );
@@ -270,6 +287,11 @@ int Irc::catchIt( )
 
 		buffer[ ret_len ] = '\0';
 		_splitToReplies( buffer );
+
+        if ((bool) _endMsgCode.size()
+            && in_vector(_lastTreatedMsgCode, _endMsgCode)) {
+            return 0;
+        }
 	}
 
 	return 0;
@@ -571,7 +593,7 @@ void Irc::_parseIrcReply( char *data )
 						// si un + est devant le 'o' ( /mode +o )
 						if ( plus )
 						{
-							// utilisateur a été oppé (chan, params)
+							// utilisateur a Ã©tÃ© oppÃ© (chan, params)
 							sChannelUser	= chan_users;
 							d				= 0;
 
@@ -596,7 +618,7 @@ void Irc::_parseIrcReply( char *data )
 						}
 						else // ( /mode -o )
 						{
-							// utilisateur a été déoppé (chan, params)
+							// utilisateur a Ã©tÃ© dÃ©oppÃ© (chan, params)
 							sChannelUser	= chan_users;
 							d				= 0;
 
@@ -628,7 +650,7 @@ void Irc::_parseIrcReply( char *data )
 
 						if ( plus )
 						{
-							// utilisateur voicé
+							// utilisateur voicÃ©
 							sChannelUser	= chan_users;
 							d				= 0;
 
@@ -648,7 +670,7 @@ void Irc::_parseIrcReply( char *data )
 						}
 						else // ( /mode -v )
 						{
-							// utilisateur a été dévoicé
+							// utilisateur a Ã©tÃ© dÃ©voicÃ©
 							sChannelUser	= chan_users;
 							d				= 0;
 							while ( sChannelUser )
@@ -724,7 +746,7 @@ void Irc::_parseIrcReply( char *data )
 							sChannelUser = sChannelUser->next;
 						}
 
-						// Si l'utilisateur est opérateur sur le certain chan
+						// Si l'utilisateur est opÃ©rateur sur le certain chan
 						if ( p[ 0 ] == '@' )
 						{
 							sChannelUser->flags = sChannelUser->flags|IRC_USER_OP;
@@ -842,6 +864,12 @@ void Irc::_parseIrcReply( char *data )
 			message = "-- WHOIS :";
 			message.append(params);
 		}
+        else if (
+                ! strcmp(cmd, "376")
+        ) {
+            message = "-- ENDMOTD :";
+			message.append(params);
+        }
 		else {
 			// not treated yet / not been needed
 			message = "-- SERVER : ";
@@ -866,7 +894,7 @@ void Irc::_parseIrcReply( char *data )
 		*data  = '\0';
 		params = data + 1;
 
-		// Si un ping est reçu
+		// Si un ping est reÃ§u
 		if ( !strcmp( cmd, "PING" ) )
 		{
 			if ( !params )
@@ -880,7 +908,15 @@ void Irc::_parseIrcReply( char *data )
 		}
 		else
 		{
+            message = string(params);
+            string::size_type spacePos = message.find_first_of(" ");
+
             log (string("RAW DATA: [").append(cmd).append("] {").append(data).append("} : ").append(params));
+
+            if (spacePos != string::npos) {
+                cmd    = (char*) (message.substr(0, (int)spacePos)).c_str();
+                params = (char*) (message.substr((int)spacePos)).c_str();
+            }
 
 			hostd_tmp.host	 = 0;
 			hostd_tmp.ident	 = 0;
@@ -890,6 +926,8 @@ void Irc::_parseIrcReply( char *data )
 			_callHook( cmd, params, &hostd_tmp );
 		}
 	}
+    
+    _lastTreatedMsgCode = string(cmd);
 }
 
 void Irc::_callHook( char *irc_command, char *params, __ircReplyData *hostd )
