@@ -15,6 +15,8 @@
 
 #include <sys/stat.h>    // stat() method in fileExists
 
+#include "string_utils.hpp"
+
 namespace evias {
 
 namespace core {

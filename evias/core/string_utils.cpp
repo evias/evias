@@ -321,11 +321,12 @@ namespace core {
 
     bool in_vector(string needle, vector<string> haystack)
     {
-        for (int i = 0, max = haystack.size() ; i < max; i++) {
-            if (haystack.at(i) == needle)
+        vector<string>::iterator i = haystack.begin();
+        for (; i != haystack.end(); i++) {
+            // strcmp uses a fast comparing algorithm
+            if (! strcmp((*i).c_str(), needle.c_str()))
                 return true;
         }
-
         return false;
     }
 
