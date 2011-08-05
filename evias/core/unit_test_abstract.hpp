@@ -28,7 +28,8 @@ namespace test {
         ERROR_DATA_INPUT    = -1,
         ERROR_ENVIRONMENT   = -2,
         ERROR_DEVELOPMENT   = -3,
-        ERROR_TEST_DATA     = -4
+        ERROR_TEST_DATA     = -4,
+        ERROR_EXTERNAL_UPDATE = -5,
     } serviceErrorCode;
 
     class testResult;
