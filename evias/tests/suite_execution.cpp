@@ -28,8 +28,8 @@ int main (int argc, char* args[])
 
     string project = "eVias C++ library unitary test suite";
     string usage = " \
-        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regexp] \
-                              [--only config,json,sqlobjects,views,dbobjects,network,regexp]  \
+        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regex] \
+                              [--only config,json,sqlobjects,views,dbobjects,network,regex]  \
                               [--verbosity quiet|normal|verbose] \
     ";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
@@ -70,8 +70,8 @@ int main (int argc, char* args[])
     if (hasVerb && callArgs["--verbosity"].size() > 0) {
         string sv = callArgs["--verbosity"];
 
-        if (sv == "1") verbosity = evias::core::test::QUIET;
-        else if (sv == "2") verbosity = evias::core::test::NORMAL;
+        if (sv == "1" || sv == "quiet") verbosity = evias::core::test::QUIET;
+        else if (sv == "2" || sv == "normal") verbosity = evias::core::test::NORMAL;
     }
 
     // process call arguments
@@ -103,7 +103,7 @@ int main (int argc, char* args[])
         if (in_vector("views", optionKeys))      testViews        = ! initTest;
         if (in_vector("dbobjects", optionKeys))  testDbObjects    = ! initTest;
         if (in_vector("network", optionKeys))    testNetwork      = ! initTest;
-        if (in_vector("regexp", optionKeys))     testRegExp       = ! initTest;
+        if (in_vector("regex", optionKeys))      testRegExp       = ! initTest;
     }
 
     // configure the test suite
