@@ -1,3 +1,6 @@
+#ifndef __EVIAS_CORE_TEST_NETWORKOBJECTS_NS_IRCCLIENT__
+#define __EVIAS_CORE_TEST_NETWORKOBJECTS_NS_IRCCLIENT__
+
 /**
  * Package : eVias unitary test suite
  *
@@ -143,3 +146,4 @@ namespace networkObjects {
 
 }; // end namespace evias
 
+#endif
