@@ -74,6 +74,7 @@ namespace core {
         }
         catch (boost::xpressive::regex_error &e) {
             setReturnCode((int) SYNTAX_ERROR);
+            throw(syntaxError());
         }
     }
 

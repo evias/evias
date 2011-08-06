@@ -25,6 +25,13 @@ namespace core {
 
     } parseReturns;
 
+    class syntaxError : public std::exception
+    {
+        public :
+            virtual const char* what () const throw()
+                { return "Syntax error in your pattern."; }
+    };
+
     /**
      * @brief
      * regular expression class based on boost::regex.
