@@ -66,7 +66,7 @@ namespace test {
         if (_testRegExp) {
             releaseMemory(_regularExpressions_errorCodes);
             releaseMemory(_regularExpressions_indexedResult);
-            releaseMemory(_regularExpressions_occurenceCounters);
+            releaseMemory(_regularExpressions_namedGroups);
             releaseMemory(_regularExpressions_boostRegex);
         }
     }
@@ -142,8 +142,8 @@ namespace test {
         if ((_testRegExp = test)) {
             addTest(_regularExpressions_errorCodes, testResult(1, "no_message_check"));
             addTest(_regularExpressions_indexedResult, testResult(1, "no_message_check"));
-            addTest(_regularExpressions_occurenceCounters, testResult(1, "no_message_check"));
             addTest(_regularExpressions_boostRegex, testResult(1, "no_message_check"));
+            addTest(_regularExpressions_namedGroups, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -274,16 +274,16 @@ namespace test {
     void eviasTestSuite::_initTestsRegExp()
     {
         _regularExpressions_errorCodes = new regularExpressions::errorCodes();
-        _regularExpressions_errorCodes->setLabel("eRegExp' errorCodes class");
+        _regularExpressions_errorCodes->setLabel("regex errorCodes class");
 
         _regularExpressions_indexedResult = new regularExpressions::indexedResult();
-        _regularExpressions_indexedResult->setLabel("eRegExp' indexedResult class");
-
-        _regularExpressions_occurenceCounters = new regularExpressions::occurenceCounters();
-        _regularExpressions_occurenceCounters->setLabel("eRegExp' occurenceCounters class");
+        _regularExpressions_indexedResult->setLabel("regex indexedResult class");
 
         _regularExpressions_boostRegex = new regularExpressions::boostRegex();
-        _regularExpressions_boostRegex->setLabel("eRegExp' boostRegex class");
+        _regularExpressions_boostRegex->setLabel("regex boostRegex class");
+
+        _regularExpressions_namedGroups = new regularExpressions::namedGroups();
+        _regularExpressions_namedGroups->setLabel("regex namedGroups class");
     }
 
 

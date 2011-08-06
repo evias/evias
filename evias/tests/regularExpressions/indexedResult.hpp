@@ -56,6 +56,37 @@ namespace regularExpressions {
                 if (r.parse("EVS124567") != PARSE_DONE) {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
+                
+                r.setPattern("^(EVS)([1-9]{4})");
+                r.parse("EVS4565");
+
+                evias::core::containers::imatches m = r.getIndexedMatches();
+                if (m[0] != "EVS4565") {
+                    return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
+                }
+                else if (m[1] != "EVS") {
+                    return setReturnCode((int) ERROR_TEST_DATA);
+                }
+                else if (m[2] != "4565") {
+                    return setReturnCode((int) ERROR_TEST_DATA);
+                }
+                
+                r.setPattern("([A-Za-z0-9]{4})([4-8]{2})([GYCA]{1})");
+                r.parse("EVS188G");
+
+                m = r.getIndexedMatches();
+                if (m[0] != "EVS188G") {
+                    return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
+                }
+                else if (m[1] != "EVS1") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+                else if (m[2] != "88") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+                else if (m[3] != "G") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

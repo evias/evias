@@ -31,7 +31,7 @@
 #include "networkObjects/ircClient.hpp"
 #include "regularExpressions/indexedResult.hpp"
 #include "regularExpressions/errorCodes.hpp"
-#include "regularExpressions/occurenceCounters.hpp"
+#include "regularExpressions/namedGroups.hpp"
 #include "regularExpressions/boostRegex.hpp"
 
 namespace evias {
@@ -107,8 +107,8 @@ namespace test {
 
         regularExpressions::errorCodes*     _regularExpressions_errorCodes;
         regularExpressions::indexedResult*  _regularExpressions_indexedResult;
-        regularExpressions::occurenceCounters*   _regularExpressions_occurenceCounters;
-        regularExpressions::boostRegex*  _regularExpressions_boostRegex;
+        regularExpressions::namedGroups*    _regularExpressions_namedGroups;
+        regularExpressions::boostRegex*     _regularExpressions_boostRegex;
 
     };
 

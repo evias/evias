@@ -84,6 +84,11 @@ namespace regularExpressions {
                     }
                 }
 
+                boost::smatch m;
+                if (! boost::regex_match(string("CC092100"), m, expr)) {
+                    return setReturnCode((int) ERROR_TEST_DATA);
+                }
+
                 return setReturnCode((int) RETURN_SUCCESS);
             }
 
