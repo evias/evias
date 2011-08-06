@@ -10,11 +10,23 @@ namespace core {
     void s_mapDump(map<string,string> mMap) {
         map<string,string>::iterator it = mMap.begin();
 
-        cout << "----Map Dump" << endl;
+        cout << "........" << endl;
         for( ; it != mMap.end(); it++) {
             cout << "['" << (*it).first << "'] '" << (*it).second << "'" << endl;
         }
-        cout << "----End Dump" << endl;
+        cout << "........" << endl;
+    }
+
+    // debug method for map<int,string>
+    // @todo implement in debug namespace
+    void is_mapDump(map<int,string> mMap) {
+        map<int,string>::iterator it = mMap.begin();
+
+        cout << "........" << endl;
+        for( ; it != mMap.end(); it++) {
+            cout << "m[" << (*it).first << "] = '" << (*it).second << "'" << endl;
+        }
+        cout << "........" << endl;
     }
 
     // debug method for vector<string>

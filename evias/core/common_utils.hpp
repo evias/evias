@@ -49,6 +49,8 @@ namespace core {
     void s_mapDump(map<string, string>);
     void s_vecDump(vector<string>);
 
+    void is_mapDump(map<int, string>);
+
     void s_mapCopy    (map<string,string> rhs, map<string,string>& lhs);
     void s_vectorCopy (vector<string> rhs, vector<string>& lhs);
 
