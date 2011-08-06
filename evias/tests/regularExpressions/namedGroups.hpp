@@ -67,19 +67,7 @@ namespace regularExpressions {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
-                evias::core::containers::imatches m = r.getIndexedMatches();
                 evias::core::containers::nmatches n = r.getNamedMatches();
-
-                // test indexed matches
-                if (m[0] != "eVs92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[1] != "eVs") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[2] != "92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
 
                 // test named matches
                 if (n["__auto__entire_match"] != "eVs92188") {
@@ -89,6 +77,42 @@ namespace regularExpressions {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
                 else if (n["user_code"] != "92188") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                string t2[3] = {
+                    "user_id",
+                    "login",
+                    "acl_role"
+                };
+                vector<string> g2(t2, t2+3);
+
+                r.setPattern(
+                    "([1-9][0-9]+);" // user_id
+                    "([A-Za-z][A-Za-z0-9_\\-\\.]+);" // login
+                    "(admin|guest);" // acl_role
+                );
+                r.setGroups(g2);
+
+                r.parse("329081988;evias92;admin;");
+
+                if (r.lastReturnCode() != PARSE_DONE) {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                n = r.getNamedMatches();
+
+                // test named matches
+                if (n["__auto__entire_match"] != "329081988;evias92;admin;") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+                else if (n["user_id"] != "329081988") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+                else if (n["login"] != "evias92") {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+                else if (n["acl_role"] != "admin") {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 

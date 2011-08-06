@@ -55,8 +55,16 @@ namespace regularExpressions {
                 }
 
                 // test SYNTAX_ERROR error code
-                evias::core::regex errExpr("(ABC-");
-                if (errExpr.lastReturnCode() != SYNTAX_ERROR) {
+                try {
+                    evias::core::regex errExpr("(ABC-");
+                    if (errExpr.lastReturnCode() != SYNTAX_ERROR) {
+                        return setReturnCode((int) ERROR_DEVELOPMENT);
+                    }
+                }
+                catch (const evias::core::syntaxError &e) {
+                    // OK
+                }
+                catch (...) {
                     return setReturnCode((int) ERROR_DEVELOPMENT);
                 }
 
