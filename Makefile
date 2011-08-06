@@ -26,23 +26,29 @@ LIB_PREFIX=build
 LIB_SRC_DIR=evias
 
 # COMPILATION
+BOOST_PATH=/home/greg/srv/home.work/external/boost_1_47_0
+
 PSQL_INC=-I/usr/include/pqxx
 QT_INC=-I/usr/include/qt4
+BOOST_INC=-I ${BOOST_PATH}
 
 QT_LINK=-lQtGui -lQtCore
 PSQL_LINK=-lpq -lpqxx
 MD5_LINK=-lssl
+BOOST_REGEX_LINK=${BOOST_PATH}/libs/regex/build/gcc/libboost_regex-gcc-1_47.a
+
 EVIAS_LINK=-Lbuild/ -levias
 
 CXX=g++
-CXX_OPTS=-Ievias -Iplatform ${QT_INC} ${PSQL_INC} -fpermissive
+CXX_OPTS=-Ievias -Iplatform ${QT_INC} ${PSQL_INC} ${BOOST_INC} -fpermissive
 
 MOC=/usr/bin/moc-qt4
 MOC_BUILD=${CXX} ${QT_INC} -I./ -c
 BUILD=${CXX} ${CXX_OPTS} -c
 
-LIB_LINKER= ${CXX} ${MD5_LINK} ${PSQL_LINK} -shared -Wl,-soname,lib${LIB_NAME}.so
+LIB_LINKER= ${CXX} ${MD5_LINK} ${PSQL_LINK} ${BOOST_REGEX_LINK} -shared -Wl,-soname,lib${LIB_NAME}.so
 TEST_LINKER = ${CXX} ${EVIAS_LINK} ${QT_LINK} ${PSQL_LINK}
+LINKER_ADD=${BOOST_REGEX_LINK}
 
 # LIBRARY FILES
 
@@ -60,8 +66,6 @@ LIB_CORE =  common_utils        \
             container           \
             base_container		\
 			run_chrono          \
-            regexp_chars_group  \
-            regexp_counter      \
             regexp
 
 LIB_APPLICATION =	console          \
@@ -83,28 +87,6 @@ LIB_MOCS =  TailEditor		\
             MainWnd			\
 			debugger		\
             basicView
-
-# LIBRARY UNITARY TESTS
-LIB_TESTS_DB =  db_connection            \
-                    db_fetchall              \
-                    db_update                \
-                    db_remove                \
-                    db_insert
-
-LIB_TESTS_CONFIG = configFileParse
-
-LIB_TESTS_JSON = jsonParsing            \
-                 jsonObjectParsing      \
-                 jsonFurther
-
-LIB_TESTS_QT = mainWnd                  \
-                   mainWnd_full
-
-LIB_TESTS_SQLOBJ= easySql         \
-                      updateSql       \
-                      removeSql       \
-                      insertSql       \
-                      sqlWithParams
 
 clean :
 	rm -f ${JUNK_DIR}/*.o
@@ -149,7 +131,7 @@ library :
 	@echo " "
 	@echo " "
 	@echo "-- link libevias.so"
-	${LIB_LINKER} -o ${LIB_PREFIX}/${LIB_NAME}.so.${LIB_RELEASE} $(foreach object, ${LIB_CORE} ${LIB_APPLICATION} ${LIB_MODEL} ${LIB_NETWORK}, ${JUNK_DIR}/${object}.o) $(foreach object, ${LIB_MOCS}, ${JUNK_DIR}/moc_${object}.o) -lc
+	${LIB_LINKER} -o ${LIB_PREFIX}/${LIB_NAME}.so.${LIB_RELEASE} ${LINKER_ADD} $(foreach object, ${LIB_CORE} ${LIB_APPLICATION} ${LIB_MODEL} ${LIB_NETWORK}, ${JUNK_DIR}/${object}.o) $(foreach object, ${LIB_MOCS}, ${JUNK_DIR}/moc_${object}.o) -lc
 	ln -s ${LIB_NAME}.so.${LIB_RELEASE} ${LIB_PREFIX}/lib${LIB_NAME}.so
 	@echo " "
 	@echo "-- libevias.so exported to ${LIB_PREFIX}"
@@ -167,7 +149,7 @@ tests :
 	@echo "-- build/link unitary test suite"
 	@${BUILD} ${LIB_TEST_SRC_DIR}/library_test_suite.cpp -o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
 	@${BUILD} ${LIB_TEST_SRC_DIR}/suite_execution.cpp -o ${LIB_TEST_JUNK_DIR}/suite_execution.o
-	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
+	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o ${LIB_TEST_JUNK_DIR}/library_test_suite.o ${LINKER_ADD}
 	@echo " "
 	@echo " "
 	@echo "-- copy library files to tests bin directory"

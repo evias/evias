@@ -7,81 +7,98 @@
 
 #include <algorithm>
 
-#include "regexp_chars_group.hpp"
-#include "regexp_counter.hpp"
+#include <boost/xpressive/xpressive.hpp>
+
+#include "string_utils.hpp"
 
 namespace evias {
 
 namespace core {
 
-namespace regexp {
-
     typedef enum {
 
-        PARSE_DONE      = 1, // success
-        NOT_SUPPORTED   = 0,
+        SYNTAX_OK       = 1,
+        PARSE_DONE      = 0, // success
         PARSE_FAILED    = -1, // ..
         DATA_MISS       = -2, // input data miss
         SYNTAX_ERROR    = -3
 
     } parseReturns;
 
-    const string expressionStarters = "([{";
-    const string expressionEnders   = ")]}";
-    const string expressionOperators= "+?";
-
-    class eRegExp
+    /**
+     * @brief
+     * regular expression class based on boost::regex.
+     * this class handles the boost object and allows an easier
+     * access to the different kinds of data the regular
+     * expressions parse encounters. Also error messages
+     * are thrown more specifically.
+     *
+     * @package evias::core
+     **/
+    class regex
     {
     public :
+        typedef map<int, std::string>           indexed_matches;
+        typedef map<std::string, std::string>   named_matches;
 
-        // pattern,value
-        eRegExp(string,string);
-        ~eRegExp();
+        // pattern(,value)
+        regex(std::string);
+        regex(std::string,std::string);
 
-        map<int,string> parse();
-        map<int,string> parse(string,string);
+        // copy
+        regex(const regex&);
 
-        void setPattern(string);
-        void setValue(string);
+        virtual ~regex() {};
 
-        string getPattern();
-        string getValue();
-        map<string,string> getNamedMatches();
-        map<int, string>   getMatches();
+        int parse(std::string = "");
 
-        map<int,charsGroup> getGroups();
-        charsGroup          getGroupAt(int);
+        void setGroups(std::vector<std::string>);
 
-        bool isExpressionStarter(string);
-        bool isExpressionEnder(string);
-        bool isOperator(string);
+        void setPattern(std::string);
+        inline void setValue(std::string v)
+            { _value = v; }
 
-    private :
+        inline int setReturnCode(int c)
+            { return (_return = c); }
 
-        int _parsePattern();
-        int _parseValue();
+        inline indexed_matches getIndexedMatches()
+            { return _imatches; }
+        inline named_matches getNamedMatches()
+            { return _nmatches; }
 
+        inline std::string getPattern()
+            { return _pattern; }
+        inline std::string getValue()
+            { return _value; }
+        inline boost::xpressive::sregex getOrigin()
+            { return _origin; }
+        inline int lastReturnCode()
+            { return _return; }
 
-        int     _totalPositions;
+    protected :
 
-        string  _pattern;
-        string  _value;
+        void _computeNamedMatches();
 
-        map<int,charsGroup> _optionalGroups;
-        map<int,charsGroup> _groupInfinities;
-        vector<charsGroup>  _followingInfinities;
+        boost::xpressive::sregex _origin;
 
-        map<int, string>    _matches;
-        map<string,string>  _namedMatches;
+        int     _return;
 
-        map<int, charsGroup> _groupsByPosition;
+        indexed_matches _imatches;
+        named_matches   _nmatches;
+
+        std::vector<std::string> _names;
+
+        std::string  _pattern;
+        std::string  _value;
     };
 
-};
+    namespace containers {
+        typedef evias::core::regex::indexed_matches imatches;
+        typedef evias::core::regex::named_matches   nmatches;
+    }
 
 }; // core
 
 }; // evias
 
 #endif
-

@@ -4,340 +4,106 @@ namespace evias {
 
 namespace core {
 
-namespace regexp {
+    using std::string;
+    using std::vector;
+    using std::map;
+    using boost::xpressive::sregex;
+    using boost::xpressive::smatch;
+    using boost::xpressive::regex_match;
 
-/*****
- * PUBLIC
- *****/
-
-    eRegExp::eRegExp(string pattern, string value)
-        : _pattern(pattern), _value(value)
+    regex::regex(string p)
     {
-        _parsePattern();
-        _parseValue();
+        setPattern(p);
+    }
+    regex::regex(string p, string v)
+        : _value(v)
+    {
+        setPattern(p);
+        parse();
+    }
+    regex::regex(const regex& rgt)
+        : _pattern(rgt._pattern),
+          _value(rgt._value)
+    {
+        setPattern(rgt._pattern);
     }
 
-    eRegExp::~eRegExp()
+    int regex::parse(string v)
     {
+        _imatches.clear();
+        _nmatches.clear();
 
-    }
+        if (v.empty() && _value.empty())
+            return setReturnCode((int) DATA_MISS);
+        else if (! v.empty())
+            _value = v;
 
-    void eRegExp::setPattern(string pattern)
-    {
-        _pattern = pattern;
-    }
-
-    string eRegExp::getPattern()
-    {
-        return _pattern;
-    }
-
-    void eRegExp::setValue(string value)
-    {
-        _value = value;
-    }
-
-    string eRegExp::getValue()
-    {
-        return _value;
-    }
-
-    map<string,string> eRegExp::getNamedMatches()
-    {
-        return _namedMatches;
-    }
-
-    map<int,string> eRegExp::getMatches()
-    {
-        return _matches;
-    }
-
-    map<int,string> eRegExp::parse()
-    {
-        _parsePattern();
-        _parseValue();
-
-        return getMatches();
-    }
-
-    map<int,string> eRegExp::parse(string pattern, string value)
-    {
-        setPattern(pattern);
-        setValue(value);
-
-        _parsePattern();
-        _parseValue();
-
-        return getMatches();
-    }
-
-    map<int,charsGroup> eRegExp::getGroups()
-    {
-        return _groupsByPosition;
-    }
-
-    charsGroup eRegExp::getGroupAt(int pos)
-    {
-        map<int,charsGroup> groups = getGroups();
-
-        if (pos < groups.size()) {
-            return groups[pos];
+        smatch matches;
+        if (! regex_match(_value, matches, _origin)) {
+            return setReturnCode((int) PARSE_FAILED);
         }
 
-        charsGroup group;
-        return group;
-    }
+        for (int i = 0, c = matches.size(); i < c; i++) {
+            string match = matches[i];
 
-    bool eRegExp::isExpressionStarter(string character)
-    {
-        if (character.size() > 1) {
-            return false;
+            _imatches.insert(std::pair<int, string>(i, match));
         }
 
-        return (expressionStarters.find(character) != string::npos);
+        _computeNamedMatches();
+
+        return setReturnCode((int) PARSE_DONE);
     }
 
-    bool eRegExp::isExpressionEnder(string character)
+    void regex::setGroups(vector<string> v)
     {
-        if (character.size() > 1) {
-            return false;
-        }
+        _names.clear();
+        for (vector<string>::iterator i = v.begin();
+             i != v.end(); i++) {
 
-        return (expressionEnders.find(character) != string::npos);
+            _names.push_back((*i));
+        }
     }
 
-    bool eRegExp::isOperator(string character)
+    void regex::setPattern(string p)
     {
-        if (character.size() > 1) {
-            return false;
-        }
+        try {
+            _origin = sregex::compile(p);
+            _pattern = p;
 
-        return (expressionOperators.find(character) != string::npos);
+            setReturnCode((int) SYNTAX_OK);
+        }
+        catch (boost::xpressive::regex_error &e) {
+            setReturnCode((int) SYNTAX_ERROR);
+        }
     }
 
-/******
- * PRIVATE
- ******/
-
-    int eRegExp::_parsePattern()
+    void regex::_computeNamedMatches()
     {
-        if (_pattern.empty()) {
-            return (int) DATA_MISS;
+        if (_return == PARSE_FAILED) {
+            return ;
         }
 
-        _groupsByPosition.clear();
+        for (int i = 0, j = 1, c = _imatches.size(), d = _names.size();
+             i < c; i++, j++) {
 
-        string::iterator patternIt = _pattern.begin();
-        string::iterator beforeIt = patternIt;
-        int currentCharPos = 0;
-        int position = 0;
-        int positionOccurences = 0;
-        charsGroup infinityMatchingGroup;
-        charsGroup lastGroup;
-
-        for (bool doEscape = false, lastWasGroup = false, hasGroupInfinity = false, infinityAndEmpty;
-             patternIt != _pattern.end();
-             patternIt++, currentCharPos++, position++) {
-
-            stringstream ssbefore;
-            ssbefore << *beforeIt;
-
-            stringstream ss;
-            ss << *patternIt;
-
-            string currentCharacter = ss.str();
-            string characterBefore  = ssbefore.str();
-
-            beforeIt = patternIt;
-
-            // check type of character. if it is a simple character
-            // or a numeric value, the corresponding group can be
-            // created, if not it may be parsed by other classes
-            // such as charsGroup and occurenceCounter.
-
-            string groupPattern;
-            charsGroup groupForPos;
-
-            if (positionOccurences > 0) {
-
-                groupForPos.setPattern(lastGroup.getPattern());
-                positionOccurences--;
-                position--;
-                currentCharPos--;
-                patternIt--; // should not go further until the occurences
-                             // for the multiplied position have all been set
+            string name;
+            if (i == 0) {
+                name = "__auto__entire_match";
             }
-            else if (isNumeric(currentCharacter) || isAlpha(currentCharacter)) {
-
-                groupPattern = currentCharacter;
-                groupForPos.setPattern(groupPattern);
-            }
-            else if (characterBefore == "\\" && doEscape) {
-
-                // XXX may be a special charsGroup
-                //     \d,\S,\w ...
-
-                doEscape     = false;
-                groupPattern = currentCharacter;
-                groupForPos.setPattern(groupPattern);
-            }
-            else if (currentCharacter == "\\" && ! doEscape) {
-
-                doEscape = true;
-                continue;
-            }
-            else if (currentCharacter == "[") {
-                // has to parse a charsGroup for this position
-
-                size_t closingBracket = _pattern.find("]", currentCharPos);
-
-                if (closingBracket != string::npos) {
-                    // can copy content
-
-                    groupPattern = _pattern.substr(currentCharPos + 1, closingBracket - currentCharPos - 1);
-                    groupForPos.setPattern(groupPattern);
-
-                    patternIt = patternIt + (closingBracket - currentCharPos);
-                    currentCharPos = closingBracket;
-                    lastWasGroup = true;
-                }
-                else { // missing closing bracket
-
-                    return (int) SYNTAX_ERROR;
-                }
-            }
-            else if (currentCharacter == ".") {
-                // ANY for this position
-                groupPattern = ":any:";
-                groupForPos.setPattern(groupPattern);
-            }
-            else if (! isExpressionStarter(currentCharacter) && ! isExpressionEnder(currentCharacter) && ! isOperator(currentCharacter)) {
-                groupPattern = currentCharacter;
-                groupForPos.setPattern(groupPattern);
-            }
-            else if (isOperator(currentCharacter) && lastWasGroup) {
-
-                // last group can possibly be applied to multiple positions
-
-                hasGroupInfinity   = true;
-                infinityAndEmpty   = (currentCharacter == "?");
-                infinityMatchingGroup.setPattern(lastGroup.getPattern());
-
-                lastWasGroup = false;
-            }
-            else if (currentCharacter == "{" && lastWasGroup) {
-
-                size_t closingBracket = _pattern.find("}", currentCharPos);
-
-                if (closingBracket != string::npos) {
-                    // valid occurence counter
-                    string occurenceCounterStr = _pattern.substr(currentCharPos + 1, closingBracket - currentCharPos - 1);
-
-                    positionOccurences = 0;
-                    if (occurenceCounterStr.find(",") != string::npos) {
-                        // has list of counters ({1,2,4} => may occur once, twice or 4 times
-
-                        // NOT IMPLEMENTED YET
-                        positionOccurences = 1;
-                    }
-                    else {
-                        positionOccurences = stringToInt(occurenceCounterStr);
-                    }
-
-                    if (positionOccurences > 0) {
-                        positionOccurences--; // first position already parsed
-                    }
-
-                    patternIt = patternIt + (closingBracket - currentCharPos);
-                    currentCharPos = closingBracket;
-                }
+            else if (j-1 <= d) {
+                name = _names[j-2];
             }
             else {
-
-                return (int) NOT_SUPPORTED;
+                name = string("__auto__group_") + (intToString(i+1));
             }
 
-            // having some infinity operators means we cannot return a reliable
-            // "group by position" map, parsing the pattern is done in another way
-            // as we will not match character by group for position but rather try
-            // and see if the current group is somewhere next to the group being
-            // infinit'd.
-
-            int atPos = 0;
-            if (position > 0) {
-                map<int, charsGroup>::reverse_iterator rit = _groupsByPosition.rbegin();
-                atPos = (*rit).first + 1;
-            }
-
-            if (infinityAndEmpty) {
-                infinityAndEmpty = false;
-                _optionalGroups.insert(make_pair(atPos-1, infinityMatchingGroup));
-            }
-
-            if (hasGroupInfinity && _groupInfinities.size() == 0) {
-                // is + or ? operator
-
-                hasGroupInfinity = false;
-
-                _groupInfinities.insert(make_pair(atPos-1, infinityMatchingGroup));
-                lastGroup = infinityMatchingGroup;
-                continue; // no need to implement totalPos + insert group
-            }
-            else if (_groupInfinities.size() > 0) {
-                hasGroupInfinity = false;
-
-                _followingInfinities.push_back(groupForPos);
-            }
-
-            if (groupForPos.getPattern().empty()) {
-                continue;
-            }
-
-            _groupsByPosition.insert(make_pair(atPos, groupForPos));
-
-            lastGroup = groupForPos;
-            _totalPositions++;
+            _nmatches.insert(std::pair<string,string>(name, _imatches[i]));
+                
         }
-
-        int atPos = 0;
-        if ((bool) _groupsByPosition.size()) {
-            map<int, charsGroup>::reverse_iterator rit = _groupsByPosition.rbegin();
-            atPos = (*rit).first + 1;
-        }
-
-        // may have to copy lastGroup several times after the loop has
-        // finished. (pattern "[abcd]{5}" should match 5 time [abcd], the loop
-        // will terminate after parsing the closing '}' bracket and so
-        // need to add 3 more entries of the same last group.
-        int cnt = 0;
-        while (positionOccurences > 0) {
-            charsGroup groupForPos(lastGroup.getPattern());
-
-            _groupsByPosition.insert(make_pair(atPos + cnt, groupForPos));
-            positionOccurences--;
-            cnt++;
-        }
-
-        return (int) PARSE_DONE;
     }
-
-    int eRegExp::_parseValue()
-    {
-        if (_value.empty()) {
-            return (int) DATA_MISS;
-        }
-
-        // XXX iterate through the value and see if each
-        //     character matches the corresponding group
-
-        // check _optionalGroups and _groupInfinities
-
-        return (int) NOT_SUPPORTED;
-    }
-
-}; // regexp
 
 }; // core
 
 }; // evias
 
+    

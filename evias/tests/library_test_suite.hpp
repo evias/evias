@@ -29,9 +29,10 @@
 #include "databaseObjects/dbFetchAll.hpp"
 #include "networkObjects/packetObject.hpp"
 #include "networkObjects/ircClient.hpp"
-#include "regularExpressions/charsRanges.hpp"
-#include "regularExpressions/easyParse.hpp"
-#include "regularExpressions/occurenceCounters.hpp"
+#include "regularExpressions/indexedResult.hpp"
+#include "regularExpressions/errorCodes.hpp"
+#include "regularExpressions/namedGroups.hpp"
+#include "regularExpressions/boostRegex.hpp"
 
 namespace evias {
 
@@ -104,9 +105,10 @@ namespace test {
         networkObjects::packetObject*   _networkObjects_packetObject;
         networkObjects::ircClient*      _networkObjects_ircClient;
 
-        regularExpressions::charsRanges* _regularExpressions_charsRanges;
-        regularExpressions::easyParse*   _regularExpressions_easyParse;
-        regularExpressions::occurenceCounters*   _regularExpressions_occurenceCounters;
+        regularExpressions::errorCodes*     _regularExpressions_errorCodes;
+        regularExpressions::indexedResult*  _regularExpressions_indexedResult;
+        regularExpressions::namedGroups*    _regularExpressions_namedGroups;
+        regularExpressions::boostRegex*     _regularExpressions_boostRegex;
 
     };
 
