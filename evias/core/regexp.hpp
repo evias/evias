@@ -7,7 +7,9 @@
 
 #include <algorithm>
 
-#include <boost/regex.hpp>
+#include <boost/xpressive/xpressive.hpp>
+
+#include "string_utils.hpp"
 
 namespace evias {
 
@@ -23,8 +25,6 @@ namespace core {
 
     } parseReturns;
 
-    typedef std::map<int, std::string>  indexed_matches;
-
     /**
      * @brief
      * regular expression class based on boost::regex.
@@ -38,12 +38,12 @@ namespace core {
     class regex
     {
     public :
+        typedef map<int, std::string>           indexed_matches;
+        typedef map<std::string, std::string>   named_matches;
 
         // pattern(,value)
         regex(std::string);
         regex(std::string,std::string);
-        regex(boost::regex);
-        regex(boost::regex, std::string);
 
         // copy
         regex(const regex&);
@@ -52,7 +52,7 @@ namespace core {
 
         int parse(std::string = "");
 
-        indexed_matches getIndexedMatches();
+        void setGroups(std::vector<std::string>);
 
         void setPattern(std::string);
         inline void setValue(std::string v)
@@ -61,26 +61,41 @@ namespace core {
         inline int setReturnCode(int c)
             { return (_return = c); }
 
-        inline std::string getPattern() const
+        inline indexed_matches getIndexedMatches()
+            { return _imatches; }
+        inline named_matches getNamedMatches()
+            { return _nmatches; }
+
+        inline std::string getPattern()
             { return _pattern; }
-        inline std::string getValue() const
+        inline std::string getValue()
             { return _value; }
-        inline boost::regex getOrigin() const
+        inline boost::xpressive::sregex getOrigin()
             { return _origin; }
-        inline int lastReturnCode() const
+        inline int lastReturnCode()
             { return _return; }
 
     protected :
 
-        boost::regex _origin;
+        void _computeNamedMatches();
+
+        boost::xpressive::sregex _origin;
 
         int     _return;
 
         indexed_matches _imatches;
+        named_matches   _nmatches;
+
+        std::vector<std::string> _names;
 
         std::string  _pattern;
         std::string  _value;
     };
+
+    namespace containers {
+        typedef evias::core::regex::indexed_matches imatches;
+        typedef evias::core::regex::named_matches   nmatches;
+    }
 
 }; // core
 
