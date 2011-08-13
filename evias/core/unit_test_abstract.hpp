@@ -11,6 +11,7 @@
 
 #include "date.hpp"
 #include "unit_test_suite.hpp"
+#include "assertable.hpp"
 
 namespace evias {
 
@@ -19,6 +20,8 @@ namespace core {
 namespace test {
 
     using namespace std;
+
+    using evias::core::assertable;
 
     typedef enum {
         RETURN_SUCCESS      = 1,
