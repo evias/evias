@@ -32,6 +32,13 @@ namespace core {
                 { return "Syntax error in your pattern."; }
     };
 
+    class noMatchException : public std::exception
+    {
+        public :
+            virtual const char* what () const throw()
+                { return "No matches found."; }
+    };
+
     /**
      * @brief
      * regular expression class based on boost::regex.
@@ -82,6 +89,9 @@ namespace core {
         inline int lastReturnCode()
             { return _return; }
 
+        inline void setNoMatchThrows(bool t)
+            { _noMatchThrows = t; }
+
     protected :
 
         void _computeNamedMatches();
@@ -89,6 +99,7 @@ namespace core {
         boost::xpressive::sregex _origin;
 
         int     _return;
+        bool    _noMatchThrows;
 
         indexed_matches _imatches;
         named_matches   _nmatches;

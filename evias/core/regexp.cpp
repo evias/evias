@@ -12,18 +12,21 @@ namespace core {
     using boost::xpressive::regex_match;
 
     regex::regex(string p)
+        : _noMatchThrows(false)
     {
         setPattern(p);
     }
     regex::regex(string p, string v)
-        : _value(v)
+        : _value(v),
+          _noMatchThrows(false)
     {
         setPattern(p);
         parse();
     }
     regex::regex(const regex& rgt)
         : _pattern(rgt._pattern),
-          _value(rgt._value)
+          _value(rgt._value),
+          _noMatchThrows(false)
     {
         setPattern(rgt._pattern);
     }
@@ -40,7 +43,17 @@ namespace core {
 
         smatch matches;
         if (! regex_match(_value, matches, _origin)) {
+            if (_noMatchThrows) {
+                setReturnCode((int) PARSE_FAILED);
+                throw(noMatchException());
+            }
+
             return setReturnCode((int) PARSE_FAILED);
+        }
+
+        if (_noMatchThrows && matches.size() == 0) {
+            setReturnCode((int) PARSE_FAILED);
+            throw(noMatchException());
         }
 
         for (int i = 0, c = matches.size(); i < c; i++) {
