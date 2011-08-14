@@ -47,8 +47,7 @@ namespace regularExpressions {
 
             inline int execute ()
             {
-                if (! (bool) _returnCode)
-                    return _returnCode;
+                assertable<bool>::assertEqual((bool) _returnCode, true);
 
                 string t[2] = {"user_id","user_code"};
                 vector<string> g(t, t+2);
@@ -63,34 +62,20 @@ namespace regularExpressions {
                 // 3rd being "92188", user_code
                 r.parse("eVs92188");
 
-                if (r.lastReturnCode() != PARSE_DONE) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) r.lastReturnCode(), (int) PARSE_DONE);
 
                 evias::core::containers::imatches m = r.getIndexedMatches();
                 evias::core::containers::nmatches n = r.getNamedMatches();
 
                 // test indexed matches
-                if (m[0] != "eVs92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[1] != "eVs") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[2] != "92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertableString<const char*>::assertEqual(m[0].c_str(), "eVs92188");
+                assertableString<const char*>::assertEqual(m[1].c_str(), "eVs");
+                assertableString<const char*>::assertEqual(m[2].c_str(), "92188");
 
                 // test named matches
-                if (n["__auto__entire_match"] != "eVs92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (n["user_id"] != "eVs") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (n["user_code"] != "92188") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertableString<const char*>::assertEqual(n["__auto__entire_match"].c_str(), "eVs92188");
+                assertableString<const char*>::assertEqual(n["user_id"].c_str(), "eVs");
+                assertableString<const char*>::assertEqual(n["user_code"].c_str(), "92188");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

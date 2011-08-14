@@ -54,27 +54,17 @@ namespace configFiles {
 
                 _configObj->parse();
 
-                if (! _configObj->state()) {
-                    _returnMsg = "bad object state after file parse.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertable<bool>::assertEqual(_configObj->state(), true);
 
                 // configuration file for test should have 2 sections
                 // each of which should contain 2 key declarations.
 
-                if (_configObj->getIniSections().size() != 2) {
-                    _returnMsg = "configuration file does not contain 2 section declarations.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertable<int>::assertEqual(_configObj->getIniSections().size(), 2);
 
                 vector<iniSection> sections     = _configObj->getIniSections();
                 vector<iniSection>::iterator it;
-                for (it = sections.begin(); it != sections.end(); it++) {
-                    if ((*it).getPairs().size() != 2) {
-                        _returnMsg = "each section should contain 2 key = value declarations.";
-                        return setReturnCode((int) ERROR_DATA_INPUT);
-                    }
-                }
+                for (it = sections.begin(); it != sections.end(); it++)
+                    assertable<int>::assertEqual((*it).getPairs().size(), 2);
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

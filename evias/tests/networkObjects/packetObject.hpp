@@ -46,8 +46,7 @@ namespace networkObjects {
 
             inline int execute ()
             {
-                if (! (bool) _returnCode)
-                    return _returnCode;
+                assertable<bool>::assertEqual((bool) _returnCode, true);
 
                 string data = "i'm saying hello through a packet.";
                 string header = "EVIAS";
@@ -60,15 +59,8 @@ namespace networkObjects {
                 readTo = _packetObj->readString();
                 readHdr= _packetObj->readHeaderString();
 
-                if (readHdr != header) {
-                    _returnMsg = "packet object returns wrong header. [return: '" + readHdr + "']";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-
-                if (readTo != data) {
-                    _returnMsg = "packet object returns wrong data. [return: '" + readTo + "']";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertableString<const char*>::assertEqual(readHdr.c_str(), header.c_str());
+                assertableString<const char*>::assertEqual(readTo.c_str(), data.c_str());
 
                 // packet correctly built
 

@@ -24,11 +24,7 @@ namespace databaseObjects {
 
             inline void prepare ()
             {
-                if (_options.size() != 4 ) {
-                    _returnMsg = "dbConnection unitary test requires 4 call arguments.";
-                    setReturnCode((int) ERROR_DATA_INPUT);
-                    return ;
-                }
+                assertable<int>::assertEqual(_options.size(), 4);
 
                 vector<string>::iterator it = _options.begin();
                 string dbname = (*it),
@@ -46,14 +42,8 @@ namespace databaseObjects {
             {
                 // execute unit test
 
-                if (_returnCode != (int) RETURN_SUCCESS) {
-                    return _returnCode;
-                }
-
-                if (! _dbAdapter->good()) {
-                    _returnMsg = "database adapter could not be initialized. (adapter error : " + _dbAdapter->lastError() + ")";
-                    return setReturnCode((int) ERROR_ENVIRONMENT);
-                }
+                assertable<int>::assertEqual(_returnCode, (int) RETURN_SUCCESS);
+                assertable<bool>::assertEqual(_dbAdapter->good(), true);
 
                 return _returnCode;
             }
