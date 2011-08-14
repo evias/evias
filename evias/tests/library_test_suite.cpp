@@ -67,6 +67,7 @@ namespace test {
             releaseMemory(_regularExpressions_errorCodes);
             releaseMemory(_regularExpressions_indexedResult);
             releaseMemory(_regularExpressions_namedGroups);
+            releaseMemory(_regularExpressions_furtherGroups);
             releaseMemory(_regularExpressions_boostRegex);
         }
     }
@@ -144,6 +145,7 @@ namespace test {
             addTest(_regularExpressions_indexedResult, testResult(1, "no_message_check"));
             addTest(_regularExpressions_boostRegex, testResult(1, "no_message_check"));
             addTest(_regularExpressions_namedGroups, testResult(1, "no_message_check"));
+            addTest(_regularExpressions_furtherGroups, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -284,6 +286,9 @@ namespace test {
 
         _regularExpressions_namedGroups = new regularExpressions::namedGroups();
         _regularExpressions_namedGroups->setLabel("regex namedGroups class");
+
+        _regularExpressions_furtherGroups = new regularExpressions::furtherGroups();
+        _regularExpressions_furtherGroups->setLabel("regex furtherGroups class");
     }
 
 

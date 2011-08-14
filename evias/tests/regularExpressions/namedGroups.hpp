@@ -64,7 +64,6 @@ namespace regularExpressions {
 
                 assertable<int>::assertEqual((int) r.lastReturnCode(), (int) PARSE_DONE);
 
-                evias::core::containers::imatches m = r.getIndexedMatches();
                 evias::core::containers::nmatches n = r.getNamedMatches();
 
                 // test indexed matches
@@ -72,10 +71,33 @@ namespace regularExpressions {
                 assertableString<const char*>::assertEqual(m[1].c_str(), "eVs");
                 assertableString<const char*>::assertEqual(m[2].c_str(), "92188");
 
+                string t2[3] = {
+                    "user_id",
+                    "login",
+                    "acl_role"
+                };
+                vector<string> g2(t2, t2+3);
+
+                r.setPattern(
+                    "([1-9][0-9]+);" // user_id
+                    "([A-Za-z][A-Za-z0-9_\\-\\.]+);" // login
+                    "(admin|guest);" // acl_role
+                );
+                r.setGroups(g2);
+
+                r.parse("329081988;evias92;admin;");
+
+                if (r.lastReturnCode() != PARSE_DONE) {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
+
+                n = r.getNamedMatches();
+
                 // test named matches
-                assertableString<const char*>::assertEqual(n["__auto__entire_match"].c_str(), "eVs92188");
-                assertableString<const char*>::assertEqual(n["user_id"].c_str(), "eVs");
-                assertableString<const char*>::assertEqual(n["user_code"].c_str(), "92188");
+                assertableString<const char*>::assertEqual(n["__auto__entire_match"].c_str(), "329081988;evias92;admin;");
+                assertableString<const char*>::assertEqual(n["user_id"].c_str(), "329081988");
+                assertableString<const char*>::assertEqual(n["login"].c_str(), "evias92");
+                assertableString<const char*>::assertEqual(n["acl_role"].c_str(), "admin");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

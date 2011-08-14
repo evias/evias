@@ -53,13 +53,21 @@ namespace regularExpressions {
                 assertable<int>::assertEqual((int) empty.lastReturnCode(), (int) DATA_MISS);
 
                 // test SYNTAX_ERROR error code
-                evias::core::regex errExpr("(ABC-");
-                assertable<int>::assertEqual((int) errExpr.lastReturnCode(), (int) SYNTAX_ERROR);
+                try {
+                    evias::core::regex errExpr("(ABC-");
+                    assertable<int>::assertEqual((int) errExpr.lastReturnCode(), (int) SYNTAX_ERROR);
+                }
+                catch (const evias::core::syntaxError &e) {
+                    // OK
+                }
+                catch (...) {
+                    return setReturnCode((int) ERROR_DEVELOPMENT);
+                }
 
                 // test SYNTAX_OK error code
                 evias::core::regex easy("[A-Z]{2}[0-9]+");
                 assertable<int>::assertEqual((int) easy.lastReturnCode(), (int) SYNTAX_OK);
-                
+
                 // test PARSE_DONE error code
                 easy.parse("AB003");
                 assertable<int>::assertEqual((int) easy.lastReturnCode(), (int) PARSE_DONE);
