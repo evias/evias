@@ -22,6 +22,7 @@ namespace test {
     using namespace std;
 
     using evias::core::assertable;
+    using evias::core::assertableString;
 
     typedef enum {
         RETURN_SUCCESS      = 1,
