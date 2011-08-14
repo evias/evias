@@ -58,8 +58,7 @@ namespace networkObjects {
 
             inline int execute ()
             {
-                if (! (bool) _returnCode)
-                    return _returnCode;
+                assertable<bool>::assertEqual((bool) _returnCode, true);
 
                 _client->start(
                     (char*)(_host.c_str()), _port,
@@ -69,9 +68,7 @@ namespace networkObjects {
                     (char*)(_pass.c_str())
                 );
 
-                if (! _client->isConnected()) {
-                    return setReturnCode((int) ERROR_ENVIRONMENT);
-                }
+                assertable<bool>::assertEqual(_client->isConnected(), true);
 
                 // catch until endofmotd (connected status fulfilled)
                 _client->catchIt(Irc::MSG_ENDMOTD);
@@ -83,9 +80,7 @@ namespace networkObjects {
                 _client->channelJoin((char*) "#gregchan");
                 _client->catchIt(codes);
 
-                if (_client->getLastTreatedCommand() != Irc::MSG_ENDLIST) {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_ENDLIST.c_str());
 
                 // Channel PART
                 codes = string(Irc::MSG_CHANPART).append("|")
@@ -96,17 +91,13 @@ namespace networkObjects {
                 _client->channelPart((char*) "#gregchan");
                 _client->catchIt(codes);
 
-                if (_client->getLastTreatedCommand() != Irc::MSG_CHANPART) {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_CHANPART.c_str());
 
                 // test "notonchan" channel part
                 _client->channelPart((char*) "#whocares");
                 _client->catchIt(codes);
 
-                if (_client->getLastTreatedCommand() != Irc::MSG_NOTONCHAN) {
-                    return setReturnCode((int) ERROR_ENVIRONMENT);
-                }
+                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_NOTONCHAN.c_str());
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

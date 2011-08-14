@@ -54,10 +54,7 @@ namespace jsonObjects {
                 // set object data
                 objectGreg->setEntries (entriesForObject);
 
-                if (objectGreg->getEntries().size() != 3) {
-                    _returnMsg = "code defines 3 entries, object returns other entries count.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual(objectGreg->getEntries().size(), 3);
 
                 // free
                 delete objectGreg;

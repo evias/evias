@@ -55,10 +55,7 @@ namespace configFiles {
 
                 _configObj->parse();
 
-                if (! _configObj->state()) {
-                    _returnMsg = "bad object state after file parse.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertable<bool>::assertEqual(_configObj->state(), true);
 
                 // the configuration file has two sections (workSection & workSection2) and
                 // one commented section. The first has 3 entries, the second has no.
@@ -68,20 +65,9 @@ namespace configFiles {
                 iniSection sectionTwo = _configObj->getSection("workSection2");
                 iniSection sectionOut = _configObj->getSection("commentedSection");
 
-                if (sectionOne.getPairs().size() != 3) {
-                    _returnMsg = "configuration file for configFiles::commentedFile should define 3 keys for section 'workSection'.";
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
-
-                if (sectionTwo.getPairs().size() != 0) {
-                    _returnMsg = "configuration file for configFiles::commentedFile should define 2 commented lines for section 'workSection2'.";
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
-
-                if (sectionOut.getLabel() != "invalid") {
-                    _returnMsg = "the label of the commented section should be set to invalid, as getSection() is failing.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual(sectionOne.getPairs().size(), 3);
+                assertable<int>::assertEqual(sectionTwo.getPairs().size(), 0);
+                assertableString<const char*>::assertEqual(sectionTwo.getLabel().c_str(), "workSection2");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

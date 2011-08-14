@@ -50,33 +50,23 @@ namespace regularExpressions {
                 // test DATA_MISS error code
                 evias::core::regex empty("ABC");
                 empty.parse();
-                if (empty.lastReturnCode() != DATA_MISS) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) empty.lastReturnCode(), (int) DATA_MISS);
 
                 // test SYNTAX_ERROR error code
                 evias::core::regex errExpr("(ABC-");
-                if (errExpr.lastReturnCode() != SYNTAX_ERROR) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) errExpr.lastReturnCode(), (int) SYNTAX_ERROR);
 
                 // test SYNTAX_OK error code
                 evias::core::regex easy("[A-Z]{2}[0-9]+");
-                if (easy.lastReturnCode() != SYNTAX_OK) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) easy.lastReturnCode(), (int) SYNTAX_OK);
                 
                 // test PARSE_DONE error code
                 easy.parse("AB003");
-                if (easy.lastReturnCode() != PARSE_DONE) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) easy.lastReturnCode(), (int) PARSE_DONE);
 
                 // test PARSE_FAILED error code
                 easy.parse("12AZ");
-                if (easy.lastReturnCode() != PARSE_FAILED) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual((int) easy.lastReturnCode(), (int) PARSE_FAILED);
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

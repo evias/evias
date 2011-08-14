@@ -61,15 +61,8 @@ namespace jsonObjects {
                 string arrayJson = "\"my_array\":[\"key1\",\"array content\",\"should work\"]";
                 jsonArrayEntry* staticArray1 = jsonArrayEntry::fromJSON (arrayJson);
 
-                if (staticArray1->getData().size() != 3) {
-                    _returnMsg = "code JSON defines 3 entries for array, object parsed other entries count.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-
-                if (object->getEntries().size() != 5) {
-                    _returnMsg = "code defines 5 entries for object, object returned other entries count.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual(staticArray1->getData().size(), 3);
+                assertable<int>::assertEqual(object->getEntries().size(), 5);
 
                 // void memory
                 entries.clear ();

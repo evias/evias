@@ -55,10 +55,7 @@ namespace configFiles {
 
                 _configObj->parse();
 
-                if (! _configObj->state()) {
-                    _returnMsg = "bad object state after file parse.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertable<bool>::assertEqual(_configObj->state(), true);
 
                 // configuration file has a section named 'updateSection'
                 // containing a key name "updateKey" of which the value
@@ -68,10 +65,10 @@ namespace configFiles {
 
                 _configObj->changeValue("updateSection", "updateKey", successVal);
 
-                if (_configObj->getValue("updateSection", "updateKey") != successVal) {
-                    _returnMsg = "value of updateSection.updateKey could not be changed.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertableString<const char*>::assertEqual(
+                    _configObj->getValue("updateSection", "updateKey").c_str(),
+                    successVal.c_str()
+                );
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

@@ -50,43 +50,28 @@ namespace regularExpressions {
 
                 // test parse reliability
                 evias::core::regex r("^EVS([1-9]{2})+$");
-                if (r.parse("EVS00") != PARSE_FAILED) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                if (r.parse("EVS124567") != PARSE_DONE) {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+
+                assertable<int>::assertEqual(r.parse("EVS00"), (int) PARSE_FAILED);
+                assertable<int>::assertEqual(r.parse("EVS124567"), (int) PARSE_DONE);
                 
                 r.setPattern("^(EVS)([1-9]{4})");
                 r.parse("EVS4565");
 
                 evias::core::containers::imatches m = r.getIndexedMatches();
-                if (m[0] != "EVS4565") {
-                    return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
-                }
-                else if (m[1] != "EVS") {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
-                else if (m[2] != "4565") {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+
+                assertableString<const char*>::assertEqual(m[0].c_str(), "EVS4565");
+                assertableString<const char*>::assertEqual(m[1].c_str(), "EVS");
+                assertableString<const char*>::assertEqual(m[2].c_str(), "4565");
                 
                 r.setPattern("([A-Za-z0-9]{4})([4-8]{2})([GYCA]{1})");
                 r.parse("EVS188G");
 
                 m = r.getIndexedMatches();
-                if (m[0] != "EVS188G") {
-                    return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
-                }
-                else if (m[1] != "EVS1") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[2] != "88") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-                else if (m[3] != "G") {
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                
+                assertableString<const char*>::assertEqual(m[0].c_str(), "EVS188G");
+                assertableString<const char*>::assertEqual(m[1].c_str(), "EVS1");
+                assertableString<const char*>::assertEqual(m[2].c_str(), "88");
+                assertableString<const char*>::assertEqual(m[3].c_str(), "G");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

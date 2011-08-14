@@ -59,15 +59,8 @@ namespace jsonObjects {
 
                 jsonObjectEntry* fromJSONGreg = jsonObjectEntry::fromJSON (jsonObjectGreg);
 
-                if (fromJSONGreg->getEntries().size() != 3) {
-                    _returnMsg = "the object created from JSON should have three entries.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
-
-                if (objectGreg->getEntries().size() != 3) {
-                    _returnMsg = "the object created from C++ classes is not containing 3 entries.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertable<int>::assertEqual(fromJSONGreg->getEntries().size(), 3);
+                assertable<int>::assertEqual(objectGreg->getEntries().size(), 3);
 
                 // free
                 delete fromJSONGreg;

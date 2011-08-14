@@ -51,16 +51,14 @@ namespace regularExpressions {
                 // test easy match
                 boost::regex expr("^EVS([A-Za-z0-9_]{3})+$");
                 boost::cmatch what;
-                if (! boost::regex_match("EVS0056_3", what, expr)) {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+                
+                assertable<bool>::assertEqual(boost::regex_match("EVS0056_3", what, expr), true);
 
                 // test match with subexpressions
                 expr.assign(boost::regex("^(?<group_name>[ABC]{2})(?<user_id>[0-9]+)$"));
                 boost::cmatch matches;
-                if (! boost::regex_match("AB092100", matches, expr)) {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+
+                assertable<bool>::assertEqual(boost::regex_match("AB092100", matches, expr), true);
 
                 // iterate matches and test values
                 for (int i = 0; i < matches.size(); i++) {
@@ -68,16 +66,13 @@ namespace regularExpressions {
 
                     switch (i) {
                         case 0:
-                            if (match != "AB092100")
-                                return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
+                            assertableString<const char*>::assertEqual(match.c_str(), "AB092100");
                             break;
                         case 1:
-                            if (match != "AB")
-                                return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
+                            assertableString<const char*>::assertEqual(match.c_str(), "AB");
                             break;
                         case 2:
-                            if (match != "092100")
-                                return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
+                            assertableString<const char*>::assertEqual(match.c_str(), "092100");
                             break;
                         default :
                             return setReturnCode((int) ERROR_EXTERNAL_UPDATE);
@@ -85,9 +80,8 @@ namespace regularExpressions {
                 }
 
                 boost::smatch m;
-                if (! boost::regex_match(string("CC092100"), m, expr)) {
-                    return setReturnCode((int) ERROR_TEST_DATA);
-                }
+
+                assertable<bool>::assertEqual(boost::regex_match(string("CC092100"), m, expr), true);
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

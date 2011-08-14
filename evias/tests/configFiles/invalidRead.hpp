@@ -55,10 +55,7 @@ namespace configFiles {
 
                 _configObj->parse();
 
-                if (! _configObj->state()) {
-                    _returnMsg = "bad object state after file parse.";
-                    return setReturnCode((int) ERROR_DATA_INPUT);
-                }
+                assertable<bool>::assertEqual(_configObj->state(), true);
 
                 // configuration file has two sections, one called Names, the other one
                 // called Addresses. first get a valid entry and test it's value.
@@ -71,10 +68,8 @@ namespace configFiles {
                 validKeys.push_back("lastname");
 
                 map<string,string> readData = _configObj->getValues("Names", validKeys);
-                if (readData.size() != 4) {
-                    _returnMsg = "code defines 4 keys to be retrieved, object returns other count.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+
+                assertable<int>::assertEqual(readData.size(), 4);
 
                 vector<string> oneInvalid;
                 oneInvalid.push_back("i_am_not_in_the_configuration_file");
@@ -83,20 +78,12 @@ namespace configFiles {
                 map<string,string> multiGetVal  = _configObj->getValues("Addresses", oneInvalid);
 
                 string expectedReturn = "";
-                if (singleGetVal != expectedReturn) {
-                    _returnMsg = "single getValue does not return correctly for invalid keys.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
 
-                if (multiGetVal.find("i_am_not_in_the_configuration_file") == multiGetVal.end()) {
-                    _returnMsg = "an invalid key should still be returned, though with an empty value.";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                typedef map<string,string>::iterator __findType;
 
-                if (multiGetVal["i_am_not_in_the_configuration_file"] != "") {
-                    _returnMsg = "field value set for invalid key is not correct. (should be empty)";
-                    return setReturnCode((int) ERROR_DEVELOPMENT);
-                }
+                assertableString<const char*>::assertEqual(singleGetVal.c_str(), expectedReturn.c_str());
+                assertable<__findType>::assertNotEqual(multiGetVal.find("i_am_not_in_the_configuration_file"), multiGetVal.end());
+                assertableString<const char*>::assertEqual(multiGetVal["i_am_not_in_the_configuration_file"].c_str(), "");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }
