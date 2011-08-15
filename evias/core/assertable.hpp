@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+#include "functional.hpp"
+
 namespace evias {
 
 namespace core {
@@ -23,25 +25,18 @@ namespace core {
     template <typename __valueType>
     class assertable
     {
+        typedef bool (*__callback) (__valueType,__valueType);
+
     public :
-        
+        assertable() {};
+        virtual ~assertable() {};
+
         static void assertEqual(__valueType, __valueType);
+        static void assertEqual(__valueType, __valueType, __callback);
         static void assertNotEqual(__valueType, __valueType);
 
         static void assertBiggerThan(__valueType, __valueType);
         static void assertSmallerThan(__valueType, __valueType);
-    };
-
-    template <typename __strType>
-    class assertableString
-    {
-    public :
-        
-        static void assertEqual(__strType, __strType);
-        static void assertNotEqual(__strType, __strType);
-
-        static void assertBiggerThan(__strType, __strType);
-        static void assertSmallerThan(__strType, __strType);
     };
 
     // API IMPLEMENTATION
@@ -50,6 +45,20 @@ namespace core {
     void assertable<__valueType>::assertEqual(__valueType v1, __valueType v2)
     {
         if (v1 == v2) return ;
+
+        throw (wrongAssert());
+    }
+
+    template <typename __valueType>
+    void assertable<__valueType>::assertEqual(__valueType v1, __valueType v2, bool (*callback) (__valueType,__valueType))
+    {
+        typedef bool (*callback_t) (__valueType, __valueType);
+        typedef evias::core::functor<bool, callback_t, __valueType> callback_functor_t;
+
+        callback_functor_t* handler = new functor<bool, callback_t, __valueType>(callback);
+
+        // execute callback method through functor
+        if (handler->execute(v1, v2)) { delete handler; return ; }
 
         throw (wrongAssert());
     }
@@ -74,40 +83,6 @@ namespace core {
     void assertable<__valueType>::assertSmallerThan(__valueType v1, __valueType v2)
     {
         if (v1 < v2) return ;
-
-        throw (wrongAssert());
-    }
-
-    // class assertableString
-
-    template <typename __strType>
-    void assertableString<__strType>::assertEqual(__strType v1, __strType v2)
-    {
-        if (strcmp(v1, v2) == 0) return ;
-
-        throw (wrongAssert());
-    }
-
-    template <typename __strType>
-    void assertableString<__strType>::assertNotEqual(__strType v1, __strType v2)
-    {
-        if (strcmp(v1, v2) != 0) return ;
-
-        throw (wrongAssert());
-    }
-
-    template <typename __strType>
-    void assertableString<__strType>::assertBiggerThan(__strType v1, __strType v2)
-    {
-        if (strcmp(v1, v2) == 1) return ;
-
-        throw (wrongAssert());
-    }
-
-    template <typename __strType>
-    void assertableString<__strType>::assertSmallerThan(__strType v1, __strType v2)
-    {
-        if (strcmp(v1, v2) == -1) return ;
 
         throw (wrongAssert());
     }

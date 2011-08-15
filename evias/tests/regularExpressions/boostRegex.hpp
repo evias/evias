@@ -66,13 +66,13 @@ namespace regularExpressions {
 
                     switch (i) {
                         case 0:
-                            assertableString<const char*>::assertEqual(match.c_str(), "AB092100");
+                            assertable<string>::assertEqual(match, "AB092100");
                             break;
                         case 1:
-                            assertableString<const char*>::assertEqual(match.c_str(), "AB");
+                            assertable<string>::assertEqual(match, "AB");
                             break;
                         case 2:
-                            assertableString<const char*>::assertEqual(match.c_str(), "092100");
+                            assertable<string>::assertEqual(match, "092100");
                             break;
                         default :
                             return setReturnCode((int) ERROR_EXTERNAL_UPDATE);

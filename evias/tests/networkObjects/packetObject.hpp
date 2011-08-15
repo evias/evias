@@ -59,8 +59,8 @@ namespace networkObjects {
                 readTo = _packetObj->readString();
                 readHdr= _packetObj->readHeaderString();
 
-                assertableString<const char*>::assertEqual(readHdr.c_str(), header.c_str());
-                assertableString<const char*>::assertEqual(readTo.c_str(), data.c_str());
+                assertable<string>::assertEqual(readHdr, header);
+                assertable<string>::assertEqual(readTo, data);
 
                 // packet correctly built
 

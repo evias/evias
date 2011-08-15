@@ -65,9 +65,9 @@ namespace configFiles {
 
                 _configObj->changeValue("updateSection", "updateKey", successVal);
 
-                assertableString<const char*>::assertEqual(
-                    _configObj->getValue("updateSection", "updateKey").c_str(),
-                    successVal.c_str()
+                assertable<string>::assertEqual(
+                    _configObj->getValue("updateSection", "updateKey"),
+                    successVal
                 );
 
                 return setReturnCode((int) RETURN_SUCCESS);

@@ -67,7 +67,7 @@ namespace configFiles {
 
                 assertable<int>::assertEqual(sectionOne.getPairs().size(), 3);
                 assertable<int>::assertEqual(sectionTwo.getPairs().size(), 0);
-                assertableString<const char*>::assertEqual(sectionTwo.getLabel().c_str(), "workSection2");
+                assertable<string>::assertEqual(sectionTwo.getLabel(), "workSection2");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

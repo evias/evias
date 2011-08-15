@@ -59,19 +59,19 @@ namespace regularExpressions {
 
                 evias::core::containers::imatches m = r.getIndexedMatches();
 
-                assertableString<const char*>::assertEqual(m[0].c_str(), "EVS4565");
-                assertableString<const char*>::assertEqual(m[1].c_str(), "EVS");
-                assertableString<const char*>::assertEqual(m[2].c_str(), "4565");
+                assertable<string>::assertEqual(m[0], "EVS4565");
+                assertable<string>::assertEqual(m[1], "EVS");
+                assertable<string>::assertEqual(m[2], "4565");
                 
                 r.setPattern("([A-Za-z0-9]{4})([4-8]{2})([GYCA]{1})");
                 r.parse("EVS188G");
 
                 m = r.getIndexedMatches();
                 
-                assertableString<const char*>::assertEqual(m[0].c_str(), "EVS188G");
-                assertableString<const char*>::assertEqual(m[1].c_str(), "EVS1");
-                assertableString<const char*>::assertEqual(m[2].c_str(), "88");
-                assertableString<const char*>::assertEqual(m[3].c_str(), "G");
+                assertable<string>::assertEqual(m[0], "EVS188G");
+                assertable<string>::assertEqual(m[1], "EVS1");
+                assertable<string>::assertEqual(m[2], "88");
+                assertable<string>::assertEqual(m[3], "G");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }
