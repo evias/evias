@@ -80,7 +80,7 @@ namespace networkObjects {
                 _client->channelJoin((char*) "#gregchan");
                 _client->catchIt(codes);
 
-                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_ENDLIST.c_str());
+                assertable<string>::assertEqual(_client->getLastTreatedCommand(), Irc::MSG_ENDLIST);
 
                 // Channel PART
                 codes = string(Irc::MSG_CHANPART).append("|")
@@ -91,13 +91,13 @@ namespace networkObjects {
                 _client->channelPart((char*) "#gregchan");
                 _client->catchIt(codes);
 
-                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_CHANPART.c_str());
+                assertable<string>::assertEqual(_client->getLastTreatedCommand(), Irc::MSG_CHANPART);
 
                 // test "notonchan" channel part
                 _client->channelPart((char*) "#whocares");
                 _client->catchIt(codes);
 
-                assertableString<const char*>::assertEqual(_client->getLastTreatedCommand().c_str(), Irc::MSG_NOTONCHAN.c_str());
+                assertable<string>::assertEqual(_client->getLastTreatedCommand(), Irc::MSG_NOTONCHAN);
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

@@ -81,9 +81,9 @@ namespace configFiles {
 
                 typedef map<string,string>::iterator __findType;
 
-                assertableString<const char*>::assertEqual(singleGetVal.c_str(), expectedReturn.c_str());
+                assertable<string>::assertEqual(singleGetVal, expectedReturn);
                 assertable<__findType>::assertNotEqual(multiGetVal.find("i_am_not_in_the_configuration_file"), multiGetVal.end());
-                assertableString<const char*>::assertEqual(multiGetVal["i_am_not_in_the_configuration_file"].c_str(), "");
+                assertable<string>::assertEqual(multiGetVal["i_am_not_in_the_configuration_file"], string(""));
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

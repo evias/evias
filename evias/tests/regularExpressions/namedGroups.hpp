@@ -67,9 +67,9 @@ namespace regularExpressions {
                 evias::core::containers::nmatches n = r.getNamedMatches();
 
                 // test indexed matches
-                assertableString<const char*>::assertEqual(m[0].c_str(), "eVs92188");
-                assertableString<const char*>::assertEqual(m[1].c_str(), "eVs");
-                assertableString<const char*>::assertEqual(m[2].c_str(), "92188");
+                assertable<string>::assertEqual(n["__auto__entire_match"], "eVs92188");
+                assertable<string>::assertEqual(n["user_id"], "eVs");
+                assertable<string>::assertEqual(n["user_code"], "92188");
 
                 string t2[3] = {
                     "user_id",
@@ -94,10 +94,10 @@ namespace regularExpressions {
                 n = r.getNamedMatches();
 
                 // test named matches
-                assertableString<const char*>::assertEqual(n["__auto__entire_match"].c_str(), "329081988;evias92;admin;");
-                assertableString<const char*>::assertEqual(n["user_id"].c_str(), "329081988");
-                assertableString<const char*>::assertEqual(n["login"].c_str(), "evias92");
-                assertableString<const char*>::assertEqual(n["acl_role"].c_str(), "admin");
+                assertable<string>::assertEqual(n["__auto__entire_match"], "329081988;evias92;admin;");
+                assertable<string>::assertEqual(n["user_id"], "329081988");
+                assertable<string>::assertEqual(n["login"], "evias92");
+                assertable<string>::assertEqual(n["acl_role"], "admin");
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }
