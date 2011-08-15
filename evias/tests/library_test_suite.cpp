@@ -21,6 +21,7 @@ namespace test {
         _initTestsDatabase();
         _initTestsNetwork();
         _initTestsRegExp();
+        _initTestsFunctional();
     }
 
     eviasTestSuite::~eviasTestSuite()
@@ -69,6 +70,11 @@ namespace test {
             releaseMemory(_regularExpressions_namedGroups);
             releaseMemory(_regularExpressions_furtherGroups);
             releaseMemory(_regularExpressions_boostRegex);
+        }
+
+        if (_testFunctional) {
+            releaseMemory(_functional_functorTest);
+            releaseMemory(_functional_moreFunctor);
         }
     }
 
@@ -150,6 +156,14 @@ namespace test {
         return this;
     }
 
+    eviasTestSuite* const eviasTestSuite::setTestFunctional(bool test)
+    {
+        if ((_testFunctional = test)) {
+            addTest(_functional_functorTest, testResult(1, "no_message_check"));
+            addTest(_functional_moreFunctor, testResult(1, "no_message_check"));
+        }
+        return this;
+    }
 
     void eviasTestSuite::_initTestsConfig()
     {
@@ -289,6 +303,15 @@ namespace test {
 
         _regularExpressions_furtherGroups = new regularExpressions::furtherGroups();
         _regularExpressions_furtherGroups->setLabel("regex furtherGroups class");
+    }
+
+    void eviasTestSuite::_initTestsFunctional()
+    {
+        _functional_functorTest = new functional::functorTest();
+        _functional_functorTest->setLabel("functional objects functorTest");
+
+        _functional_moreFunctor = new functional::moreFunctor();
+        _functional_moreFunctor->setLabel("functional objects moreFunctor");
     }
 
 

@@ -34,6 +34,8 @@
 #include "regularExpressions/namedGroups.hpp"
 #include "regularExpressions/furtherGroups.hpp"
 #include "regularExpressions/boostRegex.hpp"
+#include "functional/functorTest.hpp"
+#include "functional/moreFunctor.hpp"
 
 namespace evias {
 
@@ -55,6 +57,7 @@ namespace test {
         eviasTestSuite* const setTestDatabase(bool);
         eviasTestSuite* const setTestNetwork(bool);
         eviasTestSuite* const setTestRegExp(bool);
+        eviasTestSuite* const setTestFunctional(bool);
 
     protected :
 
@@ -65,6 +68,7 @@ namespace test {
         void _initTestsDatabase();
         void _initTestsNetwork();
         void _initTestsRegExp();
+        void _initTestsFunctional();
 
     private :
 
@@ -78,6 +82,7 @@ namespace test {
         bool _testDatabase;
         bool _testNetwork;
         bool _testRegExp;
+        bool _testFunctional;
 
         configFiles::objectParse*   _configFiles_objectParse;
         configFiles::objectWrite*   _configFiles_objectWrite;
@@ -112,6 +117,8 @@ namespace test {
         regularExpressions::namedGroups*    _regularExpressions_namedGroups;
         regularExpressions::furtherGroups*  _regularExpressions_furtherGroups;
 
+        functional::functorTest*        _functional_functorTest;
+        functional::moreFunctor*        _functional_moreFunctor;
     };
 
 }; // test
