@@ -28,8 +28,8 @@ int main (int argc, char* args[])
 
     string project = "eVias C++ library unitary test suite";
     string usage = " \
-        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regex] \
-                              [--only config,json,sqlobjects,views,dbobjects,network,regex]  \
+        ./suite_execution.exe [--skip config,json,sqlobjects,views,dbobjects,network,regex,functional] \
+                              [--only config,json,sqlobjects,views,dbobjects,network,regex,functional]  \
                               [--verbosity quiet|normal|verbose] \
     ";
     consoleParser* suiteCallArgs = new consoleParser(project, usage, argc, args);
@@ -51,6 +51,7 @@ int main (int argc, char* args[])
     bool testDbObjects   = true;
     bool testNetwork     = true;
     bool testRegExp      = true;
+    bool testFunctional  = true;
 
     bool hasVerb = (callArgs.find("--verbosity") != callArgs.end());
     bool hasOnly = (callArgs.find("--only") != callArgs.end());
@@ -104,6 +105,7 @@ int main (int argc, char* args[])
         if (in_vector("dbobjects", optionKeys))  testDbObjects    = ! initTest;
         if (in_vector("network", optionKeys))    testNetwork      = ! initTest;
         if (in_vector("regex", optionKeys))      testRegExp       = ! initTest;
+        if (in_vector("functional", optionKeys)) testFunctional   = ! initTest;
     }
 
     // configure the test suite
@@ -117,7 +119,8 @@ int main (int argc, char* args[])
                 ->setTestViews(testViews)
                 ->setTestDatabase(testDbObjects)
                 ->setTestNetwork(testNetwork)
-                ->setTestRegExp(testRegExp);
+                ->setTestRegExp(testRegExp)
+                ->setTestFunctional(testFunctional);
 
     // execute suite
     librarySuite->bootstrap(argc, args);
