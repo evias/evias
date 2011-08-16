@@ -78,58 +78,44 @@ namespace functional {
                 // remains pretty simple as we return a bool and take 2 string
                 typedef bool (*__function) (const char*,const char*);
 
-                // initialize functor class saying we return bool,
-                // we want to execute a __function (see typedef above),
-                // and we are passing string values.
-                evias::core::functor<bool, __function, const char*> *callbackHandler = new evias::core::functor<bool, __function, const char*>();
+                // define callbacks
+                evias::core::callback<bool, const char*, __function>* cbEquals  = new callback<bool, const char*, __function>(&cb_stringEquals);
+                evias::core::callback<bool, const char*, __function>* cbBigger  = new callback<bool, const char*, __function>(&cb_stringBigger);
+                evias::core::callback<bool, const char*, __function>* cbSmaller = new callback<bool, const char*, __function>(&cb_stringSmaller);
 
                 // we are going to execute each function 2 times
                 // - cb_stringEquals once TRUE, once FALSE
                 // - cb_stringBigger once TRUE, once FALSE
                 // - cb_stringSmaller once TRUE, once FALSE
-                __function callback = NULL;
 
-                // cb_stringEquals
-                callback = &cb_stringEquals;
-                callbackHandler->setCallback(callback);
-                assertable<bool>::assertEqual(callbackHandler->execute("hello", "hello"), true);
-                assertable<bool>::assertEqual(callbackHandler->execute("hello", "hellO"), false);
-
-                callback = NULL;
-
-                // cb_stringBigger
-                callback = &cb_stringBigger;
-                callbackHandler->setCallback(callback);
-                assertable<bool>::assertEqual(callbackHandler->execute("hEllo", "hello"), true);
-                assertable<bool>::assertEqual(callbackHandler->execute("hello", "hEllo"), false);
+                assertable<bool>::assertEqual(cbEquals->execute("hello", "hello"), true);
+                assertable<bool>::assertEqual(cbEquals->execute("hello", "hellO"), false);
                 
-                callback = NULL;
-
-                // cb_stringSmaller
-                callback = &cb_stringSmaller;
-                callbackHandler->setCallback(callback);
-                assertable<bool>::assertEqual(callbackHandler->execute("hello", "hEllo"), true);
-                assertable<bool>::assertEqual(callbackHandler->execute("hEllo", "hello"), false);
-
-                delete callbackHandler;
+                assertable<bool>::assertEqual(cbBigger->execute("hEllo", "hello"), true);
+                assertable<bool>::assertEqual(cbBigger->execute("hello", "hEllo"), false);
+                
+                assertable<bool>::assertEqual(cbSmaller->execute("hello", "hEllo"), true);
+                assertable<bool>::assertEqual(cbSmaller->execute("hEllo", "hello"), false);
 
                 // define new callback function type
                 typedef int (*__function2) (int,int);
 
                 // initialize functor
-                evias::core::functor<int, __function2, int> *handler2 = new evias::core::functor<int, __function2, int>();
-                handler2->setCallback(&cb_increaseStaticCounterAndAddition);
+                evias::core::callback<int, int, __function2>* cbStaticCnt = new callback<int, int, __function2>(&cb_increaseStaticCounterAndAddition);
 
                 // see if the static counter increases correctly (+1 always)
-                assertable<int>::assertEqual(handler2->execute(2,5), 8);
-                assertable<int>::assertEqual(handler2->execute(3,6), 11);
-                assertable<int>::assertEqual(handler2->execute(1,1), 5);
+                assertable<int>::assertEqual(cbStaticCnt->execute(2,5), 8);
+                assertable<int>::assertEqual(cbStaticCnt->execute(3,6), 11);
+                assertable<int>::assertEqual(cbStaticCnt->execute(1,1), 5);
 
                 // final test, the counter should have been increased 3 times (3 calls)
                 // and will be increased before the addition of 0+0, so we got to need 4 ;)
-                assertable<int>::assertEqual(handler2->execute(0,0), 4);
+                assertable<int>::assertEqual(cbStaticCnt->execute(0,0), 4);
 
-                delete handler2;
+                delete cbEquals;
+                delete cbBigger;
+                delete cbSmaller;
+                delete cbStaticCnt;
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }

@@ -112,52 +112,49 @@ namespace functional {
 
                 // define callback function type and functor type
                 typedef my_return_type_t (*callback1_t) (int, int);
-                typedef evias::core::functor<my_return_type_t, callback1_t, int> callback1_functor_t;
+                typedef evias::core::callback<my_return_type_t, int, callback1_t> callback1_class_t;
 
-                callback1_t cb1 = &cb_increaseCounterAndReturnBrief;
-                callback1_functor_t* handler1 = new functor<my_return_type_t, callback1_t, int>(cb1);
+                callback1_class_t* cbIncreaseCnt = new callback1_class_t(&cb_increaseCounterAndReturnBrief);
 
                 my_return_type_t test;
 
                 // first execution > counter=1, (1==1)=true
-                test = handler1->execute(1, 1);
+                test = cbIncreaseCnt->execute(1, 1);
                 assertable<bool>::assertEqual(test.isEqualValues, true);
                 assertable<int>::assertEqual(test.counter, 1);
 
                 // second execution > counter=2, (3==4)=false
-                test = handler1->execute(3, 4);
+                test = cbIncreaseCnt->execute(3, 4);
                 assertable<bool>::assertEqual(test.isEqualValues, false);
                 assertable<int>::assertEqual(test.counter, 2);
 
                 // third execution > counter=3, (-1==-1)=true
-                test = handler1->execute(-1, -1);
+                test = cbIncreaseCnt->execute(-1, -1);
                 assertable<bool>::assertEqual(test.isEqualValues, true);
                 assertable<int>::assertEqual(test.counter, 3);
 
-                delete handler1;
+                delete cbIncreaseCnt;
 
                 // define next callback function type and functor type
                 typedef my_user_type_t (*callback2_t) (string, string);
-                typedef evias::core::functor<my_user_type_t, callback2_t, string> callback2_functor_t;
+                typedef evias::core::callback<my_user_type_t, string, callback2_t> callback2_class_t;
 
-                callback2_t cb2 = &cb_createUserIncreasesID;
-                callback2_functor_t* handler2 = new functor<my_user_type_t, callback2_t, string>(cb2);
+                callback2_class_t* cbCreateUser = new callback2_class_t(&cb_createUserIncreasesID);
 
                 // try execution with custom return type.
-                my_user_type_t testUser = handler2->execute("greg", "my_password");
+                my_user_type_t testUser = cbCreateUser->execute("greg", "my_password");
                 assertable<int>::assertEqual(testUser.id, 1);
                 assertable<string>::assertEqual(testUser.login, "greg");
                 assertable<string>::assertEqual(testUser.pass, "my_password");
 
-                delete handler2;
+                delete cbCreateUser;
 
                 // define one more callback / functor types pair and
                 // one assertion callback type
                 typedef string (*callback3_t) (my_user_type_t, my_user_type_t);
-                typedef evias::core::functor<string, callback3_t, my_user_type_t> callback3_functor_t;
+                typedef evias::core::callback<string, my_user_type_t, callback3_t> callback3_class_t;
 
-                callback3_t cb3 = &cb_getMergedUsersToCSV;
-                callback3_functor_t* handler3 = new functor<string,callback3_t,my_user_type_t>(cb3);
+                callback3_class_t* cbMerge = new callback3_class_t(&cb_getMergedUsersToCSV);
 
                 // test data
                 my_user_type_t u1,u2;
@@ -170,7 +167,7 @@ namespace functional {
 
                 // use callback handler to execute the merge function
                 // the result will then be tested using an assertion
-                string resultCSV = handler3->execute(u1, u2);
+                string resultCSV = cbMerge->execute(u1, u2);
 
                 // configure assertion callback method (operator to use)
                 // (@see bool cb_stringEquals(string,string) defined above)
@@ -182,7 +179,7 @@ namespace functional {
                 // for assertions is then possible)
                 assertable<string>::assertEqual(resultCSV, "3;greg-ory;debut-fin;", cb4);
 
-                delete handler3;
+                delete cbMerge;
 
                 return setReturnCode((int) RETURN_SUCCESS);
             }
