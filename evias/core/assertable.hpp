@@ -50,12 +50,12 @@ namespace core {
     }
 
     template <typename __valueType>
-    void assertable<__valueType>::assertEqual(__valueType v1, __valueType v2, bool (*callback) (__valueType,__valueType))
+    void assertable<__valueType>::assertEqual(__valueType v1, __valueType v2, bool (*callback_fptr) (__valueType,__valueType))
     {
         typedef bool (*callback_t) (__valueType, __valueType);
-        typedef evias::core::functor<bool, callback_t, __valueType> callback_functor_t;
+        typedef evias::core::callback<bool, __valueType, callback_t> callback_c;
 
-        callback_functor_t* handler = new functor<bool, callback_t, __valueType>(callback);
+        callback_c* handler = new callback_c(callback_fptr);
 
         // execute callback method through functor
         if (handler->execute(v1, v2)) { delete handler; return ; }
