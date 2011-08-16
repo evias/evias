@@ -36,6 +36,7 @@
 #include "regularExpressions/boostRegex.hpp"
 #include "functional/functorTest.hpp"
 #include "functional/moreFunctor.hpp"
+#include "functional/callGroups.hpp"
 
 namespace evias {
 
@@ -119,6 +120,7 @@ namespace test {
 
         functional::functorTest*        _functional_functorTest;
         functional::moreFunctor*        _functional_moreFunctor;
+        functional::callGroups*         _functional_callGroups;
     };
 
 }; // test

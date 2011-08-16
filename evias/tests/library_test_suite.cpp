@@ -75,6 +75,7 @@ namespace test {
         if (_testFunctional) {
             releaseMemory(_functional_functorTest);
             releaseMemory(_functional_moreFunctor);
+            releaseMemory(_functional_callGroups);
         }
     }
 
@@ -161,6 +162,7 @@ namespace test {
         if ((_testFunctional = test)) {
             addTest(_functional_functorTest, testResult(1, "no_message_check"));
             addTest(_functional_moreFunctor, testResult(1, "no_message_check"));
+            addTest(_functional_callGroups, testResult(1, "no_message_check"));
         }
         return this;
     }
@@ -312,6 +314,9 @@ namespace test {
 
         _functional_moreFunctor = new functional::moreFunctor();
         _functional_moreFunctor->setLabel("functional objects moreFunctor");
+
+        _functional_callGroups = new functional::callGroups();
+        _functional_callGroups->setLabel("functional objects callGroups");
     }
 
 
