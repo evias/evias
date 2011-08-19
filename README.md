@@ -24,15 +24,15 @@ the extracted package yourself. (see bootstrap.sh)
 
 Compiling and linking the library can be done using
 
-$ make library
+    make library
 
 Compiling the unitary test suite (after library compile)
 
-$ make tests
+    make tests
 
 Compiling the examples is done using :
 
-$ make examples
+    make examples
 
 Though before being able to use the linked library, you have
 to specify that LD_LIBRARY_PATH should look into the built
@@ -44,7 +44,7 @@ can use all the features proposed.
 To execute the library unitary test suite, you execute the following
 command :
 
-$ ./evias/tests/bin/suite_execution.exe
+    ./evias/tests/bin/suite_execution.exe
 
 To compile another project using this library in any case, you have
 to define the include path to the evias library header files and
@@ -52,16 +52,16 @@ link your executable with the evias library. As the examples
 below will explain.
 
 Take this as your base compilation rule
-# g++ -c main.cpp -o main.o
+    g++ -c main.cpp -o main.o
 
 So add the include path to the evias library
-# g++ -Ipath/to/evias -c main.cpp -o main.o
+    g++ -Ipath/to/evias -c main.cpp -o main.o
 
 Take this as you're base build rule
-# g++ -o build/outputExecutable main.o
+    g++ -o build/outputExecutable main.o
 
 And add the needed information for linking to the evias library
-# g++ -Lpath/to/evias -levias -o build/outputExecutable main.o
+    g++ -Lpath/to/evias -levias -o build/outputExecutable main.o
 
 ## Contribute
 
