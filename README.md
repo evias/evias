@@ -1,19 +1,26 @@
----- eVias C++ library README ----
+# eVias C++ library
 
-{-------------------- ABSTRACT
-
-This library is currently under development. Some of the features may be buggy or
-their implementation may be incomplete. This is a hobbie development, helping me for
-a faster development of applications using C++. Bugs can be reported by mail to
+Some of the features may be buggy or their implementation may be incomplete.
+This has started as a hobbie development, helping me for a faster development
+of applications using C++. Bugs can be reported by mail to
 <saive.gregory@gmail.com>.
 
 Mostly, this library will include features helping me to achieve daily tasks. The main
 purpose of having this library linked to my applications is to be able to develop
 those application much faster by having a good library layer to work on.
 
---------------------- END ABSTRACT}
+## Requirements
 
-{-------------------- USE INSTRUCTIONS
+* g++/gcc -v >= 4.3
+* libboost v1.47 is the minimum
+* libpqxx
+* libssl-dev
+* libqt4-dev
+
+The boost package is not yet available as an apt package so you have to compile
+the extracted package yourself. (see bootstrap.sh)
+
+## Use instructions
 
 Compiling and linking the library can be done using
 
@@ -23,11 +30,18 @@ Compiling the unitary test suite (after library compile)
 
 $ make tests
 
-Before using the evias library, I recommend to execute the library
-test suite on your platform, as this will permit to see if everything
-is well configured for the library features to be used on your platform.
+Compiling the examples is done using :
 
-To execute the library unitary test suite, you simple execute the following
+$ make examples
+
+Though before being able to use the linked library, you have
+to specify that LD_LIBRARY_PATH should look into the built
+directory .. (evias/build)
+
+Executing the test suite on your platform allows you to see if you
+can use all the features proposed.
+
+To execute the library unitary test suite, you execute the following
 command :
 
 $ ./evias/tests/bin/suite_execution.exe
@@ -49,27 +63,16 @@ Take this as you're base build rule
 And add the needed information for linking to the evias library
 # g++ -Lpath/to/evias -levias -o build/outputExecutable main.o
 
---------------------- END USE INSTRUCTIONS}
+## Contribute
 
-{-------------------- CONTRIBUTE
+I would appreciate any contributions. This project is open source and
+has no limit of extension. Any kind of module or concept may be implemented
+in the library. I would be pleased to merge your work.
 
-To contribute by developing features designed to be merge into the
-evias library you can send a fork request to github.com/evias/evias.git
-and I will have a look at what you are proposing.
+Again to contribute, you can use github.com's simple fork requests or you
+can send me an email with a patch of your commit(s).
 
-Your fork request should mention a link from where I can fetch your
-developments. I would surely be happy to see people colaborating
-as this project could become useful to C++ developments, being
-the gateway between back end C++ techniques to query on an application
-base of any kind. Most of the implemented patterns are based on
-web application patterns and web application development needs.
-
---------------------- END CONTRIBUTE}
-
-{-------------------- LIBRARY MODULES LIST
-
-This section should display a list of all implemented modules. As
-I am trying to keep it up to date as possible. :]
+## Modules
 
 - evias::core
     - configIni     : ".ini" file configuration read / write module
@@ -88,8 +91,10 @@ I am trying to keep it up to date as possible. :]
     - updateQuery      : represents a whole update statement (SQL)
     - removeQuery      : represents a whole delete statement (SQL)
     - insertQuery      : represents a whole insert statement (SQL)
-    - regExp
-        - charsGroup   : example: [A-Za-Z0123] charsGroup is A-Za-Z0123
+    - regex         : class working with boost::xpressive. Regular expressions module.
+    - callback      : class for working with function pointers
+    - callqueue     : class for managing a queue of callback call configurations
+    - assertable    : class offering templated static functions for assertions.
 
 - evias::application
     - consoleParser : console call arguments parsing module
@@ -114,5 +119,4 @@ I am trying to keep it up to date as possible. :]
       - databaseObjects : tests the database connection objects. (PgSQL for now)
       - networkObjects  : tests the network objects (netPacket, tcpipConnection ..)
       - regularExpressions: tests the regular expression parse feature.
-
---------------------- END LIBRARY MODULES LIST }
+      - functional      : tests the functional part of the core library.
