@@ -49,6 +49,19 @@ namespace core {
         throw (wrongAssert());
     }
 
+    /**
+     * @brief
+     * this function allows comparing two specified values of one common
+     * type which may require more than a simple operator==() call.
+     * The pretty basical rules are to compare two values of type
+     * __valueType (see template def) returning a boolean value.
+     *
+     * @param   v1              __valueType   The first variable for the comparison
+     * @param   v2              __valueType   The second variable for the comparison
+     * @param   callback_fptr   bool (*) (__valueType, __valueType)     The function pointer to be executed
+     *
+     * @return void
+     **/
     template <typename __valueType>
     void assertable<__valueType>::assertEqual(__valueType v1, __valueType v2, bool (*callback_fptr) (__valueType,__valueType))
     {

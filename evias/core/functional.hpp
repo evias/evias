@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <map>
 
 #include "assertable.hpp"
 
@@ -15,6 +16,7 @@ namespace core {
     using std::vector;
     using std::queue;
     using std::string;
+    using std::pair;
 
     /**
      * @brief
@@ -33,40 +35,15 @@ namespace core {
      * This means the first entry of the pair will be the evias::core::callback
      * object and the second entry will be a vector<_cg_param_t>
      * with _cg_param_t = callback function pointer parameters type
+     * This "pair" is easier described as the actual "call" to the
+     * function pointer, as we store the parameters for the function
+     * call and the actual function.
      *
      * @todo implement class member function pointers
-     *
-     * @example
-     * bool intEquals(int i1, int i2)
-     * {
-     *     return i1 == i2;
-     * }
-     *
-     * typedef bool (*my_callback_t) (int, int);
-     * evias::core::callback<bool, int, my_callback_t>* f = new evias::core::callback<bool, int, my_callback_t>();
-     *
-     * my_callback_t cb = NULL;
-     * cb = &intEquals;
-     * f->setCallback(cb);
-     *
-     * bool r1 = f->execute(1, 1); // return (bool) true
-     * bool r2 = f->execute(1, 2); // return (bool) false
-     * bool r3 = f->execute(42, 42); // return (bool) true
-     * bool r4 = f->execute(42, 24); // return (bool) false, sadly
-     *
-     * OR
-     * typedef bool (*my_callback_t) (int, int);
-     * evias::core::callback<bool, int, my_callback_t>* cb_instance = new evias::core::callback<bool, int, my_callback_t>(&intEquals);
-     * evias::core::callgroup<bool,int,my_callback_t>* g = new callgroup<bool,int,my_callback_t>();
-     *
-     * g->push(cb_instance, 1, 1);
-     * g->push(cb_instance, 1, 2);
-     * g->push(cb_instance, 42, 42);
-     * g->push(cb_instance, 42, 42);
-     *
-     * vector<bool> returns = g->run();
      **/
-    template <typename _cb_return_t, typename _cb_param_t, typename _cb_funcptr_t>
+    template <typename _cb_return_t,
+              typename _cb_param_t,
+              typename _cb_funcptr_t>
     class callback
     {
         typedef _cb_return_t (*__my_decl) (_cb_param_t, _cb_param_t);
@@ -84,10 +61,14 @@ namespace core {
         _cb_return_t execute(_cb_param_t, _cb_param_t);
     };
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
-    class callgroup
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
+    class callqueue
     {
         typedef _cg_return_t (*__my_decl) (_cg_param_t, _cg_param_t);
+
+        // the callbacks which have been pushed to the callqueue instance
         typedef queue<callback<_cg_return_t,_cg_param_t,_cg_funcptr_t>*> __callbackQueue;
 
         __callbackQueue             m_callbacks;
@@ -96,9 +77,9 @@ namespace core {
         vector<_cg_return_t>        m_lastReturns;
 
     public :
-        callgroup();
+        callqueue();
 
-        ~callgroup();
+        ~callqueue();
 
         /** push **/
         void push (callback<_cg_return_t,_cg_param_t,_cg_funcptr_t>*, _cg_param_t, _cg_param_t);
@@ -114,40 +95,88 @@ namespace core {
     // IMPLEMENTATION
     // class callback
 
-    template <typename _cb_return_t, typename _cb_param_t, typename _cb_funcptr_t>
+    /**
+     * @brief
+     * constructor, assign function pointer (or null if empty)
+     *
+     * @param   cb  _cb_funcptr_t   The function pointer of type _cb_funcptr_t (3rd template)
+     **/
+    template <typename _cb_return_t,
+              typename _cb_param_t,
+              typename _cb_funcptr_t>
     callback<_cb_return_t, _cb_param_t, _cb_funcptr_t>::callback(_cb_funcptr_t cb)
         : m_funcptr(cb)
     {
     }
 
-    template <typename _cb_return_t, typename _cb_param_t, typename _cb_funcptr_t>
+    /**
+     * @brief
+     * copy constructor
+     *
+     * @param   r   const callback&     The object you want to clone
+     **/
+    template <typename _cb_return_t,
+              typename _cb_param_t,
+              typename _cb_funcptr_t>
     callback<_cb_return_t, _cb_param_t, _cb_funcptr_t>::callback(const callback& r)
         : m_funcptr(r.m_funcptr)
     {
     }
 
-    template <typename _cb_return_t, typename _cb_param_t, typename _cb_funcptr_t>
+    /**
+     * @brief
+     * execute the callback function. The function pointer has to point
+     * to a valid 2 parameters (of same type) function defined before.
+     *
+     * @param   p1  _cb_param_t     First parameter for the call
+     * @param   p2  _cb_param_t     Second parameter for the call
+     *
+     * @return  _cb_return_t    The return result of the function pointer call
+     **/
+    template <typename _cb_return_t,
+              typename _cb_param_t,
+              typename _cb_funcptr_t>
     _cb_return_t callback<_cb_return_t, _cb_param_t, _cb_funcptr_t>::execute(_cb_param_t p1, _cb_param_t p2)
     {
         return (*m_funcptr)(p1, p2);
     }
 
-    template <typename _cb_return_t, typename _cb_param_t, typename _cb_funcptr_t>
+    /**
+     * @brief
+     * assign (new) function pointer
+     *
+     * @param   fptr    _cb_funcptr_t   The function pointer..
+     **/
+    template <typename _cb_return_t,
+              typename _cb_param_t,
+              typename _cb_funcptr_t>
     void callback<_cb_return_t, _cb_param_t, _cb_funcptr_t>::set_funcptr(_cb_funcptr_t fptr)
     {
         m_funcptr = fptr;
     }
 
     // IMPLEMENTATION
-    // class callgroup
+    // class callqueue
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
-    callgroup<_cg_return_t, _cg_param_t, _cg_funcptr_t>::callgroup()
+    /**
+     * @brief
+     * constructor
+     **/
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
+    callqueue<_cg_return_t, _cg_param_t, _cg_funcptr_t>::callqueue()
     {
     }
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
-    callgroup<_cg_return_t, _cg_param_t, _cg_funcptr_t>::~callgroup()
+    /**
+     * @brief
+     * destructor, cleans all available vectors & queues..
+     **/
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
+    callqueue<_cg_return_t, _cg_param_t, _cg_funcptr_t>::~callqueue()
     {
         m_lastReturns.clear();
 
@@ -156,8 +185,21 @@ namespace core {
         while (! m_params.empty()) m_params.pop();
     }
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
-    void callgroup<_cg_return_t, _cg_param_t, _cg_funcptr_t>::push(callback<_cg_return_t, _cg_param_t, _cg_funcptr_t>* cb, _cg_param_t p1, _cg_param_t p2)
+    /**
+     * @brief
+     * push allows to append a call to the call queue. The queue works
+     * in a FIFO strategy so the first pushed call configuration will
+     * be executed the first as well.
+     *
+     * @param   cb  callback<T1,T2,T3>      the callback object to push on the queue
+     *                  [With T1=_cg_return_t, T2=_cg_param_t, T3=_cg_funcptr_t]
+     * @param   p1  _cg_param_t             first parameter to the function call
+     * @param   p2  _cg_param_t             second parameter to the function call
+     **/
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
+    void callqueue<_cg_return_t, _cg_param_t, _cg_funcptr_t>::push(callback<_cg_return_t, _cg_param_t, _cg_funcptr_t>* cb, _cg_param_t p1, _cg_param_t p2)
     {
         // build parameters vector
         _cg_param_t p[2] = {p1,p2};
@@ -168,9 +210,21 @@ namespace core {
         m_params.push(args);
     }
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
+    /**
+     * @brief
+     * pop removes the first entry of the queues. Basically it allows you
+     * to get the "callee" which you can consider to be the actual "call"
+     * configuration of your first queue entry.
+     *
+     * @return  pair<callback<T1,T2,T3>*, vector<T2>>   the callee configuration
+     *              [With T1=_cg_return_t,T2=_cg_param_t,T3=_cg_funcptr_t]
+     **/
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
     std::pair<callback<_cg_return_t,_cg_param_t,_cg_funcptr_t>*, vector<_cg_param_t> >
-        callgroup<_cg_return_t,_cg_param_t,_cg_funcptr_t>::pop()
+
+        callqueue<_cg_return_t,_cg_param_t,_cg_funcptr_t>::pop()
     {
         // pop first inserted callback object and first insert params vector
         callback<_cg_return_t,_cg_param_t,_cg_funcptr_t>* cb = m_callbacks.front();
@@ -184,8 +238,16 @@ namespace core {
         return __my_call(cb, params);
     }
 
-    template <typename _cg_return_t, typename _cg_param_t, typename _cg_funcptr_t>
-    vector<_cg_return_t> callgroup<_cg_return_t, _cg_param_t, _cg_funcptr_t>::run()
+    /**
+     * @brief
+     * run the queue's content.
+     *
+     * @return vector<_cg_return_t>     The list of return results.
+     **/
+    template <typename _cg_return_t,
+              typename _cg_param_t,
+              typename _cg_funcptr_t>
+    vector<_cg_return_t> callqueue<_cg_return_t, _cg_param_t, _cg_funcptr_t>::run()
     {
         typedef std::pair<callback<_cg_return_t,_cg_param_t,_cg_funcptr_t>*, vector<_cg_param_t> > __my_call;
 
