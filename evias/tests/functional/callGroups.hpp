@@ -91,14 +91,14 @@ namespace functional {
 
                 typedef bool (*callback1_t) (string,string);
                 typedef evias::core::callback<bool,string,callback1_t> callback1_class_t;
-                typedef evias::core::callgroup<bool,string,callback1_t> callback1_group_t;
+                typedef evias::core::callqueue<bool,string,callback1_t> callback1_queue_t;
 
                 // initialize callbacks
                 callback1_class_t* cb_Equals  = new callback1_class_t(&cg1_stringEquals);
                 callback1_class_t* cb_Bigger  = new callback1_class_t(&cg1_stringBigger);
                 callback1_class_t* cb_Smaller = new callback1_class_t(&cg1_stringSmaller);
 
-                callback1_group_t* cg1 = new callback1_group_t();
+                callback1_queue_t* cg1 = new callback1_queue_t();
                 cg1->push(cb_Equals, "hello", "hello");  // returns true
                 cg1->push(cb_Equals, "hellO", "hello");  // returns false
                 cg1->push(cb_Bigger, "helLo", "hello");  // returns true
@@ -121,13 +121,13 @@ namespace functional {
                 // callback2_group_t: relative evias::core::callgroup instance
                 typedef string (*callback2_t) (const char*, const char*);
                 typedef evias::core::callback<string,const char*,callback2_t> callback2_class_t;
-                typedef evias::core::callgroup<string,const char*,callback2_t> callback2_group_t;
+                typedef evias::core::callqueue<string,const char*,callback2_t> callback2_queue_t;
 
                 // could also call set_funcptr() after init but not need here.
                 callback2_class_t* cb_display  = new callback2_class_t(&cg2_getDisplayName);
                 callback2_class_t* cb_combine = new callback2_class_t(&cg2_getCombinedName);
 
-                callback2_group_t* cg2 = new callback2_group_t();
+                callback2_queue_t* cg2 = new callback2_queue_t();
                 // init callback/params pair for cb_display
                 cg2->push(cb_display, "Grégory", "Saive");
                 cg2->push(cb_display, "Yannick", "Saive");
