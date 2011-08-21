@@ -9,12 +9,14 @@
 # ----
 
 LIB_VERSION=`cat VERSION`
+CAT_CLONE_PATH=`cat /tmp/evias_clone_path`
 
 # PATHS
 JUNK_DIR=build/junk
 LIB_TEST_JUNK_DIR=evias/tests/junk
 LIB_TEST_PREFIX=evias/tests/bin
 LIB_TEST_SRC_DIR=evias/tests
+LIB_EXAMPLES_DIR=evias/examples
 LIB_CORE_DIR=evias/core
 LIB_APP_DIR=evias/application
 LIB_MODELS_DIR=evias/models
@@ -48,6 +50,7 @@ BUILD=${CXX} ${CXX_OPTS} -c
 
 LIB_LINKER= ${CXX} ${MD5_LINK} ${PSQL_LINK} ${BOOST_REGEX_LINK} -shared -Wl,-soname,lib${LIB_NAME}.so
 TEST_LINKER = ${CXX} ${EVIAS_LINK} ${QT_LINK} ${PSQL_LINK}
+EXAMPLE_LINKER = ${CXX} ${EVIAS_LINK} ${QT_LINK} ${PSQL_LINK}
 LINKER_ADD=${BOOST_REGEX_LINK}
 
 # LIBRARY FILES
@@ -97,10 +100,14 @@ clean :
 	rm -f ${LIB_TEST_JUNK_DIR}/*.o
 	rm -f ${LIB_TEST_PREFIX}/*.exe
 	rm -f ${LIB_TEST_PREFIX}/*${LIB_NAME}*
+	rm -f ${LIB_EXAMPLES_DIR}/junk/*.o
+	rm -f ${LIB_EXAMPLES_DIR}/bin/*${LIB_NAME}*
+	rm -f ${LIB_EXAMPLES_DIR}/bin/*.exe
 
 all :
 	@make library
 	@make tests
+	@make examples
 
 library :
 	@echo " "
@@ -159,3 +166,18 @@ tests :
 	@echo " "
 	@echo "---- Build of evias C++ library's v${LIB_VERSION} unitary tests done ----"
 
+examples :
+	@echo " "
+	@echo " "
+	@echo "---- Start build of evias C++ library's v${LIB_VERSION} examples ----"
+	@echo " "
+	@echo " "
+	@echo "-- build/link examples suite"
+	@pwd > /tmp/evias_clone_path
+	@echo "[pathsConfig]\nexamples_dir = ${CAT_CLONE_PATH}/evias/examples" > /tmp/evias_examples_config
+	@${BUILD} ${LIB_EXAMPLES_DIR}/console_launcher.cpp -o ${LIB_EXAMPLES_DIR}/junk/console_launcher.o
+	@${EXAMPLE_LINKER} -o ${LIB_EXAMPLES_DIR}/bin/console.exe ${LIB_EXAMPLES_DIR}/junk/console_launcher.o ${LINKER_ADD}
+	@echo " "
+	@echo " "
+	@echo "-- copy library files to tests bin directory"
+	@cp ${LIB_PREFIX}/*${LIB_NAME}* ${LIB_EXAMPLES_DIR}/bin/
