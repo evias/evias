@@ -32,17 +32,23 @@ namespace examples {
 
     int consoleSuite::intro()
     {
-        cout    << "-------------------------------------------" << endl
-                << "This is the eVias C++ library example suite" << endl
-                << "Please choose one action in the menu below." << endl
-                << endl
-                << "1: Configuration files examples"    << endl
-                << "2: Database objects examples"       << endl
-                << "3: Language parsing examples"       << endl
-                << "4: Funny tools"                     << endl
-                << "0: Quit"                            << endl;
+        string l[9] = {
+            "-------------------------------------------",
+            "This is the eVias C++ library example suite",
+            "Please choose one action in the menu below.",
+            "",
+            "1: Configuration files examples",
+            "2: Database objects examples",
+            "3: Language parsing examples",
+            "4: Funny tools",
+            "0: Quit"
+        };
+        unsigned char c[5] = {'0','1','2','3','4'};
 
-        switch (_waitForValidInput<int>("Your choice [0-4]: ")) {
+        renderLines(vector<string>(l, l+9));
+
+        string question = renderQuestion("Action ", vector<unsigned char>(c, c+5));
+        switch (_waitForValidInput<int>(question)) {
             default:
             case 0:
                 delegate(&consoleSuite::seeyousoon);
@@ -83,21 +89,26 @@ namespace examples {
 
     int consoleSuite::menu_configFiles()
     {
-        cout    << "-------------------------------------------" << endl
-                << "Please select an example to execute" << endl
-                << endl
-                << "1: Simple User/Group configuration file parse" << endl
-                << "9: Back"                            << endl;
+        string l[5] = {
+            "-------------------------------------------",
+            "Please select an example to execute",
+            "",
+            "1: Simple User/Group configuration file parse",
+            "0: Back"
+        };
+        unsigned char c[2] = {'1','0'};
 
-        switch (_waitForValidInput<int>("Your choice [1|9]: ")) {
-            default:
-            case 9:
-                delegate(&consoleSuite::intro);
-                break;
+        renderLines(vector<string>(l, l+5));
 
-            case 1:
+        string question = renderQuestion("Action", vector<unsigned char>(c,c+2));
+        switch (_waitForValidInput<unsigned char>(question)) {
+            case '1':
                 delegate(&consoleSuite::example_config1);
                 break;
+
+            case '0':
+                delegate(&consoleSuite::intro);
+                return 0;
         }
         
         delegate(&consoleSuite::toMenuOrNot);
@@ -107,13 +118,16 @@ namespace examples {
 
     int consoleSuite::toMenuOrNot()
     {
-        switch (_waitForValidInput<int>("Go back to menu ? [1/0]: ")) {
-            case 1:
+        unsigned char c[2] = {'y', 'n'};
+
+        string question = renderQuestion("Go back to menu ?", vector<unsigned char>(c,c+2));
+        switch (_waitForValidInput<unsigned char>(question)) {
+            case 'Y':
+            case 'y':
                 delegate(&consoleSuite::intro);
                 break;
 
             default:
-            case 0:
                 break;
         }
     }
