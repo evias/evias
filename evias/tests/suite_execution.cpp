@@ -95,7 +95,7 @@ int main (int argc, char* args[])
             initTest = false;
         }
 
-        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = testRegExp = (initTest);
+        testConfigFiles = testJson = testSqlObjects = testViews = testDbObjects = testNetwork = testRegExp = testFunctional = (initTest);
 
         // present in option key(s) means having to change the data
         if (in_vector("config", optionKeys))     testConfigFiles  = ! initTest;
