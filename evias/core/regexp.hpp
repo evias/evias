@@ -21,7 +21,8 @@ namespace core {
         PARSE_DONE      = 0, // success
         PARSE_FAILED    = -1, // ..
         DATA_MISS       = -2, // input data miss
-        SYNTAX_ERROR    = -3
+        SYNTAX_ERROR    = -3,
+        NO_MATCHES      = -4
 
     } parseReturns;
 

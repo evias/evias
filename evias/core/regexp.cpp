@@ -43,16 +43,12 @@ namespace core {
 
         smatch matches;
         if (! regex_match(_value, matches, _origin)) {
-            if (_noMatchThrows) {
-                setReturnCode((int) PARSE_FAILED);
-                throw(noMatchException());
-            }
 
             return setReturnCode((int) PARSE_FAILED);
         }
 
         if (_noMatchThrows && matches.size() == 0) {
-            setReturnCode((int) PARSE_FAILED);
+            setReturnCode((int) NO_MATCHES);
             throw(noMatchException());
         }
 
@@ -93,7 +89,7 @@ namespace core {
 
     void regex::_computeNamedMatches()
     {
-        if (_return == PARSE_FAILED) {
+        if (_return == NO_MATCHES) {
             return ;
         }
 
@@ -108,7 +104,7 @@ namespace core {
                 name = _names[j-2];
             }
             else {
-                name = string("__auto__group_") + (intToString(i+1));
+                name = string("__auto__group_") + (intToString(i));
             }
 
             _nmatches.insert(std::pair<string,string>(name, _imatches[i]));
