@@ -82,10 +82,10 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestConfig(bool test)
     {
         if ((_testConfig = test)) {
-            addTest(_configFiles_objectParse, testResult(1, "no_message_check"));
-            addTest(_configFiles_objectWrite, testResult(1, "no_message_check"));
-            addTest(_configFiles_invalidRead, testResult(1, "no_message_check"));
-            addTest(_configFiles_commentedFile, testResult(1, "no_message_check"));
+            addTest(_configFiles_objectParse, testResult(1, "no_message_check"), "Configuration files");
+            addTest(_configFiles_objectWrite, testResult(1, "no_message_check"), "Configuration files");
+            addTest(_configFiles_invalidRead, testResult(1, "no_message_check"), "Configuration files");
+            addTest(_configFiles_commentedFile, testResult(1, "no_message_check"), "Configuration files");
         }
 
         return this;
@@ -94,9 +94,9 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestJSON(bool test)
     {
         if ((_testJSON = test)) {
-            addTest(_jsonObjects_simpleParse, testResult(1, "no_message_check"));
-            addTest(_jsonObjects_objectParse, testResult(1, "no_message_check"));
-            addTest(_jsonObjects_objectLoad, testResult(1, "no_message_check"));
+            addTest(_jsonObjects_simpleParse, testResult(1, "no_message_check"), "JSON objects");
+            addTest(_jsonObjects_objectParse, testResult(1, "no_message_check"), "JSON objects");
+            addTest(_jsonObjects_objectLoad, testResult(1, "no_message_check"), "JSON objects");
         }
 
         return this;
@@ -105,11 +105,11 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestSQL(bool test)
     {
         if ((_testSQL = test)) {
-            addTest(_sqlObjects_dataChecks, testResult(1, "no_message_check"));
-            addTest(_sqlObjects_insertStmt, testResult(1, "no_message_check"));
-            addTest(_sqlObjects_removeStmt, testResult(1, "no_message_check"));
-            addTest(_sqlObjects_updateStmt, testResult(1, "no_message_check"));
-            addTest(_sqlObjects_paramsParse, testResult(1, "no_message_check"));
+            addTest(_sqlObjects_dataChecks, testResult(1, "no_message_check"), "SQL objects");
+            addTest(_sqlObjects_insertStmt, testResult(1, "no_message_check"), "SQL objects");
+            addTest(_sqlObjects_removeStmt, testResult(1, "no_message_check"), "SQL objects");
+            addTest(_sqlObjects_updateStmt, testResult(1, "no_message_check"), "SQL objects");
+            addTest(_sqlObjects_paramsParse, testResult(1, "no_message_check"), "SQL objects");
         }
         return this;
     }
@@ -117,8 +117,8 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestViews(bool test)
     {
         if ((_testViews = test)) {
-            addTest(_qtViews_mainWnd, testResult(1, "no_message_check"));
-            addTest(_qtViews_enhancedView, testResult(1, "no_message_check"));
+            addTest(_qtViews_mainWnd, testResult(1, "no_message_check"), "Qt views objects");
+            addTest(_qtViews_enhancedView, testResult(1, "no_message_check"), "Qt views objects");
         }
 
         return this;
@@ -127,11 +127,11 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestDatabase(bool test)
     {
         if ((_testDatabase = test)) {
-            addTest(_databaseObjects_dbConnection, testResult(1, "no_message_check"));
-            addTest(_databaseObjects_dbInsert, testResult(1, "no_message_check"));
-            addTest(_databaseObjects_dbDelete, testResult(1, "no_message_check"));
-            addTest(_databaseObjects_dbUpdate, testResult(1, "no_message_check"));
-            addTest(_databaseObjects_dbFetchAll, testResult(1, "no_message_check"));
+            addTest(_databaseObjects_dbConnection, testResult(1, "no_message_check"), "Database objects");
+            addTest(_databaseObjects_dbInsert, testResult(1, "no_message_check"), "Database objects");
+            addTest(_databaseObjects_dbDelete, testResult(1, "no_message_check"), "Database objects");
+            addTest(_databaseObjects_dbUpdate, testResult(1, "no_message_check"), "Database objects");
+            addTest(_databaseObjects_dbFetchAll, testResult(1, "no_message_check"), "Database objects");
         }
         return this;
     }
@@ -139,8 +139,8 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestNetwork(bool test)
     {
         if ((_testNetwork = test)) {
-            addTest(_networkObjects_packetObject, testResult(1, "no_message_check"));
-            addTest(_networkObjects_ircClient, testResult(1, "no_message_check"));
+            addTest(_networkObjects_packetObject, testResult(1, "no_message_check"), "Network objects");
+            addTest(_networkObjects_ircClient, testResult(1, "no_message_check"), "Network objects");
         }
         return this;
     }
@@ -148,11 +148,11 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestRegExp(bool test)
     {
         if ((_testRegExp = test)) {
-            addTest(_regularExpressions_errorCodes, testResult(1, "no_message_check"));
-            addTest(_regularExpressions_indexedResult, testResult(1, "no_message_check"));
-            addTest(_regularExpressions_boostRegex, testResult(1, "no_message_check"));
-            addTest(_regularExpressions_namedGroups, testResult(1, "no_message_check"));
-            addTest(_regularExpressions_furtherGroups, testResult(1, "no_message_check"));
+            addTest(_regularExpressions_errorCodes, testResult(1, "no_message_check"), "Regular expression objects");
+            addTest(_regularExpressions_indexedResult, testResult(1, "no_message_check"), "Regular expression objects");
+            addTest(_regularExpressions_boostRegex, testResult(1, "no_message_check"), "Regular expression objects");
+            addTest(_regularExpressions_namedGroups, testResult(1, "no_message_check"), "Regular expression objects");
+            addTest(_regularExpressions_furtherGroups, testResult(1, "no_message_check"), "Regular expression objects");
         }
         return this;
     }
@@ -160,9 +160,9 @@ namespace test {
     eviasTestSuite* const eviasTestSuite::setTestFunctional(bool test)
     {
         if ((_testFunctional = test)) {
-            addTest(_functional_functorTest, testResult(1, "no_message_check"));
-            addTest(_functional_moreFunctor, testResult(1, "no_message_check"));
-            addTest(_functional_callGroups, testResult(1, "no_message_check"));
+            addTest(_functional_functorTest, testResult(1, "no_message_check"), "Functional objects");
+            addTest(_functional_moreFunctor, testResult(1, "no_message_check"), "Functional objects");
+            addTest(_functional_callGroups, testResult(1, "no_message_check"), "Functional objects");
         }
         return this;
     }

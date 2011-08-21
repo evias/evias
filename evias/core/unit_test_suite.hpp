@@ -88,9 +88,9 @@ namespace test {
             int execute();
             int shutdown();
 
-            int addTest(unitTest*, testResult);
+            int addTest(unitTest*, testResult, string = "__auto_group");
 
-            unitTestSuite* const chain(unitTest*, testResult);
+            unitTestSuite* const chain(unitTest*, testResult, string = "__auto_group");
 
             vector<unitTest*> getTests()
                 { return _tests; };
@@ -106,6 +106,7 @@ namespace test {
             void setQuietMode(bool isQuiet = true)
                 { _beQuiet = isQuiet; _verbosity = QUIET; };
 
+            void displayNewTestsGroup(string);
 			void printResult(string, testResult, testResult, bool = false);
             void shortResult(string, testResult, testResult);
             void colorNotify(string, bool, bool=false);
@@ -123,6 +124,8 @@ namespace test {
             string  _errorFile;
 
             vector<unitTest*> _tests;
+            vector<string>    _groups;
+            // XXX + map<string,vector<unitTest> >
 
             map<int, testResult> _expectedResults;
             map<int, testResult> _testResults;

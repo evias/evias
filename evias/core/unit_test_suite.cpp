@@ -52,7 +52,15 @@ namespace test {
         int execReturn = 1;
         int cntSuccess  = 0;
         int cntFailures = 0;
+
+        vector<string> displayedGroups;
         for (int i = 0, max = _tests.size(); i < max; i++) {
+
+            if (! in_vector(_groups[i], displayedGroups)) {
+                displayNewTestsGroup(_groups[i]);
+
+                displayedGroups.push_back(_groups[i]);
+            }
 
             int currentTestCode   = -1;
             string currentTestMsg = "no_message_check";
@@ -122,19 +130,21 @@ namespace test {
         return 1;
     }
 
-    int unitTestSuite::addTest(unitTest* test, testResult awaited)
+    int unitTestSuite::addTest(unitTest* test, testResult awaited, string group)
     {
         _tests.push_back(test);
         _expectedResults.insert(make_pair(_count, awaited));
+
+        _groups.push_back(group);
 
         _count++;
 
         return _count;
     }
 
-    unitTestSuite* const unitTestSuite::chain(unitTest* test, testResult awaited)
+    unitTestSuite* const unitTestSuite::chain(unitTest* test, testResult awaited, string group)
     {
-        addTest(test, awaited);
+        addTest(test, awaited, group);
 
         return this;
     }
@@ -151,6 +161,21 @@ namespace test {
         }
 
         cout << msgColor << msg << backColor << endl;
+    }
+
+    void unitTestSuite::displayNewTestsGroup(string group)
+    {
+        string backColor = "\[\e[1;0m]";
+        string msgColor  = "\[\e[1;35m]"; // blue
+        string hitEnter  = "\[\e[1;31m]"; // red (require action)
+
+        cout << endl << msgColor << "NOW EXECUTING TESTS GROUP '"
+             << group << "'" << endl
+             << "------------------------------------------"
+             << hitEnter << " Please hit the Enter key to start." << backColor;
+
+        cin.get();
+        cout << endl;
     }
 
     void unitTestSuite::shortResult(string label, testResult result, testResult awaited)
