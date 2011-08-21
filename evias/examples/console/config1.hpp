@@ -92,8 +92,8 @@ namespace examples {
         }
 
         cout << endl
-             << "------------------------" << endl
-             << "Example output buffering" << endl
+             << "Executing Simple User/Group configuration file parse example" << endl
+             << "-------------------------------------------" << endl
              << endl;
         map<string, vector<string> >::iterator current = adapter.begin();
         for (; current != adapter.end(); current++) {
