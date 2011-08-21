@@ -100,6 +100,9 @@ clean :
 	rm -f ${LIB_TEST_JUNK_DIR}/*.o
 	rm -f ${LIB_TEST_PREFIX}/*.exe
 	rm -f ${LIB_TEST_PREFIX}/*${LIB_NAME}*
+	rm -f ${LIB_EXAMPLES_DIR}/junk/*.o
+	rm -f ${LIB_EXAMPLES_DIR}/bin/*${LIB_NAME}*
+	rm -f ${LIB_EXAMPLES_DIR}/bin/*.exe
 
 all :
 	@make library
