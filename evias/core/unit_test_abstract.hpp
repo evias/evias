@@ -83,6 +83,8 @@ namespace test {
             vector<unitTest*> dependsOn()
                 { return _dependsOn; }
 
+            // XXX operator==
+
         protected :
             bool _state;
 
