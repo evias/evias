@@ -20,14 +20,9 @@ namespace examples {
 
     }
 
-    void consoleSuite::delegate(int (consoleSuite::*_delegate_t) ())
-    {
-        (this->*_delegate_t)();
-    }
-
     int consoleSuite::run()
     {
-        delegate(&consoleSuite::intro);
+        intro();
     }
 
     int consoleSuite::intro()
@@ -51,26 +46,26 @@ namespace examples {
         switch (_waitForValidInput<int>(question)) {
             default:
             case 0:
-                delegate(&consoleSuite::seeyousoon);
+                seeyousoon();
                 break;
 
             case 1:
-                delegate(&consoleSuite::menu_configFiles);
+                menu_configFiles();
                 break;
 
             case 2:
                 // db objects
-                delegate(&consoleSuite::notSupported);
+                notSupported();
                 break;
 
             case 3:
                 // lang parsing
-                delegate(&consoleSuite::notSupported);
+                notSupported();
                 break;
 
             case 4:
                 // fun
-                delegate(&consoleSuite::notSupported);
+                notSupported();
                 break;
         }
 
@@ -103,15 +98,15 @@ namespace examples {
         string question = renderQuestion("Action", vector<unsigned char>(c,c+2));
         switch (_waitForValidInput<unsigned char>(question)) {
             case '1':
-                delegate(&consoleSuite::example_config1);
+                example_config1();
                 break;
 
             case '0':
-                delegate(&consoleSuite::intro);
+                intro();
                 return 0;
         }
-        
-        delegate(&consoleSuite::toMenuOrNot);
+
+        toMenuOrNot();
 
         return 0;
     }
@@ -124,7 +119,7 @@ namespace examples {
         switch (_waitForValidInput<unsigned char>(question)) {
             case 'Y':
             case 'y':
-                delegate(&consoleSuite::intro);
+                intro();
                 break;
 
             default:

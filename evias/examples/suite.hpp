@@ -37,14 +37,10 @@ namespace examples {
 
     class consoleSuite : public suite
     {
-        typedef int (consoleSuite::*_delegate_t) ();
-
     public:
 
         consoleSuite();
         ~consoleSuite();
-        
-        void delegate(_delegate_t);
 
         int run();
 
@@ -61,7 +57,7 @@ namespace examples {
         {
             using std::cout;using std::endl;
             cout << endl << "Feature not supported yet" << endl;
-            delegate(&consoleSuite::toMenuOrNot);
+            toMenuOrNot();
             return 0;
         }
 
