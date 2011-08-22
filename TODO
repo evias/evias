@@ -1,112 +1,22 @@
---------------
---- 0.9
---------------
 
-* add auto release pool feature
-    - should be based on std::auto_ptr, though acting
-      as a Mac OS X reference counter which would
-      extend the reusability of pointers and free
-      the developer of memory problems.
+Weekly / Monthly TODO file for evias C++ library
+------------------------------------------------
+The lines below are formatted as here in this
+quick 4 lines example (10.12 = 2010, Week 12):
+[begin]
+10.12 :
+    - task one
+    - task two
+    - task three
+[end]
+------------------------------------------------
 
---------------
---- 0.8 ---
---------------
+11.34.2 :
+    - implement extendedIni class
 
-* add typed container logic classes.
-* add container classes working with non-iteration data
-  access.
-* implement files data access
-    - documents: xls*, doc*, ppt, pdf, odt
-    - images: svg, png, jpg, gif
-* implement files data export
+11.34.3 :
+    - implement evias::mvc base
 
---- 0.7.9 ----
-
-* implement enhanced regular expressions parsing features
-    - should allow any regular expression to be parsed
-    - work with easy to use data accessors
-
---- 0.7.8 ----
-
-* implement regular expression parsing feature
-    - first version should allow basic parse of patterns
-      returning a map<int,string> where the int represents
-      the position and string the pattern matching value.
-    - bool matchesPattern(string value, string pattern)
-
---- 0.7.7 ----
-
-* unitary test suite entries may sometimes
-  depend on the result of co-descendants.
-  defining a relation between tests should
-  thus be possible.
-* unitary test'ify the whole library features.
-* unitTestSuite should extend evias::application::Project
-
---- 0.7.6 ----
-
-* add unitary tests for network module.
-* add unitary test suite logic class.
-    - adapt all unitary tests to be executed
-      using a suite.
-
---- 0.7.5 ----
-
-* add container logic classes working with data pointers.
-    - should be working with 8-bits data representation
-      as this would be a very good base of the network
-      packet logic classes.
-* add network module
-    - packet logic : see TCP and UDP specifications.
-    - add network connection logic, working with
-      sockets.
-      . add TCP/IP connection class
-
---- 0.7.2 ----
-
-* add threading logic classes.
-    - add Lock class, process Lock logic.
-    - add Mutex class for managing the threads locking.
-* add macro definitions, test compilation on windows
-  and change classes if needed.
-* add object utilities
-    - notClonable : easy to use interface
-      for unclonable objects.
-    - updateableObject : easy to use interface
-      for object logic.
-
-------------
---- 0.7 ----
-------------
-
-* add SQL classes
-    - adapter abstraction
-    - pgsql adapter
-    - dbTable logic
-        - should work with a template class name based on
-          a dbAdapter. As by example MySQL won't get the
-          fields of a table from information_schema relation
-          as would PgSQL.
-* add SQL queries writing classes
-    - should allow a simple write of queries
-    - queries execution is not considered for
-      these classes.
-* add unitary tests
-
-------------
---- 0.6 ----
-------------
-
-* add JSON reading and writing classes
-    - should allow single entries, array entries and
-      object entries.
-* add .ini files reading and writing classes
-* add unitary tests
-
-------------
---- 0.5 ----
-------------
-
-* import old classes, implemented in 2002, the library
-  had been forgotten on an old PC. ^^
-
+11.35 :
+    - use evias::core::regex in several features
+    - modify irc implementation to use functional features
