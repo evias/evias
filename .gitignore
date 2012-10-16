@@ -1,1 +1,4 @@
 evias/tests/bin/logs/
+build/junk/*.o
+build/*.so*
+evias/application/moc_*
