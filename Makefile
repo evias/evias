@@ -28,7 +28,7 @@ LIB_PREFIX=build
 LIB_SRC_DIR=evias
 
 # COMPILATION
-BOOST_PATH=/home/greg/srv/home.work/external/boost_1_47_0
+BOOST_PATH=/usr/lib
 
 PSQL_INC=-I/usr/include/pqxx
 QT_INC=-I/usr/include/qt4
@@ -37,7 +37,7 @@ BOOST_INC=-I ${BOOST_PATH}
 QT_LINK=-lQtGui -lQtCore
 PSQL_LINK=-lpq -lpqxx
 MD5_LINK=-lssl
-BOOST_REGEX_LINK=${BOOST_PATH}/libs/regex/build/gcc/libboost_regex-gcc-1_47.a
+BOOST_REGEX_LINK=${BOOST_PATH}/libboost_regex.a
 
 EVIAS_LINK=-Lbuild/ -levias
 
@@ -117,24 +117,24 @@ library :
 	@echo " "
 	@echo " "
 	@echo "-- evias::core"
-	$(foreach source, ${LIB_CORE}, `${BUILD} ${LIB_CORE_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
+	$(foreach source, ${LIB_CORE}, `${BUILD} -fPIC ${LIB_CORE_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
 	@echo " "
 	@echo " "
 	@echo "-- evias::application"
-	$(foreach source, ${LIB_APPLICATION}, `${BUILD} ${LIB_APP_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
+	$(foreach source, ${LIB_APPLICATION}, `${BUILD} -fPIC ${LIB_APP_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
 	@echo " "
 	@echo " "
 	@echo "-- evias::application views "
 	$(foreach source, ${LIB_MOCS}, `${MOC} ${LIB_APP_DIR}/${source}.hpp > ${LIB_APP_DIR}/moc_${source}.cpp`)
-	$(foreach source, ${LIB_MOCS}, `${MOC_BUILD} ${LIB_APP_DIR}/moc_${source}.cpp -o ${JUNK_DIR}/moc_${source}.o`)
+	$(foreach source, ${LIB_MOCS}, `${MOC_BUILD} -fPIC ${LIB_APP_DIR}/moc_${source}.cpp -o ${JUNK_DIR}/moc_${source}.o`)
 	@echo " "
 	@echo " "
 	@echo "-- evias::models"
-	$(foreach source, ${LIB_MODEL}, `${BUILD} ${LIB_MODELS_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
+	$(foreach source, ${LIB_MODEL}, `${BUILD} -fPIC ${LIB_MODELS_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
 	@echo " "
 	@echo " "
 	@echo "-- evias::network"
-	$(foreach source, ${LIB_NETWORK}, `${BUILD} ${LIB_NETWORK_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
+	$(foreach source, ${LIB_NETWORK}, `${BUILD} -fPIC ${LIB_NETWORK_DIR}/${source}.cpp -o ${JUNK_DIR}/${source}.o`)
 	@echo " "
 	@echo " "
 	@echo "-- link libevias.so"
@@ -154,8 +154,8 @@ tests :
 	@echo " "
 	@echo " "
 	@echo "-- build/link unitary test suite"
-	@${BUILD} ${LIB_TEST_SRC_DIR}/library_test_suite.cpp -o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
-	@${BUILD} ${LIB_TEST_SRC_DIR}/suite_execution.cpp -o ${LIB_TEST_JUNK_DIR}/suite_execution.o
+	@${BUILD} -fPIC ${LIB_TEST_SRC_DIR}/library_test_suite.cpp -o ${LIB_TEST_JUNK_DIR}/library_test_suite.o
+	@${BUILD} -fPIC ${LIB_TEST_SRC_DIR}/suite_execution.cpp -o ${LIB_TEST_JUNK_DIR}/suite_execution.o
 	@${TEST_LINKER} -o ${LIB_TEST_PREFIX}/suite_execution.exe ${LIB_TEST_JUNK_DIR}/suite_execution.o ${LIB_TEST_JUNK_DIR}/library_test_suite.o ${LINKER_ADD}
 	@echo " "
 	@echo " "
@@ -175,7 +175,7 @@ examples :
 	@echo "-- build/link examples suite"
 	@pwd > /tmp/evias_clone_path
 	@echo "[pathsConfig]\nexamples_dir = ${CAT_CLONE_PATH}/evias/examples" > /tmp/evias_examples_config
-	@${BUILD} ${LIB_EXAMPLES_DIR}/console_launcher.cpp -o ${LIB_EXAMPLES_DIR}/junk/console_launcher.o
+	@${BUILD} -fPIC ${LIB_EXAMPLES_DIR}/console_launcher.cpp -o ${LIB_EXAMPLES_DIR}/junk/console_launcher.o
 	@${EXAMPLE_LINKER} -o ${LIB_EXAMPLES_DIR}/bin/console.exe ${LIB_EXAMPLES_DIR}/junk/console_launcher.o ${LINKER_ADD}
 	@echo " "
 	@echo " "
